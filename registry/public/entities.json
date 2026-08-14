@@ -1,0 +1,83 @@
+{
+  "schema_version": "1.0.0",
+  "entities": [
+    {
+      "id": "person:brandon-emery",
+      "type": "Person",
+      "name": "Brandon Emery",
+      "aliases": ["Bando", "Bando Bandz"],
+      "status": "active",
+      "canonical_url": "https://iambandobandz.com/",
+      "relationships": [
+        {"predicate": "artist_identity", "target": "artist:iambandobandz"},
+        {"predicate": "founder_of", "target": "network:b-heard-network"},
+        {"predicate": "founder_of", "target": "lab:massive-magnetics"}
+      ]
+    },
+    {
+      "id": "artist:iambandobandz",
+      "type": "MusicGroup",
+      "name": "IAMBANDOBANDZ",
+      "aliases": ["Bando Bandz"],
+      "status": "active",
+      "canonical_url": "https://iambandobandz.com/",
+      "relationships": [
+        {"predicate": "performed_by", "target": "person:brandon-emery"},
+        {"predicate": "operates_under", "target": "network:b-heard-network"},
+        {"predicate": "canonical_domain", "target": "domain:iambandobandz-com"}
+      ]
+    },
+    {
+      "id": "network:b-heard-network",
+      "type": "Organization",
+      "name": "B Heard Network",
+      "status": "active",
+      "canonical_url": "https://www.facebook.com/BHeardNetworkLLC/",
+      "relationships": [{"predicate": "founded_by", "target": "person:brandon-emery"}]
+    },
+    {
+      "id": "lab:massive-magnetics",
+      "type": "Organization",
+      "name": "Massive Magnetics",
+      "status": "active",
+      "canonical_url": "https://github.com/MASSIVEMAGNETICS",
+      "relationships": [
+        {"predicate": "founded_by", "target": "person:brandon-emery"},
+        {"predicate": "develops", "target": "runtime:victor"}
+      ]
+    },
+    {
+      "id": "governance:ethica-ai",
+      "type": "Project",
+      "name": "Ethica AI",
+      "status": "active",
+      "canonical_url": "https://iambandobandz.com/",
+      "relationships": [{"predicate": "associated_with", "target": "lab:massive-magnetics"}]
+    },
+    {
+      "id": "runtime:victor",
+      "type": "SoftwareApplication",
+      "name": "Victor",
+      "aliases": ["Victor AGI Platform"],
+      "status": "active",
+      "canonical_url": "https://github.com/MASSIVEMAGNETICS",
+      "relationships": [{"predicate": "developed_by", "target": "lab:massive-magnetics"}]
+    },
+    {
+      "id": "domain:iambandobandz-com",
+      "type": "WebSite",
+      "name": "iambandobandz.com",
+      "status": "active",
+      "canonical_url": "https://iambandobandz.com/",
+      "relationships": [{"predicate": "represents", "target": "artist:iambandobandz"}]
+    },
+    {
+      "id": "store:iambandobandz-store",
+      "type": "WebSite",
+      "name": "iambandobandz.store",
+      "status": "planned",
+      "canonical_url": "https://iambandobandz.store/",
+      "relationships": [{"predicate": "commerce_for", "target": "artist:iambandobandz"}]
+    }
+  ]
+}

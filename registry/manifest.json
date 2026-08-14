@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0.0",
+  "registry_version": "2026.08.14.1",
+  "canonical_domain": "https://iambandobandz.com/",
+  "public_sources": [
+    "registry/public/entities.json",
+    "registry/public/identity.json",
+    "registry/public/platforms.json",
+    "registry/public/catalog.json",
+    "registry/public/public-profile.json"
+  ],
+  "private_policy": {
+    "path": "registry/private",
+    "committed_pii_allowed": false,
+    "required_storage": "private authenticated backend"
+  }
+}

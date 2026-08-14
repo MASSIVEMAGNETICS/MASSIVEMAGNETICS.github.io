@@ -23,12 +23,24 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Validate canonical registry
+        run: python tools/validate_registry.py
+      - name: Run registry tests
+        run: python -m unittest discover -s tests -v
+      - name: Build sanitized site from registry
+        run: python tools/build_site.py --output _site
+      - name: Validate built site
+        run: python tools/validate_registry.py --site _site
       - name: Configure Pages
         uses: actions/configure-pages@v5
       - name: Upload website
         uses: actions/upload-pages-artifact@v4
         with:
-          path: .
+          path: _site
       - name: Deploy
         id: deployment
         uses: actions/deploy-pages@v4

@@ -1,0 +1,13 @@
+{
+  "schema_version": "1.0.0",
+  "artist": "artist:iambandobandz",
+  "releases": [
+    {"id": "collection:origin-signals", "title": "Origin Signals", "kind": "collection", "year": 2024, "status": "public", "url": "https://music.apple.com/us/artist/iambandobandz/1771524530"},
+    {"id": "release:wake-up-the-dead", "title": "WAKE UP THE DEAD", "kind": "album", "year": 2025, "track_count": 22, "status": "public", "url": "https://music.apple.com/us/album/wake-up-the-dead/1799242344"},
+    {"id": "release:crybaby", "title": "CRYBABY", "kind": "album", "year": 2025, "status": "public", "url": "https://music.apple.com/us/album/crybaby/1857723003"},
+    {"id": "release:nowhere-left-to-go", "title": "NOWHERE LEFT TO GO", "kind": "album", "year": 2026, "status": "public", "url": "https://music.apple.com/us/artist/iambandobandz/1771524530"},
+    {"id": "release:steel-city", "title": "STEEL CITY", "kind": "album", "year": 2026, "status": "public", "url": "https://unitedmasters.com/m/steel-city-1"},
+    {"id": "release:exit-velocity", "title": "eXIT vELOCITY", "kind": "album", "year": 2026, "status": "public", "url": "https://unitedmasters.com/m/exit-velocity"},
+    {"id": "release:one-man-show", "title": "ONE MAN SHOW", "kind": "ep", "year": 2026, "track_count": 6, "status": "public", "url": "https://unitedmasters.com/m/one-man-show-2"}
+  ]
+}

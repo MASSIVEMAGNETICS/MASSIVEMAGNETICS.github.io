@@ -1,0 +1,18 @@
+{
+  "schema_version": "1.0.0",
+  "canonical_person": "person:brandon-emery",
+  "canonical_artist": "artist:iambandobandz",
+  "canonical_domain": "domain:iambandobandz-com",
+  "public_contacts": {
+    "artist_email": "bandobandz440@gmail.com",
+    "technical_email": "massivemagnetics@gmail.com",
+    "phone": "+1-440-453-4945"
+  },
+  "origin": {
+    "locality": "Lorain",
+    "region": "OH",
+    "country": "US",
+    "coordinates": {"latitude": 41.4528, "longitude": -82.1824}
+  },
+  "roles": ["independent artist", "producer", "founder", "systems builder"]
+}

@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://iambandobandz.com/registry/schema/release.schema.json",
+  "title": "Release",
+  "type": "object",
+  "required": ["id", "title", "kind", "year", "status", "url"],
+  "properties": {
+    "id": {"type": "string", "pattern": "^(release|collection):[a-z0-9-]+$"},
+    "title": {"type": "string"},
+    "kind": {"enum": ["single", "ep", "album", "collection"]},
+    "year": {"type": "integer", "minimum": 2000, "maximum": 2100},
+    "track_count": {"type": "integer", "minimum": 1},
+    "status": {"enum": ["public", "planned", "retired"]},
+    "url": {"type": "string", "format": "uri"}
+  },
+  "additionalProperties": false
+}
