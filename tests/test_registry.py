@@ -33,6 +33,23 @@ class RegistryTests(unittest.TestCase):
             manifest = json.loads((site / ".well-known" / "iambandobandz.json").read_text(encoding="utf-8"))
             self.assertEqual(manifest["canonical_domain"], "https://iambandobandz.com/")
 
+    def test_lead_api_cutover_is_fail_closed_by_default(self) -> None:
+        registry = load_registry()
+        capture = registry["profile"]["lead_capture"]
+        self.assertFalse(capture["api_enabled"])
+        self.assertEqual(capture["api_endpoint"], "https://api.iambandobandz.com/api/v1/leads")
+        self.assertEqual(capture["fallback"], "formsubmit")
+        self.assertEqual(capture["consent_text_version"], "signal-capture-v1")
+        with tempfile.TemporaryDirectory() as tmp:
+            site = Path(tmp) / "site"
+            build(site)
+            index = (site / "index.html").read_text(encoding="utf-8")
+            script = (site / "script.js").read_text(encoding="utf-8")
+            self.assertNotIn('name="iambandobandz:lead-api-endpoint"', index)
+            self.assertIn('iambandobandz:lead-api-endpoint', script)
+            self.assertIn('https://formsubmit.co/ajax/bandobandz440@gmail.com', script)
+            self.assertIn('signal-capture-v1', script)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -32,6 +32,59 @@
     } catch (_) {}
   }
 
+  const leadApiEndpoint = String(
+    document.querySelector('meta[name="iambandobandz:lead-api-endpoint"]')?.content || ''
+  ).trim();
+  const consentTextVersion = 'signal-capture-v1';
+
+  function newIdempotencyKey() {
+    if (window.crypto?.randomUUID) return `web-${window.crypto.randomUUID()}`;
+    const random = window.crypto?.getRandomValues
+      ? Array.from(window.crypto.getRandomValues(new Uint32Array(4)), (value) => value.toString(16)).join('')
+      : Math.random().toString(36).slice(2) + Date.now().toString(36);
+    return `web-${Date.now()}-${random}`;
+  }
+
+  async function submitFirstPartyLead({ email, phone, consent, idempotencyKey }) {
+    if (!leadApiEndpoint) throw new Error('First-party lead API is disabled');
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 5000);
+    try {
+      const response = await fetch(leadApiEndpoint, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          email,
+          phone,
+          sms_consent: consent,
+          consent_text_version: consentTextVersion,
+          source: 'website-pre-redirect',
+          idempotency_key: idempotencyKey
+        }),
+        signal: controller.signal
+      });
+      if (!response.ok) throw new Error(`First-party capture failed: ${response.status}`);
+      const receipt = await response.json();
+      if (!receipt?.ok || !receipt?.receipt_id) throw new Error('First-party capture returned no receipt');
+      return receipt;
+    } finally {
+      clearTimeout(timeout);
+    }
+  }
+
+  async function submitFormSubmit(data) {
+    const response = await fetch('https://formsubmit.co/ajax/bandobandz440@gmail.com', {
+      method: 'POST',
+      headers: { Accept: 'application/json' },
+      body: data
+    });
+    if (!response.ok) throw new Error(`Fallback capture failed: ${response.status}`);
+    return response.json().catch(() => ({}));
+  }
+
   const modal = document.createElement('div');
   modal.className = 'capture-modal';
   modal.setAttribute('role', 'dialog');
@@ -102,18 +155,34 @@
     }
 
     status.textContent = 'Locking in the signal…';
+    const method = email && phone ? 'email_phone' : email ? 'email' : 'phone';
+    const idempotencyKey = newIdempotencyKey();
+    let provider = 'formsubmit';
+
     try {
-      const response = await fetch('https://formsubmit.co/ajax/bandobandz440@gmail.com', {
-        method: 'POST',
-        headers: { Accept: 'application/json' },
-        body: data
-      });
-      if (!response.ok) throw new Error(`Capture failed: ${response.status}`);
-      track('signal_capture_complete', { method: email && phone ? 'email_phone' : email ? 'email' : 'phone', destination: pendingLabel });
+      if (leadApiEndpoint) {
+        try {
+          const receipt = await submitFirstPartyLead({ email, phone, consent, idempotencyKey });
+          provider = 'first_party';
+          track('signal_capture_receipt', {
+            provider,
+            receipt: String(receipt.receipt_id).slice(0, 80),
+            destination: pendingLabel
+          });
+        } catch (primaryError) {
+          track('signal_capture_primary_error', { message: String(primaryError), destination: pendingLabel });
+          await submitFormSubmit(data);
+          provider = 'formsubmit_fallback';
+        }
+      } else {
+        await submitFormSubmit(data);
+      }
+
+      track('signal_capture_complete', { method, provider, destination: pendingLabel });
       status.textContent = 'Signal locked. Redirecting…';
       setTimeout(continueToMusic, 450);
     } catch (error) {
-      track('signal_capture_error', { message: String(error) });
+      track('signal_capture_error', { message: String(error), provider, destination: pendingLabel });
       status.textContent = 'The capture relay failed, but the music won’t. Continuing…';
       setTimeout(continueToMusic, 900);
     }

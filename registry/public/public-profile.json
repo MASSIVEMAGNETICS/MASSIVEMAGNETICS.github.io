@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0.0",
-  "registry_version": "2026.08.14.1",
+  "registry_version": "2026.08.14.2",
   "canonical_domain": "https://iambandobandz.com/",
   "site_name": "IAMBANDOBANDZ",
   "tagline": "The Signal Survives",
@@ -10,5 +10,11 @@
     {"path": "/privacy/", "changefreq": "yearly", "priority": 0.3},
     {"path": "/terms/", "changefreq": "yearly", "priority": 0.3}
   ],
-  "public_registry_base": "/registry/public/"
+  "public_registry_base": "/registry/public/",
+  "lead_capture": {
+    "api_enabled": false,
+    "api_endpoint": "https://api.iambandobandz.com/api/v1/leads",
+    "fallback": "formsubmit",
+    "consent_text_version": "signal-capture-v1"
+  }
 }
