@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import html
 import json
 import re
 import shutil
@@ -59,6 +60,26 @@ def build(output: Path) -> None:
     if not script_pattern.search(index):
         raise RuntimeError("homepage JSON-LD block not found")
     index = script_pattern.sub(replacement, index, count=1)
+
+    profile = registry["profile"]
+    capture = profile.get("lead_capture", {})
+    if capture.get("api_enabled") is True:
+        endpoint = str(capture.get("api_endpoint", "")).strip()
+        if not endpoint.startswith("https://"):
+            raise RuntimeError("enabled lead API must use HTTPS")
+        meta = (
+            '<meta name="iambandobandz:lead-api-endpoint" '
+            f'content="{html.escape(endpoint, quote=True)}">'
+        )
+        if 'name="iambandobandz:lead-api-endpoint"' not in index:
+            index = index.replace("</head>", f"  {meta}\n</head>", 1)
+    else:
+        index = re.sub(
+            r'\s*<meta name="iambandobandz:lead-api-endpoint"[^>]*>\s*',
+            "\n",
+            index,
+        )
+
     if 'data-legal-links="registry"' not in index:
         legal = '<span data-legal-links="registry"><a href="/privacy/">Privacy</a> · <a href="/terms/">Terms</a></span>'
         index = index.replace("</footer>", legal + "</footer>", 1)

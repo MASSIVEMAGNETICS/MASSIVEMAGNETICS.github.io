@@ -73,13 +73,26 @@ def validate_source() -> list[str]:
     if "/" not in paths or "/privacy/" not in paths or "/terms/" not in paths:
         fail("required public routes missing", errors)
 
+    capture = profile.get("lead_capture")
+    if not isinstance(capture, dict):
+        fail("profile.lead_capture must be an object", errors)
+    else:
+        if not isinstance(capture.get("api_enabled"), bool):
+            fail("lead_capture.api_enabled must be boolean", errors)
+        endpoint = str(capture.get("api_endpoint", "")).strip()
+        if not valid_https(endpoint):
+            fail("lead_capture.api_endpoint must be HTTPS", errors)
+        if capture.get("fallback") != "formsubmit":
+            fail("lead_capture fallback must remain formsubmit until private runtime cutover is complete", errors)
+        if capture.get("consent_text_version") != "signal-capture-v1":
+            fail("lead_capture consent text version drift detected", errors)
+
     private_dir = ROOT / "registry" / "private"
     allowed_private = {".gitignore", "README.md"}
     leaked = [p.name for p in private_dir.iterdir() if p.name not in allowed_private]
     if leaked:
         fail(f"private data boundary violation: {', '.join(sorted(leaked))}", errors)
 
-    # Ensure generators themselves can resolve all authoritative state.
     build_jsonld(registry)
     build_public_manifest(registry)
     build_sitemap(registry)
@@ -102,6 +115,22 @@ def validate_built_site(site: Path) -> list[str]:
     jsonld = json.dumps(build_jsonld(registry), separators=(",", ":"), ensure_ascii=False)
     if jsonld not in index:
         fail("homepage JSON-LD is not registry-generated", errors)
+
+    capture = registry["profile"]["lead_capture"]
+    meta_name = 'name="iambandobandz:lead-api-endpoint"'
+    if capture["api_enabled"] is True:
+        if meta_name not in index or capture["api_endpoint"] not in index:
+            fail("enabled lead API endpoint was not injected into built homepage", errors)
+    elif meta_name in index:
+        fail("disabled lead API leaked into built homepage", errors)
+
+    script = (site / "script.js").read_text(encoding="utf-8")
+    if "iambandobandz:lead-api-endpoint" not in script:
+        fail("site script is not cutover-aware", errors)
+    if "https://formsubmit.co/ajax/bandobandz440@gmail.com" not in script:
+        fail("FormSubmit fallback was removed before private runtime verification", errors)
+    if "signal-capture-v1" not in script:
+        fail("site consent version is not pinned", errors)
 
     portfolio = (site / "portfolio" / "index.html").read_text(encoding="utf-8")
     if "massivemagnetics.github.io/portfolio" in portfolio:
