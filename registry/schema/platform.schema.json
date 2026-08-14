@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://iambandobandz.com/registry/schema/platform.schema.json",
+  "title": "External Platform Identity",
+  "type": "object",
+  "required": ["id", "name", "owner_entity", "url", "kind"],
+  "properties": {
+    "id": {"type": "string", "pattern": "^platform:[a-z0-9-]+$"},
+    "name": {"type": "string"},
+    "owner_entity": {"type": "string"},
+    "url": {"type": "string", "format": "uri"},
+    "external_id": {"type": "string"},
+    "kind": {"type": "string"}
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,27 @@
+name: Validate Canonical Registry
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  registry:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Validate canonical source
+        run: python tools/validate_registry.py
+      - name: Run registry tests
+        run: python -m unittest discover -s tests -v
+      - name: Build sanitized Pages artifact
+        run: python tools/build_site.py --output _site
+      - name: Validate built artifact
+        run: python tools/validate_registry.py --site _site

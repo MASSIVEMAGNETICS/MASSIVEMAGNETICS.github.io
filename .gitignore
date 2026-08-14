@@ -1,0 +1,8 @@
+_site/
+__pycache__/
+*.pyc
+
+# Never commit private audience/customer ledgers to this public repository.
+registry/private/*
+!registry/private/.gitignore
+!registry/private/README.md

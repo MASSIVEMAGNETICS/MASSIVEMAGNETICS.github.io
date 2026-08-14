@@ -1,0 +1,12 @@
+{
+  "schema_version": "1.0.0",
+  "platforms": [
+    {"id": "platform:unitedmasters", "name": "UnitedMasters", "owner_entity": "artist:iambandobandz", "url": "https://unitedmasters.com/a/iambandobandz", "kind": "distribution"},
+    {"id": "platform:spotify", "name": "Spotify", "owner_entity": "artist:iambandobandz", "url": "https://open.spotify.com/artist/51W2sGVZDY4QdvlpMrkxtC", "external_id": "51W2sGVZDY4QdvlpMrkxtC", "kind": "streaming"},
+    {"id": "platform:apple-music", "name": "Apple Music", "owner_entity": "artist:iambandobandz", "url": "https://music.apple.com/us/artist/iambandobandz/1771524530", "external_id": "1771524530", "kind": "streaming"},
+    {"id": "platform:instagram", "name": "Instagram", "owner_entity": "artist:iambandobandz", "url": "https://www.instagram.com/iambandobandz/", "kind": "social"},
+    {"id": "platform:facebook-bheard", "name": "Facebook / B Heard Network", "owner_entity": "network:b-heard-network", "url": "https://www.facebook.com/BHeardNetworkLLC/", "kind": "social"},
+    {"id": "platform:github", "name": "GitHub / Massive Magnetics", "owner_entity": "lab:massive-magnetics", "url": "https://github.com/MASSIVEMAGNETICS", "kind": "development"},
+    {"id": "platform:audiomack", "name": "Audiomack", "owner_entity": "artist:iambandobandz", "url": "https://audiomack.com/iambandobandz", "kind": "streaming"}
+  ]
+}

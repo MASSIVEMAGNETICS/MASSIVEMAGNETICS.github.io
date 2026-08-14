@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://iambandobandz.com/registry/schema/identity.schema.json",
+  "title": "Canonical Identity Profile",
+  "type": "object",
+  "required": ["schema_version", "canonical_person", "canonical_artist", "canonical_domain", "public_contacts", "origin"],
+  "properties": {
+    "schema_version": {"type": "string"},
+    "canonical_person": {"type": "string"},
+    "canonical_artist": {"type": "string"},
+    "canonical_domain": {"type": "string"},
+    "public_contacts": {"$ref": "contact.schema.json"},
+    "origin": {"type": "object"},
+    "roles": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": false
+}

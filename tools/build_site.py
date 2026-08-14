@@ -1,0 +1,92 @@
+from __future__ import annotations
+
+import argparse
+import json
+import re
+import shutil
+from pathlib import Path
+
+from registry_lib import ROOT, build_jsonld, build_public_manifest, build_sitemap, load_registry
+
+COPY_ITEMS = [
+    ".nojekyll",
+    "CNAME",
+    "favicon.svg",
+    "index.html",
+    "portfolio",
+    "privacy",
+    "robots.txt",
+    "script.js",
+    "site.webmanifest",
+    "social-card.svg",
+    "social-card.webp",
+    "styles.css",
+    "terms",
+]
+
+
+def copy_item(source: Path, destination: Path) -> None:
+    if source.is_dir():
+        shutil.copytree(source, destination)
+    else:
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(source, destination)
+
+
+def build(output: Path) -> None:
+    registry = load_registry()
+    if output.exists():
+        shutil.rmtree(output)
+    output.mkdir(parents=True)
+
+    for item in COPY_ITEMS:
+        source = ROOT / item
+        if not source.exists():
+            raise FileNotFoundError(f"required deploy source missing: {item}")
+        copy_item(source, output / item)
+
+    # Publish only the explicitly public registry partition.
+    shutil.copytree(ROOT / "registry" / "public", output / "registry" / "public")
+
+    compact_jsonld = json.dumps(build_jsonld(registry), separators=(",", ":"), ensure_ascii=False)
+    pretty_jsonld = json.dumps(build_jsonld(registry), indent=2, ensure_ascii=False) + "\n"
+    (output / "identity.jsonld").write_text(pretty_jsonld, encoding="utf-8")
+
+    index_path = output / "index.html"
+    index = index_path.read_text(encoding="utf-8")
+    script_pattern = re.compile(r'<script type="application/ld\+json">.*?</script>', re.DOTALL)
+    replacement = f'<script type="application/ld+json">{compact_jsonld}</script>'
+    if not script_pattern.search(index):
+        raise RuntimeError("homepage JSON-LD block not found")
+    index = script_pattern.sub(replacement, index, count=1)
+    if 'data-legal-links="registry"' not in index:
+        legal = '<span data-legal-links="registry"><a href="/privacy/">Privacy</a> · <a href="/terms/">Terms</a></span>'
+        index = index.replace("</footer>", legal + "</footer>", 1)
+    index_path.write_text(index, encoding="utf-8")
+
+    portfolio_path = output / "portfolio" / "index.html"
+    portfolio = portfolio_path.read_text(encoding="utf-8")
+    portfolio = portfolio.replace("https://massivemagnetics.github.io/portfolio/", "https://iambandobandz.com/portfolio/")
+    portfolio = re.sub(r"https://[^\"']+\.chatgpt\.site/cognitive-network-hero\.png", "https://iambandobandz.com/social-card.webp", portfolio)
+    portfolio_path.write_text(portfolio, encoding="utf-8")
+
+    (output / "sitemap.xml").write_text(build_sitemap(registry), encoding="utf-8")
+    well_known = output / ".well-known"
+    well_known.mkdir(exist_ok=True)
+    (well_known / "iambandobandz.json").write_text(
+        json.dumps(build_public_manifest(registry), indent=2, ensure_ascii=False) + "\n",
+        encoding="utf-8",
+    )
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description="Build a sanitized GitHub Pages artifact from the canonical registry")
+    parser.add_argument("--output", type=Path, default=ROOT / "_site")
+    args = parser.parse_args()
+    build(args.output.resolve())
+    print(f"Built Pages artifact: {args.output.resolve()}")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

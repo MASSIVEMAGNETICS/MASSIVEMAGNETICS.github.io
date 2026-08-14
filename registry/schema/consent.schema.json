@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://iambandobandz.com/registry/schema/consent.schema.json",
+  "title": "Consent Receipt",
+  "type": "object",
+  "required": ["event_id", "timestamp", "channel", "granted", "consent_text_version", "source"],
+  "properties": {
+    "event_id": {"type": "string", "minLength": 8},
+    "timestamp": {"type": "string", "format": "date-time"},
+    "channel": {"enum": ["email", "sms"]},
+    "granted": {"type": "boolean"},
+    "consent_text_version": {"type": "string"},
+    "source": {"type": "string"},
+    "subject_hash": {"type": "string", "description": "Hash/pseudonymous subject identifier; raw PII belongs only in the private system."}
+  },
+  "additionalProperties": false
+}

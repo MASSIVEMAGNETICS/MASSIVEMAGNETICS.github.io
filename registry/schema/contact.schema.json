@@ -1,0 +1,13 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://iambandobandz.com/registry/schema/contact.schema.json",
+  "title": "Public Contact Set",
+  "type": "object",
+  "required": ["artist_email", "technical_email", "phone"],
+  "properties": {
+    "artist_email": {"type": "string", "format": "email"},
+    "technical_email": {"type": "string", "format": "email"},
+    "phone": {"type": "string", "pattern": "^\\+1-[0-9]{3}-[0-9]{3}-[0-9]{4}$"}
+  },
+  "additionalProperties": false
+}
