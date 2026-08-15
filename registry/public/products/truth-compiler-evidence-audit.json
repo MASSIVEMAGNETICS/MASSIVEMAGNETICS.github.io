@@ -8,5 +8,5 @@
   "price": {"currency": "USD", "amount": 750, "billing": "one_time"},
   "checkout": {"provider": "stripe", "payment_link": null, "activation": "blocked_pending_owner_authorization"},
   "fulfillment": {"type": "manual_encrypted_delivery", "turnaround_target_business_days": 5},
-  "source_product_contract": "https://github.com/MASSIVEMAGNETICS/MASSIVEMAGNETICS-IP/tree/main/product"
+  "source_product_contract": "https://github.com/MASSIVEMAGNETICS/MASSIVEMAGNETICS-IP/pull/2"
 }
