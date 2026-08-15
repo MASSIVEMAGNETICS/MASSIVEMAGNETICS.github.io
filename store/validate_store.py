@@ -62,6 +62,7 @@ def validate_registry() -> None:
     if not isinstance(assets, list) or not assets:
         fail("assets must be a non-empty list")
     ids: set[str] = set()
+    hash_errors: list[str] = []
     for asset in assets:
         asset_id = asset.get("id")
         if not asset_id or asset_id in ids:
@@ -73,7 +74,11 @@ def validate_registry() -> None:
         expected_hash = ((asset.get("derived") or {}).get("sha256") or "").lower()
         actual_hash = sha256(path)
         if expected_hash != actual_hash:
-            fail(f"SHA-256 mismatch for {path.relative_to(ROOT)}: {actual_hash}")
+            hash_errors.append(
+                f"{path.relative_to(ROOT)} expected={expected_hash} actual={actual_hash}"
+            )
+    if hash_errors:
+        fail("asset SHA-256 mismatches:\n" + "\n".join(hash_errors))
 
     products = data.get("products")
     if not isinstance(products, list):
