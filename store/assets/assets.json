@@ -1,0 +1,153 @@
+{
+  "schema_version": "1.0.0",
+  "registry_version": "2026.08.15.1",
+  "storefront": {
+    "canonical_path": "https://iambandobandz.com/store/",
+    "intended_domain": "https://iambandobandz.store/",
+    "dns_state": "not_changed_by_this_branch",
+    "checkout_state": "pending_owner_authorization",
+    "currency": "USD",
+    "purchase_fallback": "direct_email_request",
+    "payment_urls_fabricated": false
+  },
+  "asset_policy": {
+    "source": "user-provided artwork",
+    "rights_status": "owner-supplied; not independently verified",
+    "derived_format": "webp",
+    "hash_algorithm": "sha256",
+    "exit_velocity_note": "Artist-name typography in the supplied master remains flagged for visual repair before print-master lock."
+  },
+  "assets": [
+    {
+      "id": "brand.iambandobandz.primary",
+      "path": "/store/assets/brands/iambandobandz.webp",
+      "role": "brand_mark",
+      "canonical": true,
+      "derived": {"width": 1000, "height": 1000, "sha256": "4dc39466fbdf9a17ff38e97c3084a928ed9d3c878afa189c4697d7e02e5623e9"},
+      "original": {"filename": "1221.png", "width": 1536, "height": 1536, "sha256": "8272ca6b18e0ac42ad139dec8933e2e1ee4172f8924f035789154851f93c72c6"},
+      "quality_state": "accepted_for_web"
+    },
+    {
+      "id": "release.crybaby.deluxe.cover",
+      "path": "/store/assets/releases/crybaby-deluxe.webp",
+      "role": "release_cover",
+      "canonical": true,
+      "derived": {"width": 320, "height": 480, "sha256": "49eda912b618293ca422ccd5c876d39baa24504e6afe4cd7c4f52fa3a534bea1"},
+      "original": {"filename": "1237.png", "width": 1024, "height": 1536, "sha256": "6b7b0d9f70b7d8e936c38cc575f2b3763afe55033683e667733e49c31cf200f6"},
+      "quality_state": "accepted_for_web"
+    },
+    {
+      "id": "release.nowhere_left_to_go.cover",
+      "path": "/store/assets/releases/nowhere-left-to-go.webp",
+      "role": "release_cover",
+      "canonical": true,
+      "derived": {"width": 480, "height": 480, "sha256": "9c1e54fa7bac8be9058e993d15c8abc2879bad9f0880ad5ceb3c7b78448db0ba"},
+      "original": {"filename": "1234.png", "width": 1536, "height": 1536, "sha256": "7754c8dd87cef95a893d20b7d53af8fe6514100357849eeef574f23289bf6c4e"},
+      "quality_state": "accepted_for_web"
+    },
+    {
+      "id": "release.steel_city.cover",
+      "path": "/store/assets/releases/steel-city.webp",
+      "role": "release_cover",
+      "canonical": true,
+      "derived": {"width": 480, "height": 480, "sha256": "4e90da3367517e710ca623fed7e52f9b27b4a0261872368f91096252a433a773"},
+      "original": {"filename": "1231.png", "width": 1536, "height": 1536, "sha256": "f4773c8975ce9fbc470fcdcaab6fe678d0730d477e7d37b1235effd264065445"},
+      "quality_state": "accepted_for_web"
+    },
+    {
+      "id": "release.exit_velocity.cover",
+      "path": "/store/assets/releases/exit-velocity.webp",
+      "role": "release_cover",
+      "canonical": true,
+      "derived": {"width": 800, "height": 800, "sha256": "2416b864daf157bacb1d66a3400341f64670378da4588a56a2f423fc82b1b190"},
+      "original": {"filename": "1249.png", "width": 1536, "height": 1536, "sha256": "deefcf367e25efede49d4da02fa6143db377c37781a43759812ad332675e6351"},
+      "quality_state": "review_needed_typography"
+    },
+    {
+      "id": "release.generations.cover",
+      "path": "/store/assets/releases/generations.webp",
+      "role": "release_cover",
+      "canonical": true,
+      "derived": {"width": 480, "height": 480, "sha256": "5f8a3f2395f1cad789b3bc668c12bac165c88b7fc07f74de48f33ca2f88c8780"},
+      "original": {"filename": "1248.png", "width": 1536, "height": 1536, "sha256": "4fa3ff210627d37d0ed7bda444917cb4c25a9ac315841205e15da8e7ae43b785"},
+      "quality_state": "accepted_for_web"
+    },
+    {
+      "id": "release.one_man_show.cover",
+      "path": "/store/assets/releases/one-man-show.webp",
+      "role": "release_cover",
+      "canonical": true,
+      "derived": {"width": 480, "height": 480, "sha256": "bd040c5f01af79586a804180c8be84d900fe709f51369e553dc92fbac66e1706"},
+      "original": {"filename": "1210.png", "width": 1536, "height": 1536, "sha256": "ffcc92206feafb87c6f74a20c35b51ef03f01aed5f79a647921907cf75933b16"},
+      "quality_state": "accepted_for_web"
+    }
+  ],
+  "products": [
+    {
+      "sku": "IBB-OMS-2026",
+      "title": "ONE MAN SHOW",
+      "art_asset": "release.one_man_show.cover",
+      "release_type": "EP",
+      "formats": ["digital", "cd", "signed_cd"],
+      "price_cents": null,
+      "checkout_state": "pending_owner_authorization",
+      "checkout_url": null,
+      "listen_url": "https://unitedmasters.com/m/one-man-show-2"
+    },
+    {
+      "sku": "IBB-GEN-2026",
+      "title": "GENERATIONS — Welcome to the End of the World",
+      "art_asset": "release.generations.cover",
+      "release_type": "album",
+      "formats": ["digital", "cd", "signed_cd"],
+      "price_cents": null,
+      "checkout_state": "pending_owner_authorization",
+      "checkout_url": null,
+      "listen_url": "https://audiomack.com/iambandobandz/song/generations"
+    },
+    {
+      "sku": "IBB-EV-2026",
+      "title": "EXIT VELOCITY",
+      "art_asset": "release.exit_velocity.cover",
+      "release_type": "album",
+      "formats": ["digital", "cd", "signed_cd"],
+      "price_cents": null,
+      "checkout_state": "pending_owner_authorization",
+      "checkout_url": null,
+      "listen_url": "https://unitedmasters.com/m/exit-velocity"
+    },
+    {
+      "sku": "IBB-SC-2026",
+      "title": "STEEL CITY",
+      "art_asset": "release.steel_city.cover",
+      "release_type": "album",
+      "formats": ["digital", "cd", "signed_cd"],
+      "price_cents": null,
+      "checkout_state": "pending_owner_authorization",
+      "checkout_url": null,
+      "listen_url": "https://unitedmasters.com/m/steel-city-1"
+    },
+    {
+      "sku": "IBB-NLTG-2026",
+      "title": "NOWHERE LEFT TO GO",
+      "art_asset": "release.nowhere_left_to_go.cover",
+      "release_type": "album",
+      "formats": ["digital", "cd", "signed_cd"],
+      "price_cents": null,
+      "checkout_state": "pending_owner_authorization",
+      "checkout_url": null,
+      "listen_url": "https://music.apple.com/us/album/nowhere-left-to-go/1868890403"
+    },
+    {
+      "sku": "IBB-CB-DLX-2025",
+      "title": "CRYBABY — Deluxe Edition",
+      "art_asset": "release.crybaby.deluxe.cover",
+      "release_type": "deluxe_album",
+      "formats": ["digital", "cd", "signed_cd"],
+      "price_cents": null,
+      "checkout_state": "pending_owner_authorization",
+      "checkout_url": null,
+      "listen_url": "https://music.apple.com/us/album/crybaby/1857723003"
+    }
+  ]
+}
