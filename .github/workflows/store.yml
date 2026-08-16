@@ -1,0 +1,30 @@
+name: Validate Direct Store
+
+on:
+  push:
+    branches: [main, "agent/**"]
+    paths:
+      - "store/**"
+      - ".github/workflows/store.yml"
+      - "CNAME"
+  pull_request:
+    paths:
+      - "store/**"
+      - ".github/workflows/store.yml"
+      - "CNAME"
+
+permissions:
+  contents: read
+
+jobs:
+  validate-store:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Compile validator
+        run: python -m py_compile store/validate_store.py
+      - name: Verify storefront contract
+        run: python store/validate_store.py
