@@ -1,0 +1,12 @@
+{
+  "schema_version": "MM-PUBLIC-PRODUCT-1",
+  "id": "truth-compiler-evidence-audit",
+  "name": "Truth Compiler Evidence Audit",
+  "owner": "Massive Magnetics",
+  "status": "order_request_available",
+  "url": "https://iambandobandz.com/products/truth-compiler-evidence-audit/",
+  "price": {"currency": "USD", "amount": 750, "billing": "one_time"},
+  "checkout": {"provider": "stripe", "payment_link": null, "activation": "blocked_pending_owner_authorization"},
+  "fulfillment": {"type": "manual_encrypted_delivery", "turnaround_target_business_days": 5},
+  "source_product_contract": "https://github.com/MASSIVEMAGNETICS/MASSIVEMAGNETICS-IP/pull/2"
+}
