@@ -33,6 +33,26 @@ class RegistryTests(unittest.TestCase):
             manifest = json.loads((site / ".well-known" / "iambandobandz.json").read_text(encoding="utf-8"))
             self.assertEqual(manifest["canonical_domain"], "https://iambandobandz.com/")
 
+    def test_empire_revenue_routes_survive_sanitized_build(self) -> None:
+        audit_url = "https://book.stripe.com/eVqfZg8nz3Ys0LT8uZgbm01"
+        with tempfile.TemporaryDirectory() as tmp:
+            site = Path(tmp) / "site"
+            build(site)
+
+            index = (site / "index.html").read_text(encoding="utf-8")
+            network_path = site / "network" / "index.html"
+            self.assertTrue(network_path.is_file(), "B Heard /network/ route was omitted from the deploy artifact")
+            network = network_path.read_text(encoding="utf-8")
+
+            self.assertIn(audit_url, index)
+            self.assertIn("https://iambandobandz.store/", index)
+            self.assertIn('href="/network/"', index)
+
+            self.assertIn("$9.99", network)
+            self.assertIn("mailto:bandobandz440@gmail.com", network)
+            self.assertNotIn("book.stripe.com", network)
+            self.assertIn("fails closed", network)
+
     def test_lead_api_cutover_is_fail_closed_by_default(self) -> None:
         registry = load_registry()
         capture = registry["profile"]["lead_capture"]
