@@ -1,0 +1,56 @@
+{
+  "schema_version": "1.0",
+  "updated": "2026-08-17",
+  "status": "active",
+  "offer_code": "truth_compiler_audit_intro_97",
+  "brand": "Massive Magnetics",
+  "name": "Truth Compiler Repository Audit",
+  "canonical_url": "https://iambandobandz.com/audit/",
+  "checkout_url": "https://book.stripe.com/eVqfZg8nz3Ys0LT8uZgbm01",
+  "price": {
+    "amount_minor": 9700,
+    "currency": "USD",
+    "model": "one_time",
+    "label": "Introductory $97 offer"
+  },
+  "scope": {
+    "unit": "one repository",
+    "intake_fields": [
+      "repository_url",
+      "audit_goal",
+      "deadline_optional"
+    ]
+  },
+  "pipeline": [
+    "repository_input",
+    "semantic_claim_extraction",
+    "structure_recognition",
+    "evidence_binding",
+    "truth_state_compilation",
+    "remediation_prioritization",
+    "audit_receipt"
+  ],
+  "deliverables": [
+    "repository_reality_map",
+    "claim_register",
+    "contradiction_register",
+    "evidence_manifest",
+    "remediation_queue",
+    "audit_receipt"
+  ],
+  "truth_policy": {
+    "prediction_is_proof": false,
+    "unsupported_claims_remain_visible": true,
+    "contradictions_remain_visible": true,
+    "human_approval_boundary": true
+  },
+  "boundaries": [
+    "not_legal_advice",
+    "not_patentability_opinion",
+    "not_scientific_certification",
+    "not_security_penetration_test",
+    "not_investment_rating",
+    "no_external_truth_guarantee_beyond_available_evidence"
+  ],
+  "technical_proof": "https://github.com/MASSIVEMAGNETICS/truth-compiler-ai"
+}
