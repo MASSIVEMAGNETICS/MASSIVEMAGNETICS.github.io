@@ -15,8 +15,8 @@
 <a class="skip-link" href="#main">Skip to content</a>
 <header class="site-header">
   <a class="wordmark" href="/" aria-label="IAMBANDOBANDZ home">B HEARD NETWORK</a>
-  <nav class="nav-links" aria-label="Network navigation"><a href="/">Empire</a><a href="https://iambandobandz.store/">Store</a></nav>
-  <a class="header-cta" href="#start">Start for $9.99</a>
+  <nav class="nav-links" aria-label="Network navigation"><a href="/">Empire</a><a href="/store/">Store</a></nav>
+  <a class="header-cta" href="https://buy.stripe.com/14AaEWgU5dz23Y5aD7gbm09">Start for $9.99</a>
 </header>
 <main id="main">
 <section class="hero" id="top">
@@ -25,24 +25,32 @@
     <p class="eyebrow">B HEARD NETWORK / CREATOR PROMOTION</p>
     <h1>GET YOUR MUSIC<br><em>HEARD BY REAL LISTENERS.</em></h1>
     <p class="hero-summary">A $9.99 targeted promotion campaign inside the B Heard Network ecosystem. No fake streams. No bots. No guaranteed playlist placement.</p>
-    <div class="hero-actions"><a class="button button-primary" href="#start">Start your $9.99 campaign</a><a class="button button-ghost" href="#included">See what's included</a></div>
+    <div class="hero-actions"><a class="button button-primary" href="https://buy.stripe.com/14AaEWgU5dz23Y5aD7gbm09">Start your $9.99 campaign ↗</a><a class="button button-ghost" href="#included">See what's included</a></div>
   </div>
 </section>
 <section class="network-section" id="included">
   <div class="section-heading"><p class="eyebrow">What the $9.99 buys</p><h2>A SMALL, COMPLETE<br>PROMOTION LOOP.</h2><p>The offer is promotion and measurement—not manufactured streams or guaranteed placement.</p></div>
   <div class="network-grid">
-    <article><span>01 / SUBMIT</span><h3>Campaign intake</h3><p>Send one original release, the destination link, and what outcome matters most.</p></article>
+    <article><span>01 / SUBMIT</span><h3>Campaign intake</h3><p>Stripe Checkout collects your creator name, project URL, campaign goal, payment, and receipt in one bounded flow.</p></article>
     <article><span>02 / PROMOTE</span><h3>Targeted exposure</h3><p>Promotion into the B Heard listener/network ecosystem with eligibility for B Heard Review Show consideration.</p></article>
     <article><span>03 / PROVE</span><h3>Tracking + receipt</h3><p>Campaign tracking, observed outcomes, and a campaign receipt rather than vague claims.</p></article>
   </div>
 </section>
 <section class="contact-section" id="start">
-  <p class="eyebrow">Checkout integration pending verification</p>
+  <p class="eyebrow">Secure Stripe checkout active</p>
   <h2>START THE<br><em>$9.99 CAMPAIGN.</em></h2>
-  <p>The B Heard $9.99 payment endpoint is not yet verified, so this page fails closed instead of inventing a checkout URL. Submit the campaign request directly and the payment/intake path can be completed from there.</p>
-  <div class="contact-actions"><a class="button button-primary" href="mailto:bandobandz440@gmail.com?subject=B%20Heard%20%249.99%20Creator%20Promotion&body=Artist%20name%3A%0ARelease%20URL%3A%0AGoal%3A%0A">Request the $9.99 campaign</a><a class="button button-ghost" href="/">Back to IAMBANDOBANDZ</a></div>
+  <p>Checkout is hosted by Stripe. Your campaign fields and payment are attached to the order so the promotion can be reconciled without guessing which creator or release paid.</p>
+  <div class="contact-actions"><a class="button button-primary" href="https://buy.stripe.com/14AaEWgU5dz23Y5aD7gbm09">Pay $9.99 + submit campaign ↗</a><a class="button button-ghost" href="mailto:bandobandz440@gmail.com?subject=B%20Heard%20campaign%20support">Campaign support</a></div>
 </section>
 </main>
 <footer><strong>B HEARD NETWORK</strong><span>© 2026 B Heard Network</span><a href="#top">Back to top ↑</a></footer>
+<script>
+  document.querySelectorAll('a[href^="https://buy.stripe.com/"]').forEach((link) => {
+    link.addEventListener('click', () => {
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push({ event: 'checkout_start', funnel: 'bheard-network', offer_code: 'bheard_creator_promo_v1', value: 9.99, currency: 'USD' });
+    });
+  });
+</script>
 </body>
 </html>
