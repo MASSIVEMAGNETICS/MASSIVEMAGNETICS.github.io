@@ -10,6 +10,7 @@ from urllib.parse import urlparse
 ROOT = Path(__file__).resolve().parent.parent
 STORE = ROOT / "store"
 REGISTRY_PATH = STORE / "assets" / "assets.json"
+COMMERCE_PATH = STORE / "commerce.json"
 EXPECTED_CNAME = "iambandobandz.com"
 REQUIRED_SKUS = {
     "IBB-OMS-2026",
@@ -19,6 +20,7 @@ REQUIRED_SKUS = {
     "IBB-NLTG-2026",
     "IBB-CB-DLX-2025",
 }
+REQUIRED_FORMATS = {"digital", "cd", "signed_cd"}
 
 
 def fail(message: str) -> None:
@@ -45,12 +47,12 @@ def local_asset_path(web_path: str) -> Path:
     return candidate
 
 
-def validate_registry() -> None:
+def validate_asset_registry() -> None:
     if not REGISTRY_PATH.is_file():
         fail("assets.json is missing")
     data = json.loads(REGISTRY_PATH.read_text(encoding="utf-8"))
     if data.get("schema_version") != "1.0.0":
-        fail("unsupported schema_version")
+        fail("unsupported asset schema_version")
 
     storefront = data.get("storefront") or {}
     if storefront.get("payment_urls_fabricated") is not False:
@@ -96,30 +98,76 @@ def validate_registry() -> None:
             fail(f"product {sku} is absent from store/index.html")
         if product.get("art_asset") not in ids:
             fail(f"product {sku} references unknown art asset")
+        formats = set(product.get("formats") or [])
+        if not REQUIRED_FORMATS.issubset(formats):
+            fail(f"product {sku} does not expose all launch formats")
 
-        state = product.get("checkout_state")
-        checkout_url = product.get("checkout_url")
-        if state == "active":
-            parsed = urlparse(checkout_url or "")
-            if parsed.scheme != "https" or not parsed.netloc:
-                fail(f"active checkout for {sku} must be an absolute HTTPS URL")
-        elif checkout_url is not None:
-            fail(f"inactive checkout for {sku} must not expose a URL")
+
+def validate_commerce_registry() -> None:
+    if not COMMERCE_PATH.is_file():
+        fail("commerce.json is missing")
+    commerce = json.loads(COMMERCE_PATH.read_text(encoding="utf-8"))
+    if commerce.get("schema_version") != "1.0.0":
+        fail("unsupported commerce schema_version")
+    if commerce.get("status") != "active":
+        fail("commerce registry must be active")
+    if commerce.get("currency") != "USD":
+        fail("commerce currency must be USD")
+    if commerce.get("canonical_path") != "https://iambandobandz.com/store/":
+        fail("commerce canonical path drifted")
+    if set(commerce.get("catalog_skus") or []) != REQUIRED_SKUS:
+        fail("commerce SKU set drifted")
+
+    attribution = commerce.get("attribution") or {}
+    if attribution.get("query_parameter") != "client_reference_id":
+        fail("checkout attribution must use client_reference_id")
+
+    formats = commerce.get("formats") or {}
+    if set(formats) != REQUIRED_FORMATS:
+        fail(f"commerce format set drifted: {sorted(formats)}")
+
+    for format_key, entry in formats.items():
+        price_cents = entry.get("price_cents")
+        if not isinstance(price_cents, int) or price_cents <= 0:
+            fail(f"{format_key} price_cents must be a positive integer")
+        for field, prefix in (
+            ("stripe_product_id", "prod_"),
+            ("stripe_price_id", "price_"),
+            ("stripe_payment_link_id", "plink_"),
+        ):
+            value = entry.get(field)
+            if not isinstance(value, str) or not value.startswith(prefix):
+                fail(f"{format_key} has invalid {field}")
+        parsed = urlparse(entry.get("checkout_url") or "")
+        if parsed.scheme != "https" or parsed.netloc != "buy.stripe.com":
+            fail(f"{format_key} checkout_url must use https://buy.stripe.com")
 
 
 def validate_site_boundary() -> None:
-    for relative in ("store/index.html", "store/styles.css", "store/store.js"):
+    for relative in (
+        "store/index.html",
+        "store/styles.css",
+        "store/store.js",
+        "store/commerce.json",
+        "store/thanks/index.html",
+    ):
         if not (ROOT / relative).is_file():
             fail(f"required storefront file missing: {relative}")
     cname = (ROOT / "CNAME").read_text(encoding="utf-8").strip()
     if cname != EXPECTED_CNAME:
         fail(f"CNAME boundary changed unexpectedly: {cname!r}")
 
+    script = (STORE / "store.js").read_text(encoding="utf-8")
+    for required in ("/store/commerce.json", "client_reference_id", "checkout_start"):
+        if required not in script:
+            fail(f"store.js missing commerce binding: {required}")
+
 
 def main() -> int:
     validate_site_boundary()
-    validate_registry()
-    print("Store validation passed: assets, hashes, SKUs, checkout boundary, and CNAME are consistent.")
+    validate_asset_registry()
+    validate_commerce_registry()
+    print("Store validation passed: assets, hashes, SKUs, Stripe commerce, attribution, and CNAME are consistent.")
     return 0
 
 
