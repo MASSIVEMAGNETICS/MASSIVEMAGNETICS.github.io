@@ -14,6 +14,7 @@ COPY_ITEMS = [
     "CNAME",
     "favicon.svg",
     "index.html",
+    "jesus-told-me",
     "network",
     "portfolio",
     "privacy",
