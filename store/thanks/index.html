@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#050505">
+  <meta name="color-scheme" content="dark">
+  <title>Checkout return — IAMBANDOBANDZ Store</title>
+  <meta name="robots" content="noindex,nofollow">
+  <link rel="stylesheet" href="/store/styles.css">
+</head>
+<body>
+  <main class="closing" style="margin-top:8vh;min-height:70vh;">
+    <img src="/store/assets/brands/iambandobandz.webp" alt="I AM BANDO BANDZ logo" width="220" height="220">
+    <div>
+      <p class="eyebrow">STRIPE CHECKOUT / RETURN ROUTE</p>
+      <h1 style="font-size:clamp(3rem,8vw,7rem);line-height:.85;margin:.15em 0 1rem;">THANK<br>YOU.</h1>
+      <p style="max-width:760px;color:#c7c7cf;font-size:1.15rem;">If you arrived here from Stripe after completing checkout, keep the Stripe receipt sent to your checkout email. That receipt—not this webpage—is the payment record.</p>
+      <p style="max-width:760px;color:#9a9aa5;">Orders are reconciled using the Stripe transaction plus the release SKU attached by the store. Physical orders use the shipping information collected during checkout. For order support, email <a href="mailto:bandobandz440@gmail.com?subject=IAMBANDOBANDZ%20order%20support">bandobandz440@gmail.com</a>.</p>
+      <div class="hero-actions"><a class="button primary" href="/store/">BACK TO STORE</a><a class="button ghost" href="/">IAMBANDOBANDZ HOME</a></div>
+    </div>
+  </main>
+  <script>
+    (() => {
+      const format = new URLSearchParams(location.search).get('format') || 'unknown';
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push({ event: 'checkout_return', funnel: 'direct-store', format });
+    })();
+  </script>
+</body>
+</html>
