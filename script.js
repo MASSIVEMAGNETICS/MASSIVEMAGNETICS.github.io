@@ -120,6 +120,7 @@
   });
 
   const externalMusicHosts = ['spotify.com', 'music.apple.com', 'unitedmasters.com', 'audiomack.com'];
+  const revenueHosts = ['iambandobandz.store', 'book.stripe.com', 'facebook.com', 'github.com'];
   document.querySelectorAll('a[href^="http"]').forEach((link) => {
     link.addEventListener('click', (event) => {
       let url;
