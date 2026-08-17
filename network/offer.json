@@ -1,0 +1,28 @@
+{
+  "schema_version": "1.0.0",
+  "registry_version": "2026.08.16.1",
+  "status": "active",
+  "offer_code": "bheard_creator_promo_v1",
+  "name": "B Heard Network Creator Promotion",
+  "price_cents": 999,
+  "currency": "USD",
+  "canonical_path": "https://iambandobandz.com/network/",
+  "stripe": {
+    "product_id": "prod_V5SGeaMCjcE6RW",
+    "price_id": "price_1U5HMBCpO4d12HbZAWSlc4SI",
+    "payment_link_id": "plink_1U5HMjCpO4d12HbZcK2NQg5p",
+    "checkout_url": "https://buy.stripe.com/14AaEWgU5dz23Y5aD7gbm09"
+  },
+  "deliverables": [
+    "campaign intake",
+    "targeted B Heard Network exposure",
+    "B Heard Review consideration eligibility",
+    "campaign tracking",
+    "outcome receipt"
+  ],
+  "claims_boundary": {
+    "fake_streams": false,
+    "bots": false,
+    "guaranteed_playlist_placement": false
+  }
+}
