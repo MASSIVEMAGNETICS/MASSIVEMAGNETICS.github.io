@@ -22,6 +22,7 @@ COPY_ITEMS = [
     "site.webmanifest",
     "social-card.svg",
     "social-card.webp",
+    "store",
     "styles.css",
     "terms",
 ]
@@ -61,6 +62,10 @@ def build(output: Path) -> None:
     if not script_pattern.search(index):
         raise RuntimeError("homepage JSON-LD block not found")
     index = script_pattern.sub(replacement, index, count=1)
+
+    # Keep the revenue path on the same verified Pages origin. The separate
+    # .store domain can be a vanity redirect later, but it is not a launch dependency.
+    index = index.replace("https://iambandobandz.store/", "/store/")
 
     profile = registry["profile"]
     capture = profile.get("lead_capture", {})
