@@ -1,0 +1,58 @@
+{
+  "schema_version": "1.0.0",
+  "registry_version": "2026.08.16.1",
+  "status": "active",
+  "currency": "USD",
+  "canonical_path": "https://iambandobandz.com/store/",
+  "attribution": {
+    "strategy": "payment_link_client_reference_id",
+    "query_parameter": "client_reference_id",
+    "source": "iambandobandz.com/store"
+  },
+  "formats": {
+    "digital": {
+      "label": "Digital download",
+      "price_cents": 999,
+      "stripe_product_id": "prod_V5SGnBZGnCoW3J",
+      "stripe_price_id": "price_1U5HMFCpO4d12HbZynUlt4q4",
+      "stripe_payment_link_id": "plink_1U5HMoCpO4d12HbZawaOjw68",
+      "checkout_url": "https://buy.stripe.com/8x214m0V766A2U15iNgbm0a",
+      "shipping_required": false
+    },
+    "cd": {
+      "label": "Physical CD",
+      "price_cents": 1999,
+      "stripe_product_id": "prod_V5SGEfvZ0Il2cw",
+      "stripe_price_id": "price_1U5HMKCpO4d12HbZykVhmdXb",
+      "stripe_payment_link_id": "plink_1U5HMuCpO4d12HbZ5dVrlHDU",
+      "checkout_url": "https://buy.stripe.com/6oU28qfQ13Ysamt4eJgbm0b",
+      "shipping_required": true,
+      "shipping_scope": "US",
+      "shipping_included": true
+    },
+    "signed_cd": {
+      "label": "Signed CD",
+      "price_cents": 2999,
+      "stripe_product_id": "prod_V5SHVc2lgfTee9",
+      "stripe_price_id": "price_1U5HMSCpO4d12HbZs8QOFq1l",
+      "stripe_payment_link_id": "plink_1U5HN0CpO4d12HbZ7uKSK5ji",
+      "checkout_url": "https://buy.stripe.com/9B6bJ01Zb1QkgKR9z3gbm0c",
+      "shipping_required": true,
+      "shipping_scope": "US",
+      "shipping_included": true
+    }
+  },
+  "catalog_skus": [
+    "IBB-OMS-2026",
+    "IBB-GEN-2026",
+    "IBB-EV-2026",
+    "IBB-SC-2026",
+    "IBB-NLTG-2026",
+    "IBB-CB-DLX-2025"
+  ],
+  "fallback": {
+    "type": "email",
+    "address": "bandobandz440@gmail.com",
+    "enabled": true
+  }
+}
