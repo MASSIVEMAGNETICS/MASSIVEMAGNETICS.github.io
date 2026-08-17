@@ -189,13 +189,15 @@
   });
 
   const externalMusicHosts = ['spotify.com', 'music.apple.com', 'unitedmasters.com', 'audiomack.com'];
+  const revenueHosts = ['iambandobandz.store', 'book.stripe.com', 'facebook.com', 'github.com'];
   document.querySelectorAll('a[href^="http"]').forEach((link) => {
     link.addEventListener('click', (event) => {
       let url;
       try { url = new URL(link.href); } catch (_) { return; }
       const isMusic = externalMusicHosts.some((host) => url.hostname.includes(host));
+      const isRevenue = revenueHosts.some((host) => url.hostname.includes(host)) || link.dataset.revenuePath;
       const label = (link.querySelector('h3')?.textContent || link.textContent || url.hostname).trim().replace(/\s+/g, ' ').slice(0, 80);
-      track(isMusic ? 'track_button_click' : 'external_link_click', { label, destination: url.hostname });
+      track(isRevenue ? 'revenue_path_click' : isMusic ? 'track_button_click' : 'external_link_click', { label, destination: url.hostname, path: link.dataset.revenuePath || 'music', stage: link.dataset.loopStage || 'outbound' });
       if (!isMusic || sessionStorage.getItem('signal_capture_seen') === '1') return;
       event.preventDefault();
       pendingUrl = link.href;
