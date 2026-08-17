@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#080808">
+  <meta name="color-scheme" content="dark">
+  <title>Research Registry — IAMBANDOBANDZ / Massive Magnetics</title>
+  <meta name="description" content="Git-anchored research provenance registry for IAMBANDOBANDZ, Massive Magnetics, Ethica AI, and B Heard Network.">
+  <meta name="robots" content="index,follow">
+  <link rel="canonical" href="https://iambandobandz.com/research/">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/research/research.css">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="IAMBANDOBANDZ">
+  <meta property="og:title" content="Research Registry — Evidence Leaves Receipts">
+  <meta property="og:description" content="White papers, active research, lineage, deprecated artifacts, SHA-256 fingerprints, and a Git-anchored proof root.">
+  <meta property="og:url" content="https://iambandobandz.com/research/">
+  <meta property="og:image" content="https://iambandobandz.com/social-card.webp">
+</head>
+<body class="research-body">
+<a class="skip-link" href="#main">Skip to research</a>
+<header class="site-header">
+  <a class="wordmark" href="/">IAMBANDOBANDZ / RESEARCH</a>
+  <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-nav">MENU</button>
+  <nav id="primary-nav" class="nav-links" aria-label="Research navigation"><a href="#papers">Papers</a><a href="#lineage">Lineage</a><a href="#proof">Proof</a><a href="/">Empire</a></nav>
+  <a class="header-cta" href="#proof">Verify proof</a>
+</header>
+<main id="main">
+  <section class="research-hero" id="top">
+    <div class="hero-grid" aria-hidden="true"></div>
+    <div class="research-hero-copy">
+      <p class="eyebrow">PUBLIC RESEARCH REGISTRY / GIT-ANCHORED PROVENANCE</p>
+      <h1>RESEARCH THAT<br><em>LEAVES RECEIPTS.</em></h1>
+      <p class="hero-summary">White papers, active drafts, technical lineage, and deprecated experiments are recorded with explicit evidence status and SHA-256 fingerprints. A dramatic title does not upgrade a hypothesis into a fact.</p>
+      <div class="hero-actions"><button class="button button-primary" id="verify-registry" type="button">Verify registry integrity</button><a class="button button-ghost" id="anchor-link-hero" href="https://github.com/MASSIVEMAGNETICS/MASSIVEMAGNETICS.github.io/commits/main" target="_blank" rel="noopener noreferrer">Open Git history ↗</a></div>
+    </div>
+    <aside class="proof-slab"><span>Record-set root / SHA-256</span><code id="hero-root">loading…</code><small>Changing any registered record changes this root.</small></aside>
+  </section>
+
+  <section class="research-metrics" aria-label="Registry metrics">
+    <div><strong id="metric-total">—</strong><span>white papers mapped</span></div>
+    <div><strong id="metric-materialized">—</strong><span>materialized</span></div>
+    <div><strong id="metric-active">—</strong><span>active drafts</span></div>
+    <div><strong id="metric-legacy">—</strong><span>lineage records</span></div>
+    <div><strong id="metric-deprecated">—</strong><span>deprecated</span></div>
+  </section>
+
+  <section class="research-section paper-section" id="papers">
+    <div class="research-heading"><div><p class="eyebrow">01 / MATERIALIZED RESEARCH</p><h2>THE PAPERS.</h2></div><p><strong>Materialized</strong> means a source artifact exists and has been fingerprinted. It does not mean peer reviewed, experimentally validated, patented, or scientifically accepted.</p></div>
+    <div class="paper-grid" id="materialized-records" aria-live="polite"></div>
+  </section>
+
+  <section class="research-section lineage-section" id="lineage">
+    <div class="research-heading"><div><p class="eyebrow">02 / EVOLUTION WITHOUT REVISIONISM</p><h2>ACTIVE + LINEAGE.</h2></div><p>Current hypotheses stay separate from historical architecture. Superseded work remains visible instead of being silently rewritten after the fact.</p></div>
+    <div class="lineage-grid"><div><h3>ACTIVE RESEARCH</h3><div id="active-records"></div></div><div><h3>TECHNICAL LINEAGE</h3><div id="legacy-records"></div></div></div>
+  </section>
+
+  <section class="research-section proof-section" id="proof">
+    <div class="research-heading"><div><p class="eyebrow">03 / TAMPER-EVIDENT RECEIPT</p><h2>VERIFY IT<br>YOURSELF.</h2></div><p>The live page can change. The Git anchor cannot be changed without producing a different commit SHA. The browser verifier independently recomputes every record digest and the root.</p></div>
+    <div class="proof-grid">
+      <article><span>RECORD-SET ROOT</span><code id="proof-root">loading…</code><button class="proof-button" id="copy-root" type="button">Copy root</button></article>
+      <article><span>GIT ANCHOR COMMIT</span><code id="anchor-commit">pending anchor…</code><a class="proof-button disabled" id="anchor-link" href="#" aria-disabled="true">Open immutable commit ↗</a></article>
+      <article><span>VERIFICATION STATUS</span><strong id="verification-status" class="verify-idle">NOT YET CHECKED</strong><p id="verification-detail">Press “Verify registry integrity” to recompute SHA-256 locally in your browser.</p></article>
+    </div>
+    <div class="machine-links"><a href="/registry/public/research.json">Canonical research JSON ↗</a><a href="/.well-known/iambandobandz.json">Public identity manifest ↗</a><a href="https://github.com/MASSIVEMAGNETICS/MASSIVEMAGNETICS.github.io" target="_blank" rel="noopener noreferrer">Source repository ↗</a></div>
+    <div class="proof-boundary"><b>WHAT THIS PROVES</b><p>The referenced Git commit proves that the exact registry and artifact fingerprints existed in that repository state. SHA-256 fingerprints make later file substitution detectable.</p><b>WHAT THIS DOES NOT PROVE</b><p>Scientific truth, peer review, patent validity, legal priority, or disputed authorship. Those require their own evidence.</p></div>
+  </section>
+
+  <section class="research-section deprecated-section">
+    <details><summary><span>04 / DEPRECATED SYNTHETIC ARTIFACTS</span><strong id="deprecated-count">14 papers</strong></summary><p>The MetaWolf branch contained research-styled synthetic documents from an abandoned experiment. They are not legitimate scientific papers. They remain listed only so the historical record cannot be cleaned up after the fact.</p><div class="deprecated-grid" id="deprecated-records"></div></details>
+  </section>
+
+  <section class="research-section doctrine-section"><p class="eyebrow">PROVENANCE DOCTRINE</p><blockquote>Make the claim. Preserve the source. State the evidence class. Hash the artifact. Record what superseded it. Never let a later narrative overwrite the receipt.</blockquote></section>
+</main>
+<footer><strong>IAMBANDOBANDZ / MASSIVE MAGNETICS</strong><span>Research provenance registry · 2026</span><a href="#top">Back to proof ↑</a></footer>
+<script src="/research/research.js" defer></script>
+</body>
+</html>
