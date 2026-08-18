@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0.0",
-  "registry_version": "2026.08.15.2",
+  "registry_version": "2026.08.18.1",
   "storefront": {
     "canonical_path": "https://iambandobandz.com/store/",
     "intended_domain": "https://iambandobandz.store/",
@@ -32,7 +32,7 @@
       "path": "/store/assets/releases/crybaby-deluxe.webp",
       "role": "release_cover",
       "canonical": true,
-      "derived": {"width": 320, "height": 480, "sha256": "006ddf0c7df8e4496635a350662e4126abee1f8ac2cb7b0d92aa2ee5d6b0811a"},
+      "derived": {"width": 320, "height": 480, "sha256": "e5ffc4c80d2a76bb50caa02c1685322163c0b5175c2c013659eb51006dfe44aa"},
       "original": {"filename": "1237.png", "width": 1024, "height": 1536, "sha256": "6b7b0d9f70b7d8e936c38cc575f2b3763afe55033683e667733e49c31cf200f6"},
       "quality_state": "accepted_for_web"
     },
@@ -41,7 +41,7 @@
       "path": "/store/assets/releases/nowhere-left-to-go.webp",
       "role": "release_cover",
       "canonical": true,
-      "derived": {"width": 480, "height": 480, "sha256": "a0de677ef2b6c0c5f019280314b1bec91050aa0f90128a25ed821823ceee51d5"},
+      "derived": {"width": 480, "height": 480, "sha256": "023d135a6142e1cfb423d05839db28e0f4cda613371d92d4e99e66b5ca19ab8d"},
       "original": {"filename": "1234.png", "width": 1536, "height": 1536, "sha256": "7754c8dd87cef95a893d20b7d53af8fe6514100357849eeef574f23289bf6c4e"},
       "quality_state": "accepted_for_web"
     },
@@ -50,7 +50,7 @@
       "path": "/store/assets/releases/steel-city.webp",
       "role": "release_cover",
       "canonical": true,
-      "derived": {"width": 480, "height": 480, "sha256": "dd46b4e90f074344be135ecb6647703e8e415ce67ab955f2f0aec894894cbbdd"},
+      "derived": {"width": 480, "height": 480, "sha256": "5613635b497edc1bda0b1817a6374d8080d8bab4e0289ae7ff8a40ba4889651c"},
       "original": {"filename": "1231.png", "width": 1536, "height": 1536, "sha256": "f4773c8975ce9fbc470fcdcaab6fe678d0730d477e7d37b1235effd264065445"},
       "quality_state": "accepted_for_web"
     },
@@ -59,7 +59,7 @@
       "path": "/store/assets/releases/exit-velocity.webp",
       "role": "release_cover",
       "canonical": true,
-      "derived": {"width": 800, "height": 800, "sha256": "a820cdc74b47cc9f7bbc26964a0b73cb5e4e85459a1e31a8155bc9a0f4a7064f"},
+      "derived": {"width": 800, "height": 800, "sha256": "8120badf6b5e4e64436693b4a368ad1e4596cafb10edc66e16c1c9867c81d8b1"},
       "original": {"filename": "1249.png", "width": 1536, "height": 1536, "sha256": "deefcf367e25efede49d4da02fa6143db377c37781a43759812ad332675e6351"},
       "quality_state": "review_needed_typography"
     },
@@ -77,7 +77,7 @@
       "path": "/store/assets/releases/one-man-show.webp",
       "role": "release_cover",
       "canonical": true,
-      "derived": {"width": 480, "height": 480, "sha256": "d457ebd51d4c892c945f326e2b4de155d0161b6247813fb468832b301655b4fb"},
+      "derived": {"width": 480, "height": 480, "sha256": "ba1bd4103b8203548570dd5cb38b645fbf395f2332e4d1019a35fa1ed4184b78"},
       "original": {"filename": "1210.png", "width": 1536, "height": 1536, "sha256": "ffcc92206feafb87c6f74a20c35b51ef03f01aed5f79a647921907cf75933b16"},
       "quality_state": "accepted_for_web"
     }
