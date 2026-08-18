@@ -13,16 +13,3 @@
 .loop-strip { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: .75rem; margin-top: 2.5rem; padding: 1rem; border-top: 1px solid var(--line); color: var(--muted); font-size: .7rem; letter-spacing: .14em; }
 .loop-strip i { color: var(--signal); font-style: normal; }
 @media (max-width: 760px) { .revenue-grid { grid-template-columns: 1fr; } .revenue-card { min-height: 15rem; } .loop-strip { justify-content: flex-start; gap: .5rem; } }
-
-
-/* Release artwork gallery */
-.release-gallery { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: .85rem; margin-top: 2rem; }
-.release-art-card { display: flex; flex-direction: column; gap: .6rem; min-width: 0; color: var(--ink); text-decoration: none; }
-.release-art-card img { width: 100%; aspect-ratio: 1; object-fit: cover; border: 1px solid var(--line); filter: saturate(.92); transition: transform .2s ease, border-color .2s ease, filter .2s ease; }
-.release-art-card:hover img, .release-art-card:focus-visible img { transform: translateY(-4px); border-color: var(--signal); filter: saturate(1.15); }
-.release-art-card span { overflow: hidden; color: var(--muted); font-size: .66rem; letter-spacing: .08em; text-overflow: ellipsis; white-space: nowrap; }
-.release-art-card b { color: var(--signal); font-size: .65rem; letter-spacing: .1em; }
-.network-card-branded { position: relative; overflow: hidden; }
-.network-logo { width: 5.5rem; height: 5.5rem; margin-bottom: .75rem; object-fit: contain; border: 1px solid var(--line); }
-@media (max-width: 900px) { .release-gallery { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-@media (max-width: 520px) { .release-gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
