@@ -20,6 +20,7 @@ COPY_ITEMS = [
     "portfolio",
     "privacy",
     "research",
+    "signal",
     "robots.txt",
     "script.js",
     "site.webmanifest",
