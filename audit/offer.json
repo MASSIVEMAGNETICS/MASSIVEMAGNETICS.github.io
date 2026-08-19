@@ -1,55 +1,123 @@
 {
-  "schema_version": "1.0",
-  "updated": "2026-08-17",
+  "schema_version": "2.0",
+  "updated": "2026-08-19",
   "status": "active",
-  "offer_code": "truth_compiler_audit_intro_97",
   "brand": "Massive Magnetics",
-  "name": "Truth Compiler Repository Audit",
+  "product_family": "Truth Compiler / Proof Compiler",
   "canonical_url": "https://iambandobandz.com/audit/",
-  "checkout_url": "https://book.stripe.com/eVqfZg8nz3Ys0LT8uZgbm01",
-  "price": {
-    "amount_minor": 9700,
-    "currency": "USD",
-    "model": "one_time",
-    "label": "Introductory $97 offer"
-  },
-  "scope": {
-    "unit": "one repository",
-    "intake_fields": [
-      "repository_url",
-      "audit_goal",
-      "deadline_optional"
-    ]
-  },
-  "pipeline": [
-    "repository_input",
-    "semantic_claim_extraction",
-    "structure_recognition",
-    "evidence_binding",
-    "truth_state_compilation",
-    "remediation_prioritization",
-    "audit_receipt"
-  ],
-  "deliverables": [
-    "repository_reality_map",
-    "claim_register",
-    "contradiction_register",
-    "evidence_manifest",
-    "remediation_queue",
-    "audit_receipt"
-  ],
   "truth_policy": {
     "prediction_is_proof": false,
     "unsupported_claims_remain_visible": true,
     "contradictions_remain_visible": true,
+    "unknowns_remain_visible": true,
     "human_approval_boundary": true
+  },
+  "audit_dimensions": [
+    "reality",
+    "architecture",
+    "integration",
+    "sovereignty",
+    "evolution"
+  ],
+  "products": [
+    {
+      "offer_code": "truth_compiler_audit_intro_97",
+      "name": "Repository Reality Scan",
+      "price_usd": 97,
+      "billing": "one_time",
+      "checkout_url": "https://book.stripe.com/eVqfZg8nz3Ys0LT8uZgbm01",
+      "scope": "one_repository"
+    },
+    {
+      "offer_code": "truth_compiler_upgrade_400",
+      "name": "Scan-to-Full Audit Upgrade",
+      "price_usd": 400,
+      "billing": "one_time",
+      "checkout_url": "https://book.stripe.com/5kQ5kCgU5eD63Y5bHbgbm0e",
+      "requires_prior_purchase": "truth_compiler_audit_intro_97"
+    },
+    {
+      "offer_code": "truth_compiler_audit_v1",
+      "name": "Full Repository Audit",
+      "price_usd": 497,
+      "billing": "one_time",
+      "checkout_url": "https://book.stripe.com/00waEWfQ11Qk8el3aFgbm00",
+      "scope": "one_repository_five_dimensions"
+    },
+    {
+      "offer_code": "truth_compiler_remediation_1497",
+      "name": "Audit + Remediation",
+      "price_usd": 1497,
+      "billing": "one_time",
+      "checkout_url": "https://book.stripe.com/14A28qavH52wfGN8uZgbm0f",
+      "scope": "one_repository_bounded_remediation"
+    },
+    {
+      "offer_code": "continuous_repo_governance_497m",
+      "name": "Continuous Repository Governance",
+      "price_usd": 497,
+      "billing": "monthly",
+      "checkout_url": "https://buy.stripe.com/14AcN46frcuYgKR6mRgbm0j",
+      "scope": "one_repository_monthly"
+    },
+    {
+      "offer_code": "personal_financial_reality_199",
+      "name": "Personal Financial Reality Audit",
+      "price_usd": 199,
+      "billing": "one_time",
+      "checkout_url": "https://book.stripe.com/bJe14m5bneD6529h1vgbm0i",
+      "scope": "one_person_up_to_12_months",
+      "raw_sensitive_training_default": false
+    },
+    {
+      "offer_code": "business_financial_reality_997",
+      "name": "Business Financial Reality Audit",
+      "price_usd": 997,
+      "billing": "one_time",
+      "checkout_url": "https://book.stripe.com/8x2aEW33f2Uo9ipcLfgbm0h",
+      "scope": "one_business_up_to_12_months"
+    },
+    {
+      "offer_code": "knowledge_capital_audit_1500",
+      "name": "Knowledge Capital Audit",
+      "price_usd": 1500,
+      "billing": "one_time",
+      "checkout_url": "https://book.stripe.com/9B6fZgfQ1bqU66dcLfgbm0g",
+      "scope": "up_to_10_candidate_assets"
+    }
+  ],
+  "public_proof": [
+    {
+      "type": "repository",
+      "url": "https://iambandobandz.com/audit/examples/repository/",
+      "primary_source": "https://github.com/MASSIVEMAGNETICS/truth-compiler-ai",
+      "demonstrates": "bounded_claim_evidence_authority"
+    },
+    {
+      "type": "financial",
+      "url": "https://iambandobandz.com/audit/examples/financial/",
+      "primary_source": "https://www.sec.gov/Archives/edgar/data/320187/000032018726000088/nke-20260531.htm",
+      "demonstrates": "warning_then_deeper_causal_evidence"
+    }
+  ],
+  "privacy": {
+    "policy_url": "https://iambandobandz.com/audit/privacy/",
+    "machine_readable_url": "https://iambandobandz.com/audit/data-rights.json",
+    "terms_url": "https://iambandobandz.com/audit/terms/",
+    "sell_private_customer_evidence": false,
+    "raw_sensitive_shared_training_default": false,
+    "deidentified_aggregate_improvement": true,
+    "separate_permission_for_private_public_case_study": true
   },
   "boundaries": [
     "not_legal_advice",
     "not_patentability_opinion",
-    "not_scientific_certification",
-    "not_security_penetration_test",
-    "not_investment_rating",
+    "not_cpa_financial_statement_audit",
+    "not_assurance_opinion",
+    "not_tax_advice",
+    "not_investment_advice",
+    "not_credit_repair",
+    "not_security_penetration_test_unless_separately_scoped",
     "no_external_truth_guarantee_beyond_available_evidence"
   ],
   "technical_proof": "https://github.com/MASSIVEMAGNETICS/truth-compiler-ai"
