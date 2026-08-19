@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#080808">
+<meta name="color-scheme" content="dark">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<title>Amplification Governor — Owner Control Plane</title>
+<link rel="stylesheet" href="./style.css">
+</head>
+<body>
+<section id="lockScreen" class="lock-screen">
+  <div class="card lock-card">
+    <div class="eyebrow">Owner Control Plane / iambandobandz.com</div>
+    <h1>AMPLIFICATION<br>GOVERNOR</h1>
+    <p><strong>No new ACTIVE branch without a displacement.</strong> Execution can terminate while knowledge is preserved. Road-closed ideas are latent assets, not trash.</p>
+    <div id="setupCopy" class="notice"><strong>First launch.</strong> Create a passphrase. The vault is encrypted in this browser with Web Crypto. The passphrase is never stored.</div>
+    <form id="unlockForm">
+      <div class="field"><label for="passphrase">Owner passphrase</label><input id="passphrase" type="password" autocomplete="current-password" minlength="10" required placeholder="Minimum 10 characters"></div>
+      <div id="confirmField" class="field"><label for="confirmPassphrase">Confirm passphrase</label><input id="confirmPassphrase" type="password" autocomplete="new-password" minlength="10" placeholder="Repeat passphrase"></div>
+      <button id="unlockBtn" class="btn btn-primary" type="submit">CREATE & UNLOCK VAULT</button>
+    </form>
+    <div class="security-note">This zero-cost deployment keeps data encrypted on this device. Anyone can load the page code, but your vault contents remain encrypted without the passphrase. Cross-device/server sync is intentionally disabled until a real authenticated backend is connected. Export encrypted backups regularly.</div>
+  </div>
+</section>
+
+<div id="app" class="hidden">
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand"><span class="sig"></span><div><strong>AMPLIFICATION GOVERNOR</strong><br><small class="muted">Owner / Signal Control Plane</small></div></div>
+    <div class="top-actions">
+      <button class="btn btn-primary" data-action="new">+ NEW IDEA</button>
+      <button class="btn" data-action="backup">BACKUP</button>
+      <button class="btn" data-action="reference">WHAT THIS MEANS</button>
+      <button class="btn btn-ghost" data-action="lock">LOCK</button>
+    </div>
+  </div>
+</header>
+<main class="shell">
+  <div class="notice"><strong>Canonical law:</strong> No new ACTIVE branch if all 3 slots are occupied. First move one ACTIVE branch to SHIPPED, MONETIZED, MERGED, VAULTED, or KILLED. <strong>No idea is ever silently discarded.</strong></div>
+
+  <section class="grid kpis" id="kpis"></section>
+
+  <section class="grid layout">
+    <div class="grid" style="gap:14px">
+      <article class="card section">
+        <div class="section-head"><div><div class="eyebrow">Governor / WIP limit</div><h2>ACTIVE EXECUTION</h2><p id="governorState" class="muted"></p></div><div class="capacity" id="capacity"></div></div>
+        <div class="active-grid" id="activeSlots"></div>
+      </article>
+
+      <article class="card section">
+        <div class="section-head"><div><div class="eyebrow">Portfolio / preserved state</div><h2>IDEA LEDGER</h2></div><button class="btn" data-action="import">IMPORT</button></div>
+        <div class="filter-grid">
+          <div class="field"><label>Search</label><input id="searchBox" placeholder="Title, thesis, tags, source..."></div>
+          <div class="field"><label>State</label><select id="stateFilter"><option value="ALL">ALL</option><option>CANDIDATE</option><option>ACTIVE</option><option>VAULTED</option><option>MERGED</option><option>KILLED</option><option>SHIPPED</option><option>MONETIZED</option></select></div>
+          <div class="field"><label>Sort</label><select id="sortBy"><option value="score">Priority score</option><option value="updated">Recently updated</option><option value="value">Expected value</option><option value="created">Created</option></select></div>
+        </div>
+        <div class="toolbar"><button class="btn btn-primary" data-action="new">+ Capture idea</button><button class="btn" data-action="export-json">Export JSON</button><button class="btn" data-action="export-md">Export Markdown</button></div>
+        <div class="ideas" id="ideaList"></div>
+      </article>
+    </div>
+
+    <aside class="side-stack">
+      <article class="card section"><div class="section-head"><div><div class="eyebrow">Deferred opportunity ledger</div><h3>REACTIVATION</h3></div></div><div id="reactivationList" class="list"></div></article>
+      <article class="card section"><div class="section-head"><div><div class="eyebrow">Dormant leverage</div><h3>TOP VAULTED ASSETS</h3></div></div><div id="vaultLeaders" class="list"></div></article>
+      <article class="card section"><div class="section-head"><div><div class="eyebrow">Proof / provenance</div><h3>RECENT ACTIVITY</h3></div></div><div id="eventList"></div></article>
+    </aside>
+  </section>
+  <div class="footer-note">Encrypted local-first owner control plane. Backup is a feature, not an afterthought. Server sync requires a real authenticated backend; never paste database/API secrets into this page.</div>
+</main>
+</div>
+
+<div id="ideaModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="ideaModalTitle">
+  <div class="modal-card">
+    <div class="modal-head"><div><div class="eyebrow">Knowledge asset</div><h2 id="ideaModalTitle">CAPTURE IDEA</h2></div><button class="btn" data-close="ideaModal">CLOSE</button></div>
+    <form id="ideaForm" class="form-grid">
+      <input type="hidden" id="ideaId">
+      <div class="field span-2"><label>Title</label><input id="ideaTitle" required maxlength="160"></div>
+      <div class="field span-2"><label>Concise thesis</label><input id="ideaThesis" maxlength="300" placeholder="One sentence: what is the claim/opportunity?"></div>
+      <div class="field span-2"><label>Full description</label><textarea id="ideaDescription"></textarea></div>
+      <div class="field"><label>State</label><select id="ideaState"><option>CANDIDATE</option><option>ACTIVE</option><option>VAULTED</option><option>MERGED</option><option>KILLED</option><option>SHIPPED</option><option>MONETIZED</option></select><div class="help">ACTIVE is governor-controlled. KILLED preserves a tombstone.</div></div>
+      <div class="field"><label>Expected value ($)</label><input id="expectedValue" type="number" min="0" step="1" value="0"><div class="help">Your estimate only—not a market valuation.</div></div>
+      <div class="field"><label>Origin / source</label><input id="origin" placeholder="Chat, notebook, repo, song, observation..."></div>
+      <div class="field"><label>Source reference / URL</label><input id="sourceRef" placeholder="URL, file, conversation ID, commit..."></div>
+      <div class="field span-2"><label>Tags</label><input id="tags" placeholder="comma, separated, semantic, handles"></div>
+      <div class="field"><label>Parent idea ID</label><input id="parentId" placeholder="Optional"></div>
+      <div class="field"><label>Related idea IDs</label><input id="relatedIds" placeholder="Comma separated"></div>
+      <div class="field span-2"><label>Dependencies</label><textarea id="dependencies" placeholder="What has to exist first?"></textarea></div>
+      <div class="field span-2"><label>Blockers</label><textarea id="blockers" placeholder="What prevents execution now?"></textarea></div>
+      <div class="field span-2"><label>Next action</label><input id="nextAction" placeholder="Smallest concrete next move"></div>
+      <div class="field"><label>Reactivation date</label><input id="reactivateOn" type="date"></div>
+      <div class="field"><label>Reactivation trigger</label><input id="reactivationTrigger" placeholder="When X becomes true, revisit"></div>
+      <div class="field span-2"><label>Stop / transition reason</label><textarea id="stopReason" placeholder="Required for KILLED. Strongly recommended for VAULTED/MERGED."></textarea></div>
+      <div class="field span-2"><label>Owner notes</label><textarea id="ownerNotes"></textarea></div>
+
+      <div class="field"><label>Impact (1–10)</label><div class="range-line"><input id="impact" type="range" min="1" max="10" value="5"><output id="impactOut">5</output></div><div class="help">Potential real-world consequence if successful.</div></div>
+      <div class="field"><label>Evidence (1–10)</label><div class="range-line"><input id="evidence" type="range" min="1" max="10" value="3"><output id="evidenceOut">3</output></div><div class="help">Strength of independent support, not enthusiasm.</div></div>
+      <div class="field"><label>Revenue leverage (1–10)</label><div class="range-line"><input id="revenue" type="range" min="1" max="10" value="3"><output id="revenueOut">3</output></div><div class="help">Economic or measurable external leverage.</div></div>
+      <div class="field"><label>Completion probability (1–10)</label><div class="range-line"><input id="completion" type="range" min="1" max="10" value="5"><output id="completionOut">5</output></div><div class="help">Likelihood you can actually finish with current resources.</div></div>
+      <div class="field"><label>Cost burden (1–10)</label><div class="range-line"><input id="cost" type="range" min="1" max="10" value="3"><output id="costOut">3</output></div><div class="help">Cash/compute/material burden. Higher is worse.</div></div>
+      <div class="field"><label>Time burden (1–10)</label><div class="range-line"><input id="timeBurden" type="range" min="1" max="10" value="3"><output id="timeOut">3</output></div><div class="help">Calendar/cognitive time. Higher is worse.</div></div>
+      <div class="field"><label>Dependency burden (1–10)</label><div class="range-line"><input id="dependencyBurden" type="range" min="1" max="10" value="3"><output id="depOut">3</output></div><div class="help">Reliance on people/services/prerequisites. Higher is worse.</div></div>
+      <div class="field"><label>Priority heuristic</label><div id="liveScore" class="notice mono">0.00</div><div class="help">P=(impact×evidence×revenue×completion)/(cost×time×dependencies). Prioritization aid, not truth.</div></div>
+
+      <div class="field span-2"><label>Evidence items</label><div id="evidenceItems"></div><button id="addEvidence" class="btn" type="button">+ Evidence item</button></div>
+
+      <div class="field span-2"><label>Transcript / entity data quality</label><textarea id="rawTranscript" placeholder="Optional raw transcript"></textarea></div>
+      <div class="field"><label>Canonical entity</label><input id="canonicalEntity" placeholder="Only when verified"></div>
+      <div class="field"><label>Entity confidence (0–100%)</label><input id="entityConfidence" type="number" min="0" max="100" value="0"></div>
+      <div class="field"><label><input id="entityVerified" type="checkbox"> Entity verified</label><div class="help">Unverified transcript entities never overwrite canonical identity data.</div></div>
+      <div class="field"><label>Monetized amount ($)</label><input id="monetizedAmount" type="number" min="0" step="0.01" value="0"></div>
+      <div class="field span-2"><label>Receipt / outcome note</label><textarea id="receiptNote" placeholder="Deployment URL, payment receipt note, customer result, benchmark, etc."></textarea></div>
+      <div class="span-2 toolbar" style="justify-content:flex-end"><button class="btn" type="button" data-close="ideaModal">CANCEL</button><button class="btn btn-primary" type="submit">SAVE ASSET</button></div>
+    </form>
+  </div>
+</div>
+
+<div id="referenceModal" class="modal hidden" role="dialog" aria-modal="true">
+  <div class="modal-card">
+    <div class="modal-head"><div><div class="eyebrow">Control law / glossary</div><h2>WHAT THIS MEANS</h2></div><button class="btn" data-close="referenceModal">CLOSE</button></div>
+    <div class="notice"><strong>Preservation law:</strong> Execution can terminate while knowledge is preserved. A road-closed branch retains provenance, evidence, stop reason, dependencies, relationships and reactivation conditions.</div>
+    <div class="legend" style="margin-top:12px">
+      <article><h4>CANDIDATE</h4><div class="muted">Captured and preserved, but not consuming an ACTIVE slot.</div></article>
+      <article><h4>ACTIVE</h4><div class="muted">One of at most three execution commitments. Human attention is the scarce resource.</div></article>
+      <article><h4>VAULTED</h4><div class="muted">Potentially valuable, but not executable now. Preserve it with a reactivation trigger instead of letting it rot in memory.</div></article>
+      <article><h4>MERGED</h4><div class="muted">The branch stopped independently because its value was absorbed into another canonical branch. The original record remains.</div></article>
+      <article><h4>KILLED</h4><div class="muted">Evidence says the approach is invalid, dominated, or not worth pursuing. KILLED is not deletion: the tombstone prevents repeating expensive mistakes.</div></article>
+      <article><h4>SHIPPED</h4><div class="muted">A completed artifact reached the outside world. Add a receipt or URL.</div></article>
+      <article><h4>MONETIZED</h4><div class="muted">Verified economic value exists. Record the amount/date/context rather than treating projected revenue as realized revenue.</div></article>
+      <article><h4>Priority heuristic</h4><div class="muted">Higher impact/evidence/revenue/completion increase priority; higher cost/time/dependency burden reduce it. The score helps triage. It does not decide truth or guarantee value.</div></article>
+      <article><h4>Closure rate</h4><div class="muted">Share of preserved ideas that reached SHIPPED, MONETIZED, MERGED, or KILLED. VAULTED is preserved opportunity, not closure proof.</div></article>
+      <article><h4>Estimated portfolio value</h4><div class="muted">Sum of your own expected-value entries. It is planning metadata—not an appraisal, investment value, or realized revenue.</div></article>
+      <article><h4>Reactivation trigger</h4><div class="muted">A concrete condition or date that makes a VAULTED/CANDIDATE branch worth reviewing again.</div></article>
+      <article><h4>Transcript provenance</h4><div class="muted">Raw transcript text can be preserved, but uncertain names/entities remain UNVERIFIED and cannot silently rewrite canonical history.</div></article>
+    </div>
+  </div>
+</div>
+
+<div id="backupModal" class="modal hidden" role="dialog" aria-modal="true">
+  <div class="modal-card">
+    <div class="modal-head"><div><div class="eyebrow">Continuity</div><h2>BACKUP / RESTORE</h2></div><button class="btn" data-close="backupModal">CLOSE</button></div>
+    <div class="notice"><strong>Encrypted backup is the safe default.</strong> It can be stored elsewhere without exposing the vault contents, but it still requires your passphrase to unlock.</div>
+    <div class="toolbar"><button class="btn btn-primary" id="downloadEncrypted">DOWNLOAD ENCRYPTED BACKUP</button><button class="btn" id="restoreEncrypted">RESTORE ENCRYPTED BACKUP</button></div>
+    <input id="restoreFile" type="file" accept="application/json,.json" class="hidden">
+    <p class="muted">Plain JSON and Markdown exports are intentionally separate tools because they are unencrypted once downloaded.</p>
+  </div>
+</div>
+
+<div id="importModal" class="modal hidden" role="dialog" aria-modal="true">
+  <div class="modal-card">
+    <div class="modal-head"><div><div class="eyebrow">Bulk ingest</div><h2>IMPORT PLAIN JSON</h2></div><button class="btn" data-close="importModal">CLOSE</button></div>
+    <p class="muted">Import an array of idea objects or a prior plain vault export. Imported records are validated, assigned IDs when missing, and logged. This does not bypass the 3-ACTIVE governor.</p>
+    <div class="field"><label>JSON</label><textarea id="importJson" style="min-height:260px" placeholder='[{"title":"...","state":"CANDIDATE"}]'></textarea></div>
+    <div class="toolbar" style="justify-content:flex-end"><button class="btn btn-primary" id="runImport">VALIDATE & IMPORT</button></div>
+  </div>
+</div>
+<div id="toast" class="toast hidden"></div>
+
+<script src="./app.js"></script>
+</body>
+</html>
