@@ -1,0 +1,52 @@
+{
+  "schema_version": "1.0",
+  "effective_date": "2026-08-19",
+  "brand": "Massive Magnetics",
+  "service": "Truth Compiler",
+  "canonical_policy": "https://iambandobandz.com/audit/privacy/",
+  "core_rule": "Public-source evidence and de-identified service telemetry may be used for product improvement. Raw private repositories, personal financial records, credentials, account numbers, unpublished inventions, and other sensitive customer content are excluded from shared-model training and public case studies by default unless the customer gives separate affirmative permission.",
+  "data_classes": {
+    "public_source": {
+      "service_delivery": true,
+      "product_improvement": true,
+      "public_case_study": true,
+      "sale_as_customer_evidence": false
+    },
+    "service_metadata": {
+      "service_delivery": true,
+      "security_fraud_billing": true,
+      "deidentified_product_improvement": true,
+      "targeted_advertising_from_private_audit_evidence": false
+    },
+    "customer_private": {
+      "service_delivery": true,
+      "quality_assurance": true,
+      "security_support_legal": true,
+      "raw_shared_model_training_default": false,
+      "public_case_study_default": false,
+      "separate_affirmative_permission_required_for_broader_reuse": true
+    },
+    "sensitive_financial_identity": {
+      "service_delivery": true,
+      "raw_shared_model_training_default": false,
+      "public_case_study_default": false,
+      "sale": false,
+      "targeted_advertising": false,
+      "credentials_should_be_submitted": false
+    }
+  },
+  "customer_rights": [
+    "access",
+    "correction",
+    "deletion_subject_to_exceptions",
+    "export",
+    "restrict_sensitive_use",
+    "withdraw_optional_consent",
+    "opt_out_sale_sharing_targeted_advertising_where_applicable",
+    "non_retaliation"
+  ],
+  "retention_principle": "Retain only as long as reasonably necessary for delivery, verification, support, security, contracts, accounting, dispute resolution, and legal obligations; prefer de-identified derived metrics over unnecessary raw customer content for improvement datasets.",
+  "privacy_request_email": "bandobandz440@gmail.com",
+  "global_privacy_control": "Honor recognized opt-out preference signals where legally required if future processing constitutes sale, sharing, or targeted advertising.",
+  "high_stakes_boundary": "Truth Compiler outputs are not intended to be the sole basis for natural-person eligibility decisions involving credit, housing, employment, insurance, medical care, criminal justice, or other legally protected high-stakes opportunities."
+}
