@@ -1,0 +1,51 @@
+{
+  "schema_version": "1.0.0",
+  "organism_id": "site:iambandobandz",
+  "architecture": "bounded-autopoiesis-v1",
+  "canonical_origin": "https://iambandobandz.com/",
+  "identity_invariant": "canonical-registry-plus-verified-history",
+  "boundary": {
+    "same_origin_runtime": true,
+    "private_registry_excluded": true,
+    "external_services_are_inputs_not_authority": true
+  },
+  "required_routes": [
+    "/",
+    "/network/",
+    "/store/",
+    "/privacy/",
+    "/terms/"
+  ],
+  "required_assets": [
+    "/styles.css",
+    "/script.js",
+    "/autopoietic-runtime.js",
+    "/sw.js",
+    "/site.webmanifest",
+    "/.well-known/iambandobandz.json",
+    "/.well-known/autopoiesis.json"
+  ],
+  "repair": {
+    "mode": "rebuild-redeploy",
+    "autonomous_scope": [
+      "derived-artifacts",
+      "pages-deployment",
+      "runtime-cache"
+    ],
+    "forbidden_autonomous_mutations": [
+      "identity",
+      "legal-policy",
+      "pricing",
+      "source-code",
+      "private-data"
+    ],
+    "fallback": "last-known-good-autopoietic-commit"
+  },
+  "runtime": {
+    "health_interval_seconds": 300,
+    "health_timeout_ms": 5000,
+    "cache_name": "iambandobandz-lkg-v1",
+    "offline_fallback": "/",
+    "status_indicator": true
+  }
+}

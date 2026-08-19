@@ -1,0 +1,126 @@
+name: Autopoietic Repair
+
+on:
+  schedule:
+    - cron: '17 */6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  sense-rebuild-repair:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout organism genome
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 24
+
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+
+      - name: Express and verify current genome
+        id: current
+        shell: bash
+        run: |
+          set +e
+          rm -rf _site
+          python tools/validate_registry.py &&
+          python -m unittest discover -s tests -v &&
+          python tools/build_site.py --output _site &&
+          python tools/validate_registry.py --site _site
+          rc=$?
+          if [ "$rc" -eq 0 ]; then
+            echo "source_ok=true" >> "$GITHUB_OUTPUT"
+            echo "artifact_sha=$GITHUB_SHA" >> "$GITHUB_OUTPUT"
+          else
+            echo "source_ok=false" >> "$GITHUB_OUTPUT"
+          fi
+          exit 0
+
+      - name: Regenerate from last-known-good autopoietic ancestor
+        id: fallback
+        if: steps.current.outputs.source_ok != 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf _site /tmp/autopoietic-fallback /tmp/autopoietic-site
+          recovered=""
+          for candidate in $(git rev-list --max-count=20 HEAD~1); do
+            git worktree remove --force /tmp/autopoietic-fallback >/dev/null 2>&1 || true
+            rm -rf /tmp/autopoietic-fallback /tmp/autopoietic-site
+            git worktree add --detach /tmp/autopoietic-fallback "$candidate" >/dev/null
+            if (
+              cd /tmp/autopoietic-fallback &&
+              test -f registry/public/autopoiesis.json &&
+              test -f autopoietic-runtime.js &&
+              test -f sw.js &&
+              python tools/validate_registry.py &&
+              python -m unittest discover -s tests -v &&
+              python tools/build_site.py --output /tmp/autopoietic-site &&
+              python tools/validate_registry.py --site /tmp/autopoietic-site
+            ); then
+              recovered="$candidate"
+              break
+            fi
+          done
+          test -n "$recovered"
+          cp -a /tmp/autopoietic-site _site
+          echo "recovered=true" >> "$GITHUB_OUTPUT"
+          echo "artifact_sha=$recovered" >> "$GITHUB_OUTPUT"
+
+      - name: Sense production boundary
+        id: health
+        shell: bash
+        run: |
+          set +e
+          failed=0
+          for path in "/" "/.well-known/iambandobandz.json" "/.well-known/autopoiesis.json" "/network/" "/store/" "/privacy/" "/terms/"; do
+            code=$(curl -L -sS -o /dev/null -w "%{http_code}" --connect-timeout 5 --max-time 15 "https://iambandobandz.com${path}")
+            if [ "$code" -lt 200 ] || [ "$code" -ge 400 ]; then
+              echo "Unhealthy ${path}: HTTP ${code}"
+              failed=1
+            fi
+          done
+          if [ "${{ steps.current.outputs.source_ok }}" != "true" ]; then
+            failed=1
+          fi
+          echo "repair_required=$failed" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Configure Pages repair channel
+        if: steps.health.outputs.repair_required == '1' || github.event_name == 'workflow_dispatch'
+        uses: actions/configure-pages@v5
+
+      - name: Upload regenerated organism
+        if: steps.health.outputs.repair_required == '1' || github.event_name == 'workflow_dispatch'
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+
+      - name: Repair production deployment
+        if: steps.health.outputs.repair_required == '1' || github.event_name == 'workflow_dispatch'
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+      - name: Emit repair receipt
+        shell: bash
+        run: |
+          artifact_sha="${{ steps.current.outputs.artifact_sha }}"
+          recovered="${{ steps.fallback.outputs.recovered }}"
+          fallback_sha="${{ steps.fallback.outputs.artifact_sha }}"
+          if [ -n "$fallback_sha" ]; then artifact_sha="$fallback_sha"; fi
+          printf 'source_sha=%s\nartifact_sha=%s\nsource_ok=%s\nrecovered=%s\nrepair_required=%s\n' \
+            "$GITHUB_SHA" "$artifact_sha" "${{ steps.current.outputs.source_ok }}" "$recovered" "${{ steps.health.outputs.repair_required }}"

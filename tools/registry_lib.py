@@ -26,6 +26,7 @@ def load_registry() -> dict[str, Any]:
         "platforms": load_json(PUBLIC / "platforms.json"),
         "catalog": load_json(PUBLIC / "catalog.json"),
         "profile": load_json(PUBLIC / "public-profile.json"),
+        "autopoiesis": load_json(PUBLIC / "autopoiesis.json"),
     }
 
 
@@ -84,6 +85,19 @@ def build_jsonld(registry: dict[str, Any]) -> dict[str, Any]:
             })
 
     return {"@context": "https://schema.org", "@graph": graph}
+
+
+def build_autopoiesis_manifest(registry: dict[str, Any]) -> dict[str, Any]:
+    policy = registry["autopoiesis"]
+    genome = {name: value for name, value in registry.items() if name != "autopoiesis"}
+    return {
+        **policy,
+        "registry_version": registry["profile"]["registry_version"],
+        "proof": {
+            "genome_sha256": canonical_sha256(genome),
+            "autopoiesis_policy_sha256": canonical_sha256(policy),
+        },
+    }
 
 
 def build_public_manifest(registry: dict[str, Any]) -> dict[str, Any]:

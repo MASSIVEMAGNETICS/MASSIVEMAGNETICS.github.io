@@ -7,7 +7,14 @@ import re
 import shutil
 from pathlib import Path
 
-from registry_lib import ROOT, build_jsonld, build_public_manifest, build_sitemap, load_registry
+from registry_lib import (
+    ROOT,
+    build_autopoiesis_manifest,
+    build_jsonld,
+    build_public_manifest,
+    build_sitemap,
+    load_registry,
+)
 
 COPY_ITEMS = [
     ".nojekyll",
@@ -22,6 +29,8 @@ COPY_ITEMS = [
     "research",
     "robots.txt",
     "script.js",
+    "autopoietic-runtime.js",
+    "sw.js",
     "site.webmanifest",
     "social-card.svg",
     "social-card.webp",
@@ -37,6 +46,18 @@ def copy_item(source: Path, destination: Path) -> None:
     else:
         destination.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(source, destination)
+
+
+def inject_autopoietic_runtime(output: Path) -> None:
+    runtime_tag = '<script src="/autopoietic-runtime.js" defer></script>'
+    for page in output.rglob("*.html"):
+        text = page.read_text(encoding="utf-8")
+        if runtime_tag in text:
+            continue
+        if "</body>" not in text:
+            raise RuntimeError(f"HTML page cannot receive autopoietic runtime: {page.relative_to(output)}")
+        text = text.replace("</body>", f"  {runtime_tag}\n</body>", 1)
+        page.write_text(text, encoding="utf-8")
 
 
 def build(output: Path) -> None:
@@ -107,6 +128,13 @@ def build(output: Path) -> None:
         json.dumps(build_public_manifest(registry), indent=2, ensure_ascii=False) + "\n",
         encoding="utf-8",
     )
+    (well_known / "autopoiesis.json").write_text(
+        json.dumps(build_autopoiesis_manifest(registry), indent=2, ensure_ascii=False) + "\n",
+        encoding="utf-8",
+    )
+
+    # Every rendered page receives the same boundary/continuity runtime.
+    inject_autopoietic_runtime(output)
 
 
 def main() -> int:

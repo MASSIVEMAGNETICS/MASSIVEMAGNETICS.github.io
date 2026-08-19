@@ -7,7 +7,15 @@ import sys
 from pathlib import Path
 from urllib.parse import urlparse
 
-from registry_lib import ROOT, build_jsonld, build_public_manifest, build_sitemap, entity_map, load_registry
+from registry_lib import (
+    ROOT,
+    build_autopoiesis_manifest,
+    build_jsonld,
+    build_public_manifest,
+    build_sitemap,
+    entity_map,
+    load_registry,
+)
 
 
 def fail(message: str, errors: list[str]) -> None:
@@ -87,6 +95,28 @@ def validate_source() -> list[str]:
         if capture.get("consent_text_version") != "signal-capture-v1":
             fail("lead_capture consent text version drift detected", errors)
 
+    autopoiesis = registry["autopoiesis"]
+    if autopoiesis.get("architecture") != "bounded-autopoiesis-v1":
+        fail("autopoiesis architecture drift detected", errors)
+    if autopoiesis.get("canonical_origin") != profile["canonical_domain"]:
+        fail("autopoiesis canonical origin drift detected", errors)
+    boundary = autopoiesis.get("boundary", {})
+    if boundary.get("same_origin_runtime") is not True:
+        fail("autopoiesis runtime must remain same-origin", errors)
+    if boundary.get("private_registry_excluded") is not True:
+        fail("autopoiesis must preserve the private-registry boundary", errors)
+    repair = autopoiesis.get("repair", {})
+    if repair.get("mode") != "rebuild-redeploy":
+        fail("autopoiesis repair mode must remain rebuild-redeploy", errors)
+    forbidden = set(repair.get("forbidden_autonomous_mutations", []))
+    required_forbidden = {"identity", "legal-policy", "pricing", "source-code", "private-data"}
+    if not required_forbidden.issubset(forbidden):
+        fail("autopoiesis mutation boundary is missing protected domains", errors)
+    required_assets = set(autopoiesis.get("required_assets", []))
+    for asset in {"/autopoietic-runtime.js", "/sw.js", "/.well-known/autopoiesis.json"}:
+        if asset not in required_assets:
+            fail(f"autopoiesis required asset missing from policy: {asset}", errors)
+
     private_dir = ROOT / "registry" / "private"
     allowed_private = {".gitignore", "README.md"}
     leaked = [p.name for p in private_dir.iterdir() if p.name not in allowed_private]
@@ -95,6 +125,7 @@ def validate_source() -> list[str]:
 
     build_jsonld(registry)
     build_public_manifest(registry)
+    build_autopoiesis_manifest(registry)
     build_sitemap(registry)
     return errors
 
@@ -102,7 +133,17 @@ def validate_source() -> list[str]:
 def validate_built_site(site: Path) -> list[str]:
     errors: list[str] = []
     registry = load_registry()
-    required = ["index.html", "sitemap.xml", "privacy/index.html", "terms/index.html", ".well-known/iambandobandz.json", "identity.jsonld"]
+    required = [
+        "index.html",
+        "sitemap.xml",
+        "privacy/index.html",
+        "terms/index.html",
+        ".well-known/iambandobandz.json",
+        ".well-known/autopoiesis.json",
+        "identity.jsonld",
+        "autopoietic-runtime.js",
+        "sw.js",
+    ]
     for relative in required:
         if not (site / relative).is_file():
             fail(f"built site missing {relative}", errors)
@@ -132,6 +173,24 @@ def validate_built_site(site: Path) -> list[str]:
     if "signal-capture-v1" not in script:
         fail("site consent version is not pinned", errors)
 
+    runtime = (site / "autopoietic-runtime.js").read_text(encoding="utf-8")
+    if 'navigator.serviceWorker.register("/sw.js"' not in runtime:
+        fail("autopoietic runtime does not register the service worker", errors)
+    if "/.well-known/autopoiesis.json" not in runtime:
+        fail("autopoietic runtime does not sense its canonical manifest", errors)
+
+    worker = (site / "sw.js").read_text(encoding="utf-8")
+    if "url.origin !== self.location.origin" not in worker:
+        fail("service worker same-origin boundary missing", errors)
+    if "LKG_SERVED" not in worker:
+        fail("service worker lacks last-known-good recovery signaling", errors)
+
+    runtime_tag = '<script src="/autopoietic-runtime.js" defer></script>'
+    for page in site.rglob("*.html"):
+        text = page.read_text(encoding="utf-8")
+        if runtime_tag not in text:
+            fail(f"page missing autopoietic runtime: {page.relative_to(site)}", errors)
+
     portfolio = (site / "portfolio" / "index.html").read_text(encoding="utf-8")
     if "massivemagnetics.github.io/portfolio" in portfolio:
         fail("portfolio canonical drift remains", errors)
@@ -147,6 +206,10 @@ def validate_built_site(site: Path) -> list[str]:
     public_manifest = json.loads((site / ".well-known" / "iambandobandz.json").read_text(encoding="utf-8"))
     if public_manifest != build_public_manifest(registry):
         fail("public manifest differs from canonical registry", errors)
+
+    autopoiesis_manifest = json.loads((site / ".well-known" / "autopoiesis.json").read_text(encoding="utf-8"))
+    if autopoiesis_manifest != build_autopoiesis_manifest(registry):
+        fail("autopoiesis manifest differs from canonical registry", errors)
 
     if (site / "registry" / "private").exists():
         fail("private registry boundary leaked into Pages artifact", errors)
