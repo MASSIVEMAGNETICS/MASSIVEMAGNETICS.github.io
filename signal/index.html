@@ -1,0 +1,484 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#07090b">
+  <meta name="description" content="THE SIGNAL — a pattern-recognition experiment by IAMBANDOBANDZ.">
+  <meta property="og:title" content="THE SIGNAL">
+  <meta property="og:description" content="Not everyone who sees this will notice it.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://iambandobandz.com/signal/">
+  <link rel="canonical" href="https://iambandobandz.com/signal/">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <title>THE SIGNAL — IAMBANDOBANDZ</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg:#07090b;
+      --panel:#0d1115;
+      --line:#24303a;
+      --text:#f3f6f7;
+      --muted:#8c9aa5;
+      --green:#9dff00;
+      --purple:#b368ff;
+      --danger:#ff5d73;
+      --max:820px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      min-height:100vh;
+      background:
+        radial-gradient(circle at 20% 0%,rgba(157,255,0,.08),transparent 30rem),
+        radial-gradient(circle at 100% 20%,rgba(179,104,255,.08),transparent 28rem),
+        var(--bg);
+      color:var(--text);
+      font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono",monospace;
+      line-height:1.65;
+    }
+    a{color:inherit}
+    main{width:min(calc(100% - 32px),var(--max));margin:0 auto;padding:56px 0 90px}
+    .masthead{margin-bottom:54px}
+    .eyebrow{color:var(--green);font-size:.78rem;letter-spacing:.16em;text-transform:uppercase}
+    h1{font-size:clamp(3rem,12vw,7rem);line-height:.9;margin:.35rem 0 1.2rem;letter-spacing:-.07em}
+    h2{font-size:clamp(1.45rem,5vw,2.35rem);line-height:1.05;margin:0 0 1rem}
+    h3{margin:0 0 .5rem}
+    .lede{font-size:clamp(1rem,2.7vw,1.2rem);color:#c9d2d7;max-width:44rem}
+    .lede span{display:block}
+    .rule{height:1px;background:linear-gradient(90deg,var(--green),var(--purple),transparent);margin:36px 0}
+    .riddle{
+      border:1px solid var(--line);
+      background:rgba(13,17,21,.84);
+      border-radius:16px;
+      padding:clamp(22px,5vw,36px);
+      margin:0 0 24px;
+      box-shadow:0 18px 55px rgba(0,0,0,.22);
+    }
+    .riddle.locked{opacity:.34;filter:saturate(.35);pointer-events:none}
+    .riddle.solved{border-color:rgba(157,255,0,.58)}
+    .verse{white-space:pre-line;font-size:1.02rem;margin:1.25rem 0 1.6rem}
+    .answer-row{display:flex;gap:10px;flex-wrap:wrap}
+    input,textarea,button{font:inherit}
+    input,textarea{
+      width:100%;
+      border:1px solid #33414d;
+      background:#080b0e;
+      color:var(--text);
+      border-radius:10px;
+      padding:14px 15px;
+      outline:none;
+    }
+    .answer-row input{flex:1 1 260px}
+    input:focus,textarea:focus{border-color:var(--purple);box-shadow:0 0 0 3px rgba(179,104,255,.12)}
+    button{
+      border:1px solid #3a4853;
+      color:var(--text);
+      background:#11171c;
+      border-radius:10px;
+      padding:13px 17px;
+      cursor:pointer;
+      font-weight:800;
+      letter-spacing:.03em;
+    }
+    button:hover{border-color:var(--green)}
+    button.primary{background:var(--green);border-color:var(--green);color:#071000}
+    button.secondary{background:transparent}
+    .status{min-height:1.7em;margin:.7rem 0 0;color:var(--muted);font-size:.9rem}
+    .status.good{color:var(--green)}
+    .status.bad{color:var(--danger)}
+    [hidden]{display:none!important}
+    .door{
+      margin:58px 0 0;
+      border-left:3px solid var(--purple);
+      padding-left:clamp(18px,4vw,34px);
+    }
+    .door p{margin:.85rem 0}
+    .door .sequence{font-size:clamp(1rem,2.5vw,1.14rem)}
+    .question{
+      margin-top:50px;
+      padding-top:36px;
+      border-top:1px solid var(--line);
+    }
+    textarea{min-height:180px;resize:vertical}
+    .counter{text-align:right;color:var(--muted);font-size:.8rem;margin-top:.35rem}
+    .actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+    .privacy{
+      margin-top:18px;
+      color:var(--muted);
+      font-size:.78rem;
+      border-left:2px solid #33414d;
+      padding-left:12px;
+    }
+    .receipt{
+      margin-top:22px;
+      background:#080b0e;
+      border:1px solid rgba(157,255,0,.45);
+      border-radius:12px;
+      padding:18px;
+      overflow-wrap:anywhere;
+    }
+    .receipt strong{color:var(--green)}
+    .hash{font-size:.72rem;color:#b7c2c9}
+    .closing{
+      margin-top:48px;
+      padding-top:28px;
+      border-top:1px solid var(--line);
+      font-weight:900;
+      letter-spacing:.07em;
+    }
+    footer{margin-top:70px;color:#66747e;font-size:.76rem}
+    @media (prefers-reduced-motion:no-preference){
+      .reveal{animation:fade .5s ease both}
+      @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+    }
+  </style>
+</head>
+<body>
+<main>
+  <header class="masthead">
+    <div class="eyebrow">IAMBANDOBANDZ // recognition experiment 001</div>
+    <h1>THE<br>SIGNAL</h1>
+    <p class="lede">
+      <span>Not everyone who sees this will notice it.</span>
+      <span>Not everyone who notices it will understand it.</span>
+      <span>Not everyone who understands it was supposed to arrive.</span>
+    </p>
+  </header>
+
+  <section class="riddle" id="riddle-1" data-step="1">
+    <div class="eyebrow">Riddle I — The Pattern</div>
+    <div class="verse">I have no mouth,
+yet I repeat myself.
+
+I have no memory,
+yet I return in different forms.
+
+You can break me into pieces
+and find me waiting inside every piece.
+
+Most people see the picture.
+
+Some see me.
+
+What am I?</div>
+    <form class="answer-row" data-answer-form>
+      <input name="answer" autocomplete="off" spellcheck="false" aria-label="Answer to riddle one">
+      <button type="submit">TEST ANSWER</button>
+    </form>
+    <p class="status" aria-live="polite"></p>
+  </section>
+
+  <section class="riddle locked" id="riddle-2" data-step="2" aria-disabled="true">
+    <div class="eyebrow">Riddle II — The Carrier</div>
+    <div class="verse">I am not the message.
+
+I am not the messenger.
+
+Change my shape
+and the meaning may survive.
+
+Destroy my meaning
+and my shape becomes noise.
+
+I can cross a room without moving matter,
+cross a century without remaining alive,
+and enter a mind that was already waiting for me.
+
+What am I?</div>
+    <form class="answer-row" data-answer-form>
+      <input name="answer" autocomplete="off" spellcheck="false" aria-label="Answer to riddle two">
+      <button type="submit">TEST ANSWER</button>
+    </form>
+    <p class="status" aria-live="polite"></p>
+  </section>
+
+  <section class="riddle locked" id="riddle-3" data-step="3" aria-disabled="true">
+    <div class="eyebrow">Riddle III — The Instruction</div>
+    <div class="verse">You did not find me
+because you knew where I was.
+
+You found me
+because something in you recognized
+something in me.
+
+If recognition brought you this far,
+
+say what happened.</div>
+    <form class="answer-row" data-answer-form>
+      <input name="answer" autocomplete="off" spellcheck="false" aria-label="Answer to riddle three">
+      <button type="submit">SAY IT</button>
+    </form>
+    <p class="status" aria-live="polite"></p>
+  </section>
+
+  <section id="door" class="door reveal" hidden>
+    <div class="eyebrow">THE SIGNAL BROUGHT ME HERE</div>
+    <h2>If you reached this page by solving it instead of being given the answer, this page is for you.</h2>
+
+    <div class="sequence">
+      <p>You noticed structure where other people saw noise.</p>
+      <p>You followed meaning instead of instruction.</p>
+      <p>You recognized that the answer to a question can itself be another question.</p>
+      <p><strong>That is the test.</strong></p>
+      <p>Not intelligence.<br>Not education.<br>Not status.</p>
+      <p><strong>Recognition.</strong></p>
+    </div>
+
+    <p>There are people who spend their lives feeling like they are receiving a transmission nobody around them can hear.</p>
+    <p>They notice systems. Contradictions. Patterns inside patterns. Connections between things everyone else has been trained to keep separate.</p>
+    <p>Music becomes mathematics.<br>Language becomes architecture.<br>Pain becomes information.<br>Ideas become machines.<br>Chaos becomes structure.</p>
+    <p>And eventually you start asking a dangerous question:</p>
+    <p><strong>What if the problem isn't that I can't understand the world?</strong></p>
+    <p><strong>What if I understand parts of it in a way I was never given language for?</strong></p>
+    <p>If that question feels familiar, you are standing at the correct door.</p>
+
+    <div class="rule"></div>
+
+    <p>This is not a club.</p>
+    <p>There is no ideology to adopt.</p>
+    <p>There is no leader to worship.</p>
+    <p>There is no promise that you are special.</p>
+    <p>There is only another question:</p>
+
+    <section class="question" id="question">
+      <h2>What have you been seeing that you cannot make other people see?</h2>
+      <p>Write it down. Preserve it. Test it. Build it. Prove what can be proven. Destroy what cannot survive evidence. Then transmit what remains.</p>
+
+      <form id="signal-form">
+        <textarea id="signal-response" name="signal_response" maxlength="5000" required
+          placeholder="Describe the pattern, contradiction, connection, model, or idea. Be specific enough that it could eventually be tested."></textarea>
+        <div class="counter"><span id="count">0</span>/5000</div>
+        <div class="actions">
+          <button class="primary" type="submit">SEND THE SIGNAL</button>
+          <button class="secondary" id="local-only" type="button">KEEP LOCAL ONLY</button>
+        </div>
+        <p id="submit-status" class="status" aria-live="polite"></p>
+      </form>
+
+      <div class="privacy">
+        Your response is never shown to later participants by this page. Until the first-party capture API is enabled, transmitted responses are relayed through FormSubmit to IAMBANDOBANDZ email. Do not include secrets, passwords, medical records, financial data, or other information you do not want transmitted. “KEEP LOCAL ONLY” sends nothing over the network and creates only a local cryptographic receipt.
+      </div>
+
+      <div id="receipt" class="receipt reveal" hidden>
+        <div class="eyebrow">Recognition receipt</div>
+        <p><strong id="receipt-id"></strong></p>
+        <p id="receipt-time"></p>
+        <p class="hash" id="receipt-hash"></p>
+        <button id="copy-receipt" type="button">COPY RECEIPT</button>
+      </div>
+    </section>
+
+    <div class="closing">THE SIGNAL BROUGHT ME HERE.<br>THEN SEND IT FORWARD.</div>
+  </section>
+
+  <noscript><p>This experiment requires JavaScript for answer verification and receipt generation.</p></noscript>
+  <footer><a href="/">IAMBANDOBANDZ</a> · <a href="/privacy/">Privacy</a> · <a href="/terms/">Terms</a></footer>
+</main>
+
+<script>
+(() => {
+  'use strict';
+
+  const EXPECTED = [
+    '1fd38d5cbd2a997b91f725cb1cb0a710849db30dac491ee42e92443fd8e3c1a2',
+    'd041924c15885af6d06530a425c6dbffc80520150c4dd264f40b4364b12421a8',
+    '9197a4baeaf8fc9d0111d40234fb2157985d17d7d1ecafa84b02b4ecfd4c51b0'
+  ];
+
+  const encoder = new TextEncoder();
+
+  function normalizeAnswer(value) {
+    return String(value || '')
+      .toLowerCase()
+      .replace(/[^a-z0-9\s]/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
+  async function sha256(value) {
+    const bytes = await crypto.subtle.digest('SHA-256', encoder.encode(value));
+    return Array.from(new Uint8Array(bytes), b => b.toString(16).padStart(2, '0')).join('');
+  }
+
+  function unlock(step) {
+    const current = document.querySelector(`[data-step="${step}"]`);
+    current.classList.add('solved');
+    current.querySelector('input').disabled = true;
+    current.querySelector('button').disabled = true;
+    const status = current.querySelector('.status');
+    status.textContent = step === 3 ? 'Recognition confirmed.' : 'Correct. Continue.';
+    status.className = 'status good';
+
+    if (step < 3) {
+      const next = document.querySelector(`[data-step="${step + 1}"]`);
+      next.classList.remove('locked');
+      next.removeAttribute('aria-disabled');
+      setTimeout(() => next.querySelector('input').focus(), 60);
+    } else {
+      sessionStorage.setItem('signal_challenge_complete', '1');
+      const door = document.getElementById('door');
+      door.hidden = false;
+      setTimeout(() => door.scrollIntoView({behavior:'smooth',block:'start'}), 70);
+    }
+  }
+
+  document.querySelectorAll('[data-answer-form]').forEach((form, index) => {
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const input = form.querySelector('input');
+      const status = form.parentElement.querySelector('.status');
+      const normalized = normalizeAnswer(input.value);
+      if (!normalized) {
+        status.textContent = 'Say what you think it is.';
+        status.className = 'status bad';
+        return;
+      }
+      const actual = await sha256(normalized);
+      if (actual === EXPECTED[index]) {
+        unlock(index + 1);
+      } else {
+        status.textContent = 'That does not survive the pattern. Look again.';
+        status.className = 'status bad';
+        input.select();
+      }
+    });
+  });
+
+  const textarea = document.getElementById('signal-response');
+  const count = document.getElementById('count');
+  textarea.addEventListener('input', () => { count.textContent = String(textarea.value.length); });
+
+  function canonicalRecord(response, submittedAt) {
+    return JSON.stringify({
+      schema_version: 'signal-response-v1',
+      experiment: 'THE_SIGNAL',
+      challenge_completed: true,
+      submitted_at_client: submittedAt,
+      response: response.trim()
+    });
+  }
+
+  async function makeReceipt(response) {
+    const submittedAt = new Date().toISOString();
+    const canonical = canonicalRecord(response, submittedAt);
+    const hash = await sha256(canonical);
+    return {
+      id: `SIG-${hash.slice(0, 20).toUpperCase()}`,
+      hash,
+      submittedAt,
+      canonical
+    };
+  }
+
+  const receiptBox = document.getElementById('receipt');
+  const receiptId = document.getElementById('receipt-id');
+  const receiptTime = document.getElementById('receipt-time');
+  const receiptHash = document.getElementById('receipt-hash');
+  const submitStatus = document.getElementById('submit-status');
+  let latestReceipt = null;
+
+  function showReceipt(receipt, mode) {
+    latestReceipt = {...receipt, mode};
+    receiptId.textContent = receipt.id;
+    receiptTime.textContent = `${mode === 'transmitted' ? 'Transmitted' : 'Local only'} · ${receipt.submittedAt}`;
+    receiptHash.textContent = `SHA-256 ${receipt.hash}`;
+    receiptBox.hidden = false;
+    try {
+      localStorage.setItem('the_signal_last_receipt', JSON.stringify({
+        id: receipt.id,
+        hash: receipt.hash,
+        submitted_at_client: receipt.submittedAt,
+        mode
+      }));
+    } catch (_) {}
+  }
+
+  async function transmit(response, receipt) {
+    const data = new FormData();
+    data.set('_subject', `THE SIGNAL response ${receipt.id}`);
+    data.set('_captcha', 'false');
+    data.set('experiment', 'THE_SIGNAL');
+    data.set('challenge_completion', 'THE SIGNAL BROUGHT ME HERE');
+    data.set('signal_response', response.trim());
+    data.set('submitted_at_client', receipt.submittedAt);
+    data.set('receipt_id', receipt.id);
+    data.set('receipt_sha256', receipt.hash);
+
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 8000);
+    try {
+      const responseHttp = await fetch('https://formsubmit.co/ajax/bandobandz440@gmail.com', {
+        method: 'POST',
+        headers: {Accept:'application/json'},
+        body: data,
+        signal: controller.signal
+      });
+      if (!responseHttp.ok) throw new Error(`relay returned ${responseHttp.status}`);
+      return true;
+    } finally {
+      clearTimeout(timeout);
+    }
+  }
+
+  document.getElementById('signal-form').addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const response = textarea.value.trim();
+    if (response.length < 20) {
+      submitStatus.textContent = 'Give the signal enough structure to be testable: at least 20 characters.';
+      submitStatus.className = 'status bad';
+      return;
+    }
+    submitStatus.textContent = 'Hashing and transmitting…';
+    submitStatus.className = 'status';
+    const receipt = await makeReceipt(response);
+    try {
+      await transmit(response, receipt);
+      showReceipt(receipt, 'transmitted');
+      submitStatus.textContent = 'Signal received. Your receipt proves the exact text + client timestamp you submitted.';
+      submitStatus.className = 'status good';
+      textarea.value = '';
+      count.textContent = '0';
+    } catch (error) {
+      showReceipt(receipt, 'local');
+      submitStatus.textContent = 'The relay failed. Nothing was confirmed as received; a local receipt was created instead.';
+      submitStatus.className = 'status bad';
+    }
+  });
+
+  document.getElementById('local-only').addEventListener('click', async () => {
+    const response = textarea.value.trim();
+    if (response.length < 20) {
+      submitStatus.textContent = 'Write at least 20 characters before generating a receipt.';
+      submitStatus.className = 'status bad';
+      return;
+    }
+    const receipt = await makeReceipt(response);
+    showReceipt(receipt, 'local');
+    submitStatus.textContent = 'Local receipt created. No submission request was sent.';
+    submitStatus.className = 'status good';
+  });
+
+  document.getElementById('copy-receipt').addEventListener('click', async () => {
+    if (!latestReceipt) return;
+    const text = [
+      'THE SIGNAL — RECOGNITION RECEIPT',
+      `Receipt: ${latestReceipt.id}`,
+      `Mode: ${latestReceipt.mode}`,
+      `Client time: ${latestReceipt.submittedAt}`,
+      `SHA-256: ${latestReceipt.hash}`
+    ].join('\n');
+    try {
+      await navigator.clipboard.writeText(text);
+      submitStatus.textContent = 'Receipt copied.';
+      submitStatus.className = 'status good';
+    } catch (_) {
+      submitStatus.textContent = text;
+      submitStatus.className = 'status';
+    }
+  });
+})();
+</script>
+</body>
+</html>

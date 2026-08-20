@@ -21,6 +21,7 @@ COPY_ITEMS = [
     "privacy",
     "proof",
     "research",
+    "signal",
     "robots.txt",
     "script.js",
     "site.webmanifest",
