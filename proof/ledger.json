@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0.0",
-  "ledger_version": "2026.08.20.1",
+  "ledger_version": "2026.08.20.2",
   "canonical_url": "https://iambandobandz.com/proof/",
   "ledger_date": "2026-08-20",
   "purpose": "A bounded public record of independently checkable artifacts, releases, commits, deployments, and provenance.",
@@ -134,6 +134,22 @@
       "evidence": [
         {"label": "Merged GitHub commit 255a72c", "url": "https://github.com/MASSIVEMAGNETICS/truth-compiler-ai/commit/255a72cfff227f61c9f7a14d0da18d7c55a7f13d", "authority": "GitHub"},
         {"label": "Truth Compiler repository", "url": "https://github.com/MASSIVEMAGNETICS/truth-compiler-ai", "authority": "GitHub"}
+      ]
+    },
+    {
+      "id": "software-victor-heartbeat-v1-freeze",
+      "date": "2026-08-19",
+      "date_precision": "day",
+      "category": "software",
+      "title": "Victor Heartbeat v1 frozen architecture contract",
+      "claim": "An immutable dev-ville commit adds the frozen Victor Heartbeat v1 architecture contract, and four GitHub Actions workflows completed successfully on that exact commit. The containing pull request remains draft and unmerged, so this record proves the committed contract and exact-head CI evidence, not canonical merge into main or production autonomy.",
+      "proof_level": "IMMUTABLE_COMMIT",
+      "status": "PARTIAL",
+      "evidence": [
+        {"label": "GitHub commit 9e11600", "url": "https://github.com/MASSIVEMAGNETICS/dev-ville/commit/9e116000bb5f0282fef8a2249c12ed2eab43d0b9", "authority": "GitHub"},
+        {"label": "Heartbeat pull request #18", "url": "https://github.com/MASSIVEMAGNETICS/dev-ville/pull/18", "authority": "GitHub"},
+        {"label": "Victor Canonical Heartbeat workflow run", "url": "https://github.com/MASSIVEMAGNETICS/dev-ville/actions/runs/32298309656", "authority": "GitHub"},
+        {"label": "Victor Driver Tests workflow run", "url": "https://github.com/MASSIVEMAGNETICS/dev-ville/actions/runs/32298309631", "authority": "GitHub"}
       ]
     },
     {
