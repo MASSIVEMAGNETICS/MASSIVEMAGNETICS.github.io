@@ -1,0 +1,181 @@
+{
+  "schema_version": "1.0.0",
+  "ledger_version": "2026.08.20.1",
+  "canonical_url": "https://iambandobandz.com/proof/",
+  "ledger_date": "2026-08-20",
+  "purpose": "A bounded public record of independently checkable artifacts, releases, commits, deployments, and provenance.",
+  "methodology": {
+    "rule": "Every entry must identify exactly what the linked evidence proves. Evidence of existence is not evidence of commercial success, scientific validity, customer adoption, or capability beyond the cited artifact.",
+    "proof_levels": [
+      "INDEPENDENT_RELEASE",
+      "PUBLIC_REPOSITORY",
+      "IMMUTABLE_COMMIT",
+      "LIVE_DEPLOYMENT",
+      "PUBLIC_PROVENANCE"
+    ],
+    "statuses": ["VERIFIED", "PARTIAL"],
+    "claim_boundary": "No entry may upgrade a source into a stronger claim than the source supports."
+  },
+  "entries": [
+    {
+      "id": "music-wake-up-the-dead",
+      "date": "2025-03-07",
+      "date_precision": "day",
+      "category": "music",
+      "title": "WAKE UP THE DEAD",
+      "claim": "A 22-song IAMBANDOBANDZ album was publicly released on March 7, 2025.",
+      "proof_level": "INDEPENDENT_RELEASE",
+      "status": "VERIFIED",
+      "evidence": [
+        {"label": "Apple Music release page", "url": "https://music.apple.com/us/album/wake-up-the-dead/1799242344", "authority": "Apple Music"}
+      ]
+    },
+    {
+      "id": "music-crybaby",
+      "date": "2025-12-01",
+      "date_precision": "day",
+      "category": "music",
+      "title": "Crybaby",
+      "claim": "A 15-song IAMBANDOBANDZ album was publicly released on December 1, 2025.",
+      "proof_level": "INDEPENDENT_RELEASE",
+      "status": "VERIFIED",
+      "evidence": [
+        {"label": "Apple Music release page", "url": "https://music.apple.com/us/album/crybaby/1857723003", "authority": "Apple Music"}
+      ]
+    },
+    {
+      "id": "music-nowhere-left-to-go",
+      "date": "2026-01-15",
+      "date_precision": "day",
+      "category": "music",
+      "title": "Nowhere Left To Go",
+      "claim": "A 23-song IAMBANDOBANDZ album was publicly released on January 15, 2026.",
+      "proof_level": "INDEPENDENT_RELEASE",
+      "status": "VERIFIED",
+      "evidence": [
+        {"label": "Apple Music release page", "url": "https://music.apple.com/us/album/nowhere-left-to-go/1868890403", "authority": "Apple Music"}
+      ]
+    },
+    {
+      "id": "music-steel-city",
+      "date": "2026",
+      "date_precision": "year",
+      "category": "music",
+      "title": "Steel City",
+      "claim": "UnitedMasters lists Steel City as a 2026 IAMBANDOBANDZ album and exposes its public track listing.",
+      "proof_level": "INDEPENDENT_RELEASE",
+      "status": "VERIFIED",
+      "evidence": [
+        {"label": "UnitedMasters release page", "url": "https://unitedmasters.com/m/steel-city-1", "authority": "UnitedMasters"}
+      ]
+    },
+    {
+      "id": "music-exit-velocity",
+      "date": "2026",
+      "date_precision": "year",
+      "category": "music",
+      "title": "eXIT vELOCITY",
+      "claim": "UnitedMasters lists eXIT vELOCITY as a 2026 IAMBANDOBANDZ album and exposes its public track listing.",
+      "proof_level": "INDEPENDENT_RELEASE",
+      "status": "VERIFIED",
+      "evidence": [
+        {"label": "UnitedMasters release page", "url": "https://unitedmasters.com/m/exit-velocity", "authority": "UnitedMasters"}
+      ]
+    },
+    {
+      "id": "music-one-man-show",
+      "date": "2026",
+      "date_precision": "year",
+      "category": "music",
+      "title": "ONE MAN SHOW",
+      "claim": "UnitedMasters lists ONE MAN SHOW as a 2026 IAMBANDOBANDZ release with six public tracks.",
+      "proof_level": "INDEPENDENT_RELEASE",
+      "status": "VERIFIED",
+      "evidence": [
+        {"label": "UnitedMasters release page", "url": "https://unitedmasters.com/m/one-man-show-2", "authority": "UnitedMasters"}
+      ]
+    },
+    {
+      "id": "software-victor-whisper-poc",
+      "date": "2025-09-14",
+      "date_precision": "day",
+      "category": "software",
+      "title": "Victor mobile voice proof-of-concept",
+      "claim": "A public Victor commit records a React Native proof-of-concept for on-device transcription using whisper.cpp bindings, including model download, permissions, initialization, and transcription UI.",
+      "proof_level": "IMMUTABLE_COMMIT",
+      "status": "VERIFIED",
+      "evidence": [
+        {"label": "GitHub commit 6ab8806", "url": "https://github.com/MASSIVEMAGNETICS/victor/commit/6ab8806d00ba7105b3e1874f4a0e24585b13cf02", "authority": "GitHub"}
+      ]
+    },
+    {
+      "id": "software-victor-godcore-v47",
+      "date": "2026-01-01",
+      "date_precision": "day",
+      "category": "software",
+      "title": "VictorGodcore v4.7 integration commit",
+      "claim": "A public Victor commit records dataset integration, multimodal training data, FPKTBlock updates, memory-shard ingestion, and training-loop integration.",
+      "proof_level": "IMMUTABLE_COMMIT",
+      "status": "VERIFIED",
+      "evidence": [
+        {"label": "GitHub commit 3b6094c", "url": "https://github.com/MASSIVEMAGNETICS/victor/commit/3b6094c37d0451fdb098987f2b0526bd73f5792d", "authority": "GitHub"},
+        {"label": "Victor repository", "url": "https://github.com/MASSIVEMAGNETICS/victor", "authority": "GitHub"}
+      ]
+    },
+    {
+      "id": "software-truth-compiler-governor",
+      "date": "2026-08-15",
+      "date_precision": "day",
+      "category": "software",
+      "title": "Truth Compiler bounded release governor",
+      "claim": "The public truth-compiler-ai repository contains a merged commit for a bounded Protector release governor, preceded by tests for replay and capability boundaries and CI coverage.",
+      "proof_level": "IMMUTABLE_COMMIT",
+      "status": "VERIFIED",
+      "evidence": [
+        {"label": "Merged GitHub commit 255a72c", "url": "https://github.com/MASSIVEMAGNETICS/truth-compiler-ai/commit/255a72cfff227f61c9f7a14d0da18d7c55a7f13d", "authority": "GitHub"},
+        {"label": "Truth Compiler repository", "url": "https://github.com/MASSIVEMAGNETICS/truth-compiler-ai", "authority": "GitHub"}
+      ]
+    },
+    {
+      "id": "research-provenance-registry",
+      "date": "2026-08-17",
+      "date_precision": "day",
+      "category": "research",
+      "title": "Git-anchored research provenance registry",
+      "claim": "The site repository contains a commit explicitly publishing a research provenance registry with artifact fingerprints, a deterministic record-set root, browser verification, sitemap registration, and CI proof checks.",
+      "proof_level": "PUBLIC_PROVENANCE",
+      "status": "VERIFIED",
+      "evidence": [
+        {"label": "GitHub commit f1d1bda", "url": "https://github.com/MASSIVEMAGNETICS/MASSIVEMAGNETICS.github.io/commit/f1d1bdad905f6eb75dd86d810a3243c8695b36e5", "authority": "GitHub"},
+        {"label": "Live research registry", "url": "https://iambandobandz.com/research/", "authority": "IAMBANDOBANDZ"}
+      ]
+    },
+    {
+      "id": "deployment-truth-compiler-funnel",
+      "date": "2026-08-19",
+      "date_precision": "day",
+      "category": "deployment",
+      "title": "Truth Compiler proof and privacy funnel",
+      "claim": "The live-site repository records deployment of a proof-driven audit funnel, public case-study surfaces, customer privacy/data-rights policy, service terms, product manifest, and post-checkout routing.",
+      "proof_level": "LIVE_DEPLOYMENT",
+      "status": "VERIFIED",
+      "evidence": [
+        {"label": "GitHub commit c1cb5da", "url": "https://github.com/MASSIVEMAGNETICS/MASSIVEMAGNETICS.github.io/commit/c1cb5da0590527b00d7d9ba66463988d50e2a290", "authority": "GitHub"},
+        {"label": "Live audit route", "url": "https://iambandobandz.com/audit/", "authority": "IAMBANDOBANDZ"}
+      ]
+    },
+    {
+      "id": "deployment-owner-control-plane",
+      "date": "2026-08-19",
+      "date_precision": "day",
+      "category": "deployment",
+      "title": "Amplification Governor owner control plane",
+      "claim": "The live-site repository records deployment of a local-first owner control plane with Idea Vault, Branch Governor, preservation states, audit trail, reactivation triggers, receipts, exports, and data-quality controls.",
+      "proof_level": "LIVE_DEPLOYMENT",
+      "status": "VERIFIED",
+      "evidence": [
+        {"label": "GitHub commit 2fe28ea", "url": "https://github.com/MASSIVEMAGNETICS/MASSIVEMAGNETICS.github.io/commit/2fe28ea5b966d5642e295b2263c08ab402ae4e9b", "authority": "GitHub"}
+      ]
+    }
+  ]
+}
