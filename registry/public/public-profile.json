@@ -1,11 +1,12 @@
 {
   "schema_version": "1.0.0",
-  "registry_version": "2026.08.17.1",
+  "registry_version": "2026.08.20.1",
   "canonical_domain": "https://iambandobandz.com/",
   "site_name": "IAMBANDOBANDZ",
   "tagline": "The Signal Survives",
   "routes": [
     {"path": "/", "changefreq": "weekly", "priority": 1.0},
+    {"path": "/proof/", "changefreq": "weekly", "priority": 0.95},
     {"path": "/research/", "changefreq": "weekly", "priority": 0.9},
     {"path": "/portfolio/", "changefreq": "monthly", "priority": 0.7},
     {"path": "/privacy/", "changefreq": "yearly", "priority": 0.3},
