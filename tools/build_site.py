@@ -41,6 +41,16 @@ def copy_item(source: Path, destination: Path) -> None:
         shutil.copy2(source, destination)
 
 
+def inject_legal_links(path: Path) -> None:
+    page = path.read_text(encoding="utf-8")
+    if 'href="/privacy/"' in page and 'href="/terms/"' in page:
+        return
+    legal = '<span data-legal-links="registry"><a href="/privacy/">Privacy</a> · <a href="/terms/">Terms</a> · <a href="/proof/">Proof</a></span>'
+    if "</footer>" not in page:
+        raise RuntimeError(f"commercial page footer missing: {path.relative_to(path.parents[1])}")
+    path.write_text(page.replace("</footer>", legal + "</footer>", 1), encoding="utf-8")
+
+
 def build(output: Path) -> None:
     registry = load_registry()
     if output.exists():
@@ -103,6 +113,11 @@ def build(output: Path) -> None:
         legal = '<span data-legal-links="registry"><a href="/privacy/">Privacy</a> · <a href="/terms/">Terms</a></span>'
         index = index.replace("</footer>", legal + "</footer>", 1)
     index_path.write_text(index, encoding="utf-8")
+
+    # Commercial pages must expose the same trust boundary even when their
+    # source templates evolve independently.
+    inject_legal_links(output / "store" / "index.html")
+    inject_legal_links(output / "network" / "index.html")
 
     portfolio_path = output / "portfolio" / "index.html"
     portfolio = portfolio_path.read_text(encoding="utf-8")
