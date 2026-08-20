@@ -19,6 +19,58 @@ def valid_https(value: str) -> bool:
     return parsed.scheme == "https" and bool(parsed.netloc)
 
 
+def validate_proof_ledger(path: Path) -> list[str]:
+    errors: list[str] = []
+    if not path.is_file():
+        return [f"proof ledger missing: {path}"]
+    try:
+        ledger = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        return [f"proof ledger unreadable: {exc}"]
+
+    if ledger.get("schema_version") != "1.0.0":
+        fail("proof ledger schema_version drift detected", errors)
+    if ledger.get("canonical_url") != "https://iambandobandz.com/proof/":
+        fail("proof ledger canonical URL drift detected", errors)
+    methodology = ledger.get("methodology")
+    if not isinstance(methodology, dict) or not methodology.get("claim_boundary"):
+        fail("proof ledger claim boundary missing", errors)
+    entries = ledger.get("entries")
+    if not isinstance(entries, list) or not entries:
+        fail("proof ledger entries must be a non-empty list", errors)
+        return errors
+
+    allowed_categories = {"music", "software", "research", "deployment"}
+    allowed_levels = {"INDEPENDENT_RELEASE", "PUBLIC_REPOSITORY", "IMMUTABLE_COMMIT", "LIVE_DEPLOYMENT", "PUBLIC_PROVENANCE"}
+    allowed_statuses = {"VERIFIED", "PARTIAL"}
+    ids: list[str] = []
+    for entry in entries:
+        entry_id = str(entry.get("id", ""))
+        ids.append(entry_id)
+        if not re.fullmatch(r"[a-z0-9][a-z0-9-]+", entry_id):
+            fail(f"invalid proof entry ID: {entry_id}", errors)
+        if entry.get("category") not in allowed_categories:
+            fail(f"invalid proof category: {entry_id}", errors)
+        if entry.get("proof_level") not in allowed_levels:
+            fail(f"invalid proof level: {entry_id}", errors)
+        if entry.get("status") not in allowed_statuses:
+            fail(f"invalid proof status: {entry_id}", errors)
+        if not str(entry.get("claim", "")).strip():
+            fail(f"proof claim missing: {entry_id}", errors)
+        evidence = entry.get("evidence")
+        if not isinstance(evidence, list) or not evidence:
+            fail(f"proof evidence missing: {entry_id}", errors)
+            continue
+        for source in evidence:
+            if not valid_https(str(source.get("url", ""))):
+                fail(f"proof evidence URL must be HTTPS: {entry_id}", errors)
+            if not str(source.get("authority", "")).strip():
+                fail(f"proof evidence authority missing: {entry_id}", errors)
+    if len(ids) != len(set(ids)):
+        fail("duplicate proof entry IDs", errors)
+    return errors
+
+
 def validate_source() -> list[str]:
     errors: list[str] = []
     registry = load_registry()
@@ -70,7 +122,7 @@ def validate_source() -> list[str]:
     paths = [r["path"] for r in profile["routes"]]
     if len(paths) != len(set(paths)):
         fail("duplicate public routes", errors)
-    if "/" not in paths or "/privacy/" not in paths or "/terms/" not in paths:
+    if "/" not in paths or "/proof/" not in paths or "/privacy/" not in paths or "/terms/" not in paths:
         fail("required public routes missing", errors)
 
     capture = profile.get("lead_capture")
@@ -93,6 +145,7 @@ def validate_source() -> list[str]:
     if leaked:
         fail(f"private data boundary violation: {', '.join(sorted(leaked))}", errors)
 
+    errors.extend(validate_proof_ledger(ROOT / "proof" / "ledger.json"))
     build_jsonld(registry)
     build_public_manifest(registry)
     build_sitemap(registry)
@@ -102,7 +155,7 @@ def validate_source() -> list[str]:
 def validate_built_site(site: Path) -> list[str]:
     errors: list[str] = []
     registry = load_registry()
-    required = ["index.html", "sitemap.xml", "privacy/index.html", "terms/index.html", ".well-known/iambandobandz.json", "identity.jsonld"]
+    required = ["index.html", "sitemap.xml", "privacy/index.html", "terms/index.html", "proof/index.html", "proof/ledger.json", ".well-known/iambandobandz.json", "identity.jsonld"]
     for relative in required:
         if not (site / relative).is_file():
             fail(f"built site missing {relative}", errors)
@@ -112,6 +165,8 @@ def validate_built_site(site: Path) -> list[str]:
     index = (site / "index.html").read_text(encoding="utf-8")
     if "Privacy" not in index or "Terms" not in index:
         fail("homepage missing legal links", errors)
+    if 'href="/proof/"' not in index:
+        fail("homepage missing Proof Ledger navigation", errors)
     jsonld = json.dumps(build_jsonld(registry), separators=(",", ":"), ensure_ascii=False)
     if jsonld not in index:
         fail("homepage JSON-LD is not registry-generated", errors)
@@ -140,9 +195,18 @@ def validate_built_site(site: Path) -> list[str]:
     if "https://iambandobandz.com/portfolio/" not in portfolio:
         fail("portfolio canonical URL missing", errors)
 
+    proof_html = (site / "proof" / "index.html").read_text(encoding="utf-8")
+    if "https://iambandobandz.com/proof/" not in proof_html:
+        fail("Proof Ledger canonical URL missing", errors)
+    if "/proof/ledger.json" not in proof_html:
+        fail("Proof Ledger interface is not wired to ledger data", errors)
+    errors.extend(validate_proof_ledger(site / "proof" / "ledger.json"))
+
     sitemap = (site / "sitemap.xml").read_text(encoding="utf-8")
     if sitemap != build_sitemap(registry):
         fail("built sitemap differs from canonical registry", errors)
+    if "https://iambandobandz.com/proof/" not in sitemap:
+        fail("Proof Ledger omitted from sitemap", errors)
 
     public_manifest = json.loads((site / ".well-known" / "iambandobandz.json").read_text(encoding="utf-8"))
     if public_manifest != build_public_manifest(registry):
