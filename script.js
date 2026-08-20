@@ -18,8 +18,35 @@
   }
 
   const analyticsKey = 'iambandobandz_click_events';
+  const analyticsSessionKey = 'iambandobandz_session_id';
+  const query = new URLSearchParams(location.search);
+  const acquisition = {
+    referrer: document.referrer || '',
+    utm_source: query.get('utm_source') || '',
+    utm_medium: query.get('utm_medium') || '',
+    utm_campaign: query.get('utm_campaign') || ''
+  };
+
+  function analyticsSessionId() {
+    let value = sessionStorage.getItem(analyticsSessionKey);
+    if (!value) {
+      value = window.crypto?.randomUUID
+        ? window.crypto.randomUUID()
+        : `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`;
+      sessionStorage.setItem(analyticsSessionKey, value);
+    }
+    return value;
+  }
+
   function track(eventName, details = {}) {
-    const payload = { event: eventName, ...details, path: location.pathname, timestamp: new Date().toISOString() };
+    const payload = {
+      event: eventName,
+      session_id: analyticsSessionId(),
+      page_path: location.pathname,
+      ...acquisition,
+      ...details,
+      timestamp: new Date().toISOString()
+    };
     window.dataLayer = window.dataLayer || [];
     window.dataLayer.push(payload);
     if (typeof window.gtag === 'function') window.gtag('event', eventName, details);
@@ -28,9 +55,11 @@
     try {
       const events = JSON.parse(localStorage.getItem(analyticsKey) || '[]');
       events.push(payload);
-      localStorage.setItem(analyticsKey, JSON.stringify(events.slice(-250)));
+      localStorage.setItem(analyticsKey, JSON.stringify(events.slice(-2000)));
     } catch (_) {}
   }
+
+  track('page_view');
 
   const leadApiEndpoint = String(
     document.querySelector('meta[name="iambandobandz:lead-api-endpoint"]')?.content || ''
@@ -61,7 +90,7 @@
           phone,
           sms_consent: consent,
           consent_text_version: consentTextVersion,
-          source: 'website-pre-redirect',
+          source: 'website-engaged-music-capture',
           idempotency_key: idempotencyKey
         }),
         signal: controller.signal
@@ -101,8 +130,9 @@
           <input type="tel" name="phone" autocomplete="tel" placeholder="Mobile number" aria-label="Mobile number">
         </div>
         <label class="consent"><input type="checkbox" name="sms_consent"><span>I agree to receive occasional automated promotional texts from IAMBANDOBANDZ. Consent is not a condition of purchase. Message and data rates may apply. Reply STOP to opt out.</span></label>
+        <p class="consent-legal"><a href="/privacy/">Privacy</a> · <a href="/terms/">Terms</a></p>
         <input type="hidden" name="_subject" value="New IAMBANDOBANDZ Signal Signup">
-        <input type="hidden" name="source" value="Website pre-redirect capture">
+        <input type="hidden" name="source" value="Website engaged-music capture">
         <div class="capture-actions">
           <button type="submit">JOIN + CONTINUE</button>
           <button class="skip-capture" type="button">SKIP TO MUSIC</button>
@@ -190,15 +220,28 @@
 
   const externalMusicHosts = ['spotify.com', 'music.apple.com', 'unitedmasters.com', 'audiomack.com'];
   const revenueHosts = ['iambandobandz.store', 'book.stripe.com'];
-  document.querySelectorAll('a[href^="http"]').forEach((link) => {
+  const musicEngagementKey = 'signal_music_engagement_count';
+
+  document.querySelectorAll('a[href]').forEach((link) => {
     link.addEventListener('click', (event) => {
       let url;
-      try { url = new URL(link.href); } catch (_) { return; }
+      try { url = new URL(link.href, location.href); } catch (_) { return; }
       const isMusic = externalMusicHosts.some((host) => url.hostname.includes(host));
       const isRevenue = revenueHosts.some((host) => url.hostname.includes(host)) || Boolean(link.dataset.revenuePath);
       const label = (link.querySelector('h3')?.textContent || link.textContent || url.hostname).trim().replace(/\s+/g, ' ').slice(0, 80);
-      track(isRevenue ? 'revenue_path_click' : isMusic ? 'track_button_click' : 'external_link_click', { label, destination: url.hostname, path: link.dataset.revenuePath || (isMusic ? 'music' : 'external'), stage: link.dataset.loopStage || 'outbound' });
+      const funnelPath = link.dataset.revenuePath || (isMusic ? 'music' : url.origin === location.origin ? 'internal' : 'external');
+      track(isRevenue ? 'revenue_path_click' : isMusic ? 'track_button_click' : 'link_click', {
+        label,
+        destination: url.origin === location.origin ? url.pathname : url.hostname,
+        path: funnelPath,
+        stage: link.dataset.loopStage || 'outbound'
+      });
+
       if (!isMusic || sessionStorage.getItem('signal_capture_seen') === '1') return;
+      const priorMusicEngagements = Number(sessionStorage.getItem(musicEngagementKey) || '0');
+      sessionStorage.setItem(musicEngagementKey, String(priorMusicEngagements + 1));
+      if (priorMusicEngagements < 1) return;
+
       event.preventDefault();
       pendingUrl = link.href;
       pendingLabel = label;
