@@ -11,8 +11,15 @@ class ConversionFunnelTests(unittest.TestCase):
     def test_homepage_routes_cold_audit_traffic_through_evidence_page(self) -> None:
         index = (ROOT / "index.html").read_text(encoding="utf-8")
         self.assertIn('href="/audit/"', index)
-        self.assertNotIn('https://book.stripe.com/', index)
+        self.assertIn('Inspect $97 audit', index)
+        self.assertIn('See the $97 repo audit', index)
+        self.assertIn('data-loop-stage="consider"', index)
         self.assertIn('data-revenue-path="truth-compiler"', index)
+
+    def test_homepage_keeps_one_high_intent_direct_checkout_path(self) -> None:
+        index = (ROOT / "index.html").read_text(encoding="utf-8")
+        self.assertEqual(index.count('https://book.stripe.com/eVqfZg8nz3Ys0LT8uZgbm01'), 1)
+        self.assertIn('Buy now — $97', index)
 
     def test_homepage_revenue_cards_have_defined_contrast_tokens(self) -> None:
         index = (ROOT / "index.html").read_text(encoding="utf-8")
@@ -30,12 +37,12 @@ class ConversionFunnelTests(unittest.TestCase):
         for route in ('/signal/', '/proof/', '/research/', '/audit/', '/store/', '/network/'):
             self.assertIn(f'href="{route}"', index)
 
-    def test_registry_generates_commercial_routes_and_capture_version(self) -> None:
+    def test_registry_generates_commercial_routes_and_preserves_pinned_consent(self) -> None:
         profile = json.loads((ROOT / "registry" / "public" / "public-profile.json").read_text(encoding="utf-8"))
         routes = {item["path"] for item in profile["routes"]}
         for route in ('/audit/', '/store/', '/network/', '/signal/', '/proof/', '/research/'):
             self.assertIn(route, routes)
-        self.assertEqual(profile["lead_capture"]["consent_text_version"], "signal-capture-v2")
+        self.assertEqual(profile["lead_capture"]["consent_text_version"], "signal-capture-v1")
 
     def test_internal_revenue_routes_remain_measurable(self) -> None:
         script = (ROOT / "script.js").read_text(encoding="utf-8")
@@ -48,6 +55,8 @@ class ConversionFunnelTests(unittest.TestCase):
         script = (ROOT / "script.js").read_text(encoding="utf-8")
         self.assertIn("signal_music_engagement_count", script)
         self.assertIn("if (priorMusicEngagements < 1) return;", script)
+        self.assertIn("signal-capture-v1", script)
+        self.assertIn('class="consent-legal"', script)
         self.assertIn('href="/privacy/"', script)
         self.assertIn('href="/terms/"', script)
 
