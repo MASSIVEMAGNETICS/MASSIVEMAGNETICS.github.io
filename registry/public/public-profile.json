@@ -6,6 +6,7 @@
   "tagline": "The Signal Survives",
   "routes": [
     {"path": "/", "changefreq": "weekly", "priority": 1.0},
+    {"path": "/proof/", "changefreq": "weekly", "priority": 0.95},
     {"path": "/research/", "changefreq": "weekly", "priority": 0.9},
     {"path": "/signal/", "changefreq": "monthly", "priority": 0.9},
     {"path": "/portfolio/", "changefreq": "monthly", "priority": 0.7},

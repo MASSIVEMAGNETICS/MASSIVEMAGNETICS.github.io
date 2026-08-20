@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#070707">
+  <meta name="color-scheme" content="dark">
+  <title>Proof Ledger — IAMBANDOBANDZ / Massive Magnetics</title>
+  <meta name="description" content="A bounded public record of independently checkable IAMBANDOBANDZ and Massive Magnetics releases, commits, deployments, and provenance.">
+  <meta name="robots" content="index,follow">
+  <link rel="canonical" href="https://iambandobandz.com/proof/">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <style>
+    :root{--bg:#070707;--panel:#0d0d0d;--line:#2a2a2a;--text:#f5f5f5;--muted:#a6a6a6;--green:#78ff58;--violet:#b884ff;--max:1180px}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(circle at 85% 5%,#171020 0,transparent 29rem),var(--bg);color:var(--text);font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;line-height:1.55}a{color:inherit}.wrap{width:min(calc(100% - 32px),var(--max));margin:auto}.top{position:sticky;top:0;z-index:20;border-bottom:1px solid var(--line);background:rgba(7,7,7,.9);backdrop-filter:blur(14px)}.top .wrap{min-height:64px;display:flex;align-items:center;justify-content:space-between;gap:20px}.brand{text-decoration:none;font-weight:900;letter-spacing:.08em}.top nav{display:flex;gap:18px;flex-wrap:wrap}.top nav a{font-size:.82rem;text-decoration:none;color:var(--muted)}.top nav a:hover{color:var(--green)}.hero{padding:88px 0 56px;border-bottom:1px solid var(--line)}.kicker,.label{font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--green);font-weight:800}.hero h1{font-size:clamp(3rem,9vw,7.8rem);line-height:.86;letter-spacing:-.06em;margin:18px 0 28px;max-width:1000px}.hero h1 em{font-style:normal;color:var(--green)}.hero .lead{font-size:clamp(1.05rem,2vw,1.35rem);max-width:800px;color:#d0d0d0}.boundary{margin-top:32px;border-left:3px solid var(--violet);padding:16px 18px;background:#0c0910;color:#c8c1ce;max-width:900px}.stats{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--line)}.stat{padding:26px;border-right:1px solid var(--line)}.stat:last-child{border-right:0}.stat strong{display:block;font-size:2rem;line-height:1}.stat span{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.1em}.main{padding:48px 0 80px}.toolbar{display:flex;justify-content:space-between;align-items:end;gap:24px;margin-bottom:26px;flex-wrap:wrap}.toolbar h2{font-size:clamp(1.8rem,4vw,3.4rem);margin:6px 0 0;letter-spacing:-.04em}.filters{display:flex;gap:8px;flex-wrap:wrap}.filters button{border:1px solid var(--line);background:#0b0b0b;color:#ccc;padding:9px 12px;border-radius:999px;cursor:pointer;font:inherit;font-size:.74rem;font-weight:800;letter-spacing:.08em}.filters button[aria-pressed="true"],.filters button:hover{border-color:var(--green);color:var(--green)}.ledger{display:grid;gap:14px}.entry{display:grid;grid-template-columns:130px 1fr 170px;gap:22px;border:1px solid var(--line);background:linear-gradient(135deg,#0f0f0f,#090909);padding:24px}.entry-date{font-variant-numeric:tabular-nums;color:var(--green);font-weight:800}.entry h3{font-size:1.35rem;margin:2px 0 8px}.entry p{margin:0;color:#c6c6c6}.proof-level{font-size:.7rem;letter-spacing:.08em;color:var(--violet);font-weight:850}.status{display:inline-block;margin-top:8px;padding:5px 8px;border:1px solid #31532b;color:var(--green);font-size:.66rem;font-weight:900;letter-spacing:.1em}.evidence{margin-top:16px;display:flex;gap:8px;flex-wrap:wrap}.evidence a{display:inline-block;border-bottom:1px solid #525252;text-decoration:none;font-size:.78rem;color:#ddd}.evidence a:hover{border-color:var(--green);color:var(--green)}.digest{margin-top:40px;padding:22px;border:1px solid var(--line);background:#090909}.digest code{display:block;margin-top:8px;overflow-wrap:anywhere;color:var(--green)}.digest p{color:var(--muted);margin:8px 0 0;font-size:.86rem}.error{border:1px solid #7b3333;padding:22px;background:#190d0d}.footer{padding:28px 0 48px;border-top:1px solid var(--line);color:var(--muted);font-size:.8rem}.footer .wrap{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap}.footer a{text-decoration:none}.footer a:hover{color:var(--green)}
+    @media(max-width:800px){.stats{grid-template-columns:repeat(2,1fr)}.stat:nth-child(2){border-right:0}.stat:nth-child(-n+2){border-bottom:1px solid var(--line)}.entry{grid-template-columns:1fr}.entry .meta{display:flex;justify-content:space-between;gap:16px;align-items:start}.hero{padding-top:64px}.top nav{display:none}}
+  </style>
+  <script type="application/ld+json">{"@context":"https://schema.org","@type":"CollectionPage","name":"IAMBANDOBANDZ / Massive Magnetics Proof Ledger","url":"https://iambandobandz.com/proof/","description":"A bounded public record of independently checkable releases, commits, deployments, and provenance.","isPartOf":{"@type":"WebSite","name":"IAMBANDOBANDZ","url":"https://iambandobandz.com/"}}</script>
+</head>
+<body>
+<header class="top"><div class="wrap"><a class="brand" href="/">IAMBANDOBANDZ</a><nav aria-label="Proof navigation"><a href="/">Home</a><a href="/research/">Research</a><a href="/audit/">Audit</a><a href="https://github.com/MASSIVEMAGNETICS" target="_blank" rel="noopener noreferrer">GitHub ↗</a></nav></div></header>
+<main>
+<section class="hero"><div class="wrap"><p class="kicker">Canonical public evidence surface / v1</p><h1>THE WORK EXISTS.<br><em>HERE ARE THE RECEIPTS.</em></h1><p class="lead">This ledger converts invisible effort into inspectable evidence. It records what an outside observer can independently check: published releases, public repositories, immutable commits, live deployments, and provenance records.</p><div class="boundary"><strong>Claim boundary:</strong> this page does not claim that every experiment succeeded. A release proves publication. A commit proves recorded code/history. A live route proves deployment. None of those automatically prove revenue, customer adoption, scientific validity, or capabilities beyond the cited evidence.</div></div></section>
+<section class="stats" aria-label="Proof Ledger counts"><div class="stat"><strong id="stat-total">—</strong><span>Evidence records</span></div><div class="stat"><strong id="stat-music">—</strong><span>Public releases</span></div><div class="stat"><strong id="stat-code">—</strong><span>Software records</span></div><div class="stat"><strong id="stat-other">—</strong><span>Research + deploy</span></div></section>
+<section class="main"><div class="wrap"><div class="toolbar"><div><p class="label">Effort → artifact → evidence</p><h2>Canonical Proof Ledger</h2></div><div class="filters" aria-label="Filter ledger"><button type="button" data-filter="all" aria-pressed="true">ALL</button><button type="button" data-filter="music" aria-pressed="false">MUSIC</button><button type="button" data-filter="software" aria-pressed="false">SOFTWARE</button><button type="button" data-filter="research" aria-pressed="false">RESEARCH</button><button type="button" data-filter="deployment" aria-pressed="false">DEPLOYMENT</button></div></div><div id="ledger" class="ledger" aria-live="polite"><p>Loading ledger…</p></div><div class="digest"><span class="label">Browser-computed ledger digest / SHA-256</span><code id="digest">computing…</code><p>This fingerprint is computed from the exact <a href="/proof/ledger.json">ledger.json</a> bytes loaded by your browser. It detects changed content; it is not represented as a third-party signature.</p></div></div></section>
+</main>
+<footer class="footer"><div class="wrap"><span>BUILD IT. BLOOM IT. PROVE IT. BROADCAST IT. OWN IT. BE HEARD.</span><span><a href="/privacy/">Privacy</a> · <a href="/terms/">Terms</a> · <a href="/proof/ledger.json">Raw ledger</a></span></div></footer>
+<script>
+(() => {
+  'use strict';
+  const ledgerEl = document.getElementById('ledger');
+  const digestEl = document.getElementById('digest');
+  const buttons = [...document.querySelectorAll('[data-filter]')];
+  let data = null;
+  let active = 'all';
+
+  const escapeHTML = value => String(value).replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+  const safeURL = value => { try { const u = new URL(value, location.origin); return u.protocol === 'https:' ? u.href : '#'; } catch { return '#'; } };
+
+  function render() {
+    if (!data) return;
+    const rows = data.entries.filter(entry => active === 'all' || entry.category === active);
+    ledgerEl.innerHTML = rows.map(entry => {
+      const links = entry.evidence.map(source => `<a href="${safeURL(source.url)}" target="_blank" rel="noopener noreferrer">${escapeHTML(source.label)} ↗</a>`).join('');
+      return `<article class="entry" data-category="${escapeHTML(entry.category)}"><div class="entry-date">${escapeHTML(entry.date)}</div><div><span class="label">${escapeHTML(entry.category)}</span><h3>${escapeHTML(entry.title)}</h3><p>${escapeHTML(entry.claim)}</p><div class="evidence">${links}</div></div><div class="meta"><div><div class="proof-level">${escapeHTML(entry.proof_level.replaceAll('_',' '))}</div><span class="status">${escapeHTML(entry.status)}</span></div></div></article>`;
+    }).join('') || '<p>No records match this filter.</p>';
+  }
+
+  buttons.forEach(button => button.addEventListener('click', () => {
+    active = button.dataset.filter;
+    buttons.forEach(item => item.setAttribute('aria-pressed', String(item === button)));
+    render();
+  }));
+
+  async function digest(text) {
+    if (!crypto?.subtle) return 'WebCrypto unavailable in this browser';
+    const bytes = new TextEncoder().encode(text);
+    const hash = await crypto.subtle.digest('SHA-256', bytes);
+    return [...new Uint8Array(hash)].map(b => b.toString(16).padStart(2,'0')).join('');
+  }
+
+  fetch('/proof/ledger.json', {cache:'no-store'})
+    .then(async response => {
+      if (!response.ok) throw new Error(`ledger HTTP ${response.status}`);
+      const raw = await response.text();
+      data = JSON.parse(raw);
+      if (!Array.isArray(data.entries)) throw new Error('invalid ledger schema');
+      document.getElementById('stat-total').textContent = data.entries.length;
+      document.getElementById('stat-music').textContent = data.entries.filter(x => x.category === 'music').length;
+      document.getElementById('stat-code').textContent = data.entries.filter(x => x.category === 'software').length;
+      document.getElementById('stat-other').textContent = data.entries.filter(x => ['research','deployment'].includes(x.category)).length;
+      digestEl.textContent = await digest(raw);
+      render();
+    })
+    .catch(error => {
+      ledgerEl.innerHTML = `<div class="error"><strong>Ledger data unavailable.</strong><p>${escapeHTML(error.message)}</p><p><a href="/proof/ledger.json">Open the raw ledger directly.</a></p></div>`;
+      digestEl.textContent = 'unavailable';
+    });
+})();
+</script>
+</body>
+</html>

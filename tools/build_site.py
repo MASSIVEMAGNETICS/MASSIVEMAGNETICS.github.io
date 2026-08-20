@@ -19,6 +19,7 @@ COPY_ITEMS = [
     "network",
     "portfolio",
     "privacy",
+    "proof",
     "research",
     "signal",
     "robots.txt",
@@ -66,6 +67,14 @@ def build(output: Path) -> None:
     if not script_pattern.search(index):
         raise RuntimeError("homepage JSON-LD block not found")
     index = script_pattern.sub(replacement, index, count=1)
+
+    # Keep the proof surface reachable from the canonical homepage without
+    # forcing the source homepage to duplicate deployment-only routing logic.
+    if 'href="/proof/"' not in index:
+        proof_nav_anchor = '<a href="#empire">Empire</a>'
+        if proof_nav_anchor not in index:
+            raise RuntimeError("homepage Empire nav anchor not found for Proof Ledger injection")
+        index = index.replace(proof_nav_anchor, proof_nav_anchor + '<a href="/proof/">Proof</a>', 1)
 
     # Keep the revenue path on the same verified Pages origin. The separate
     # .store domain can be a vanity redirect later, but it is not a launch dependency.
