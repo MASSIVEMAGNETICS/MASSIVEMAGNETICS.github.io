@@ -18,8 +18,22 @@
   }
 
   const analyticsKey = 'iambandobandz_click_events';
+  const query = new URLSearchParams(location.search);
+  const acquisition = {
+    referrer: document.referrer || '',
+    utm_source: query.get('utm_source') || '',
+    utm_medium: query.get('utm_medium') || '',
+    utm_campaign: query.get('utm_campaign') || ''
+  };
+
   function track(eventName, details = {}) {
-    const payload = { event: eventName, ...details, path: location.pathname, timestamp: new Date().toISOString() };
+    const payload = {
+      event: eventName,
+      page_path: location.pathname,
+      ...acquisition,
+      ...details,
+      timestamp: new Date().toISOString()
+    };
     window.dataLayer = window.dataLayer || [];
     window.dataLayer.push(payload);
     if (typeof window.gtag === 'function') window.gtag('event', eventName, details);
@@ -35,7 +49,7 @@
   const leadApiEndpoint = String(
     document.querySelector('meta[name="iambandobandz:lead-api-endpoint"]')?.content || ''
   ).trim();
-  const consentTextVersion = 'signal-capture-v1';
+  const consentTextVersion = 'signal-capture-v2';
 
   function newIdempotencyKey() {
     if (window.crypto?.randomUUID) return `web-${window.crypto.randomUUID()}`;
@@ -61,7 +75,7 @@
           phone,
           sms_consent: consent,
           consent_text_version: consentTextVersion,
-          source: 'website-pre-redirect',
+          source: 'website-engaged-music-capture',
           idempotency_key: idempotencyKey
         }),
         signal: controller.signal
@@ -100,9 +114,9 @@
           <input type="email" name="email" autocomplete="email" placeholder="Email address" aria-label="Email address">
           <input type="tel" name="phone" autocomplete="tel" placeholder="Mobile number" aria-label="Mobile number">
         </div>
-        <label class="consent"><input type="checkbox" name="sms_consent"><span>I agree to receive occasional automated promotional texts from IAMBANDOBANDZ. Consent is not a condition of purchase. Message and data rates may apply. Reply STOP to opt out.</span></label>
+        <label class="consent"><input type="checkbox" name="sms_consent"><span>I agree to receive occasional automated promotional texts from IAMBANDOBANDZ. Consent is not a condition of purchase. Message and data rates may apply. Reply STOP to opt out. <a href="/privacy/">Privacy</a> · <a href="/terms/">Terms</a></span></label>
         <input type="hidden" name="_subject" value="New IAMBANDOBANDZ Signal Signup">
-        <input type="hidden" name="source" value="Website pre-redirect capture">
+        <input type="hidden" name="source" value="Website engaged-music capture">
         <div class="capture-actions">
           <button type="submit">JOIN + CONTINUE</button>
           <button class="skip-capture" type="button">SKIP TO MUSIC</button>
@@ -190,15 +204,28 @@
 
   const externalMusicHosts = ['spotify.com', 'music.apple.com', 'unitedmasters.com', 'audiomack.com'];
   const revenueHosts = ['iambandobandz.store', 'book.stripe.com'];
-  document.querySelectorAll('a[href^="http"]').forEach((link) => {
+  const musicEngagementKey = 'signal_music_engagement_count';
+
+  document.querySelectorAll('a[href]').forEach((link) => {
     link.addEventListener('click', (event) => {
       let url;
-      try { url = new URL(link.href); } catch (_) { return; }
+      try { url = new URL(link.href, location.href); } catch (_) { return; }
       const isMusic = externalMusicHosts.some((host) => url.hostname.includes(host));
       const isRevenue = revenueHosts.some((host) => url.hostname.includes(host)) || Boolean(link.dataset.revenuePath);
       const label = (link.querySelector('h3')?.textContent || link.textContent || url.hostname).trim().replace(/\s+/g, ' ').slice(0, 80);
-      track(isRevenue ? 'revenue_path_click' : isMusic ? 'track_button_click' : 'external_link_click', { label, destination: url.hostname, path: link.dataset.revenuePath || (isMusic ? 'music' : 'external'), stage: link.dataset.loopStage || 'outbound' });
+      const funnelPath = link.dataset.revenuePath || (isMusic ? 'music' : url.origin === location.origin ? 'internal' : 'external');
+      track(isRevenue ? 'revenue_path_click' : isMusic ? 'track_button_click' : 'link_click', {
+        label,
+        destination: url.origin === location.origin ? url.pathname : url.hostname,
+        path: funnelPath,
+        stage: link.dataset.loopStage || 'outbound'
+      });
+
       if (!isMusic || sessionStorage.getItem('signal_capture_seen') === '1') return;
+      const priorMusicEngagements = Number(sessionStorage.getItem(musicEngagementKey) || '0');
+      sessionStorage.setItem(musicEngagementKey, String(priorMusicEngagements + 1));
+      if (priorMusicEngagements < 1) return;
+
       event.preventDefault();
       pendingUrl = link.href;
       pendingLabel = label;
