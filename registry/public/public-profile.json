@@ -21,6 +21,6 @@
     "api_enabled": false,
     "api_endpoint": "https://api.iambandobandz.com/api/v1/leads",
     "fallback": "formsubmit",
-    "consent_text_version": "signal-capture-v2"
+    "consent_text_version": "signal-capture-v1"
   }
 }
