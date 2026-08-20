@@ -49,7 +49,7 @@
   const leadApiEndpoint = String(
     document.querySelector('meta[name="iambandobandz:lead-api-endpoint"]')?.content || ''
   ).trim();
-  const consentTextVersion = 'signal-capture-v2';
+  const consentTextVersion = 'signal-capture-v1';
 
   function newIdempotencyKey() {
     if (window.crypto?.randomUUID) return `web-${window.crypto.randomUUID()}`;
@@ -114,7 +114,8 @@
           <input type="email" name="email" autocomplete="email" placeholder="Email address" aria-label="Email address">
           <input type="tel" name="phone" autocomplete="tel" placeholder="Mobile number" aria-label="Mobile number">
         </div>
-        <label class="consent"><input type="checkbox" name="sms_consent"><span>I agree to receive occasional automated promotional texts from IAMBANDOBANDZ. Consent is not a condition of purchase. Message and data rates may apply. Reply STOP to opt out. <a href="/privacy/">Privacy</a> · <a href="/terms/">Terms</a></span></label>
+        <label class="consent"><input type="checkbox" name="sms_consent"><span>I agree to receive occasional automated promotional texts from IAMBANDOBANDZ. Consent is not a condition of purchase. Message and data rates may apply. Reply STOP to opt out.</span></label>
+        <p class="consent-legal"><a href="/privacy/">Privacy</a> · <a href="/terms/">Terms</a></p>
         <input type="hidden" name="_subject" value="New IAMBANDOBANDZ Signal Signup">
         <input type="hidden" name="source" value="Website engaged-music capture">
         <div class="capture-actions">
