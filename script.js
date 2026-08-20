@@ -18,6 +18,7 @@
   }
 
   const analyticsKey = 'iambandobandz_click_events';
+  const analyticsSessionKey = 'iambandobandz_session_id';
   const query = new URLSearchParams(location.search);
   const acquisition = {
     referrer: document.referrer || '',
@@ -26,9 +27,21 @@
     utm_campaign: query.get('utm_campaign') || ''
   };
 
+  function analyticsSessionId() {
+    let value = sessionStorage.getItem(analyticsSessionKey);
+    if (!value) {
+      value = window.crypto?.randomUUID
+        ? window.crypto.randomUUID()
+        : `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`;
+      sessionStorage.setItem(analyticsSessionKey, value);
+    }
+    return value;
+  }
+
   function track(eventName, details = {}) {
     const payload = {
       event: eventName,
+      session_id: analyticsSessionId(),
       page_path: location.pathname,
       ...acquisition,
       ...details,
@@ -42,9 +55,11 @@
     try {
       const events = JSON.parse(localStorage.getItem(analyticsKey) || '[]');
       events.push(payload);
-      localStorage.setItem(analyticsKey, JSON.stringify(events.slice(-250)));
+      localStorage.setItem(analyticsKey, JSON.stringify(events.slice(-2000)));
     } catch (_) {}
   }
+
+  track('page_view');
 
   const leadApiEndpoint = String(
     document.querySelector('meta[name="iambandobandz:lead-api-endpoint"]')?.content || ''
