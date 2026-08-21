@@ -1,7 +1,14 @@
 {
-  "generated_at": null,
-  "item_count": 0,
+  "schema_version": "frontier-radar-status/1.2",
+  "generated_at": "2026-08-21T07:16:33.032308Z",
+  "item_count": 160,
+  "healthy_source_count": 3,
   "error_count": 0,
-  "feed_sha256": "bootstrap",
-  "healthy": false
+  "feed_sha256": "1202bd3877f03a21f423ff82cdbd514f5c65e136a6f43bb519320bae48c199da",
+  "content_sha256": "f807cb25175728dfd6be8c1100ad930aecc6a7686d5290da4c869ee000c44f94",
+  "file_sha256": "15d805a360555674e92ed1b75d400eb1c6a1a32f9e9e928c07f412138ff9d26b",
+  "healthy": true,
+  "preserved_previous": false,
+  "issues": [],
+  "version": "1.2.0"
 }
