@@ -3,59 +3,106 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="description" content="Massive Magnetics Frontier Radar: automated public-signal intelligence for emerging AI architectures, models, agents, and indie research.">
+  <meta name="description" content="Massive Magnetics Frontier Radar V1.2: verified public-signal intelligence for emerging AI architectures, models, agents, and indie research.">
   <meta name="robots" content="index,follow">
-  <title>Frontier Radar · Massive Magnetics</title>
+  <meta name="referrer" content="no-referrer">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; connect-src 'self'; img-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'; upgrade-insecure-requests">
+  <title>Frontier Radar V1.2 · Massive Magnetics</title>
   <link rel="stylesheet" href="./styles.css">
 </head>
 <body>
   <header class="topbar">
     <a class="brand" href="/">MASSIVE MAGNETICS</a>
-    <div class="status"><span id="healthDot" class="dot"></span><span id="healthText">LOADING RADAR</span></div>
+    <div class="status" role="status" aria-live="polite">
+      <span id="healthDot" class="dot"></span>
+      <span id="healthText">VERIFYING RADAR</span>
+    </div>
   </header>
 
   <main>
     <section class="hero">
-      <p class="eyebrow">PUBLIC AI FRONTIER INTELLIGENCE</p>
-      <h1>FRONTIER <span>RADAR</span></h1>
-      <p class="lede">Automated scanning of GitHub, Hugging Face, and arXiv for architectural discontinuities, compact intelligence, continual learning, agents, and generative audio.</p>
-      <div class="metrics">
-        <div><strong id="itemCount">—</strong><span>signals</span></div>
-        <div><strong id="sourceCount">—</strong><span>sources</span></div>
-        <div><strong id="lastScan">—</strong><span>last scan</span></div>
-        <div><strong id="errorCount">—</strong><span>source errors</span></div>
+      <div class="hero-copy">
+        <p class="eyebrow">PUBLIC AI FRONTIER INTELLIGENCE · V1.2</p>
+        <h1>FRONTIER <span>RADAR</span></h1>
+        <p class="lede">Continuously ranks public GitHub, Hugging Face, and arXiv signals for architectural discontinuities, compact intelligence, continual learning, persistent agents, and generative audio.</p>
+      </div>
+      <div class="integrity" aria-label="Feed integrity">
+        <span class="integrity-label">SNAPSHOT INTEGRITY</span>
+        <strong id="integrityState">CHECKING</strong>
+        <code id="fileHash">SHA256 —</code>
       </div>
     </section>
 
+    <section class="metrics" aria-label="Radar metrics">
+      <div><strong id="itemCount">—</strong><span>signals</span></div>
+      <div><strong id="breakoutCount">—</strong><span>breakouts</span></div>
+      <div><strong id="healthySources">—</strong><span>healthy sources</span></div>
+      <div><strong id="lastScan">—</strong><span>last scan</span></div>
+      <div><strong id="scanDuration">—</strong><span>scan time</span></div>
+    </section>
+
+    <section class="source-health" aria-label="Source health">
+      <div id="sourceHealth"></div>
+    </section>
+
     <section class="controls" aria-label="Radar filters">
-      <input id="search" type="search" placeholder="Filter title, author, summary…" autocomplete="off">
-      <select id="sourceFilter" aria-label="Source filter">
-        <option value="all">All sources</option>
-        <option value="github">GitHub</option>
-        <option value="huggingface">Hugging Face</option>
-        <option value="arxiv">arXiv</option>
-      </select>
-      <select id="minScore" aria-label="Minimum score">
-        <option value="0">All scores</option>
-        <option value="50">50+</option>
-        <option value="65" selected>65+</option>
-        <option value="80">80+</option>
-      </select>
-      <button id="copyHash" type="button">COPY FEED HASH</button>
+      <label>
+        <span>Search</span>
+        <input id="search" type="search" placeholder="Title, author, summary…" autocomplete="off">
+      </label>
+      <label>
+        <span>Source</span>
+        <select id="sourceFilter">
+          <option value="all">All sources</option>
+          <option value="github">GitHub</option>
+          <option value="huggingface">Hugging Face</option>
+          <option value="arxiv">arXiv</option>
+        </select>
+      </label>
+      <label>
+        <span>Trend</span>
+        <select id="trendFilter">
+          <option value="all">All trends</option>
+          <option value="breakout">Breakout</option>
+          <option value="rising">Rising</option>
+          <option value="new">New</option>
+          <option value="stable">Stable</option>
+        </select>
+      </label>
+      <label>
+        <span>Minimum score</span>
+        <select id="minScore">
+          <option value="0">All scores</option>
+          <option value="50">50+</option>
+          <option value="65" selected>65+</option>
+          <option value="78">78+</option>
+        </select>
+      </label>
+      <label>
+        <span>Sort</span>
+        <select id="sortMode">
+          <option value="rank">Radar rank</option>
+          <option value="velocity">Velocity</option>
+          <option value="newest">Newest</option>
+        </select>
+      </label>
+      <button id="copyHash" type="button">COPY SNAPSHOT HASH</button>
     </section>
 
     <section class="legend">
-      <span><b>Score</b> = frontier relevance + recency + traction + indie signal + reproducibility.</span>
-      <span id="feedHash" class="hash">SHA256: —</span>
+      <p><b>V1.2 score:</b> frontier relevance + recency + traction + indie signal + reproducibility + novelty + observed velocity.</p>
+      <p><b>Fail-closed:</b> a scan below the source/item quality floor cannot replace the last-known-good snapshot.</p>
     </section>
 
-    <section id="feed" class="feed" aria-live="polite"></section>
+    <section id="feed" class="feed" aria-live="polite" aria-busy="true"></section>
   </main>
 
   <footer>
     <span>Massive Magnetics · Public-source competitive intelligence</span>
-    <span>No private surveillance. Evidence links point to original public sources.</span>
+    <span>No private surveillance. Upstream content is treated as untrusted data.</span>
   </footer>
+
+  <noscript>This dashboard requires JavaScript to verify and render the signed-by-hash static feed.</noscript>
   <script src="./app.js" defer></script>
 </body>
 </html>
