@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Massive Magnetics Frontier Radar: automated public-signal intelligence for emerging AI architectures, models, agents, and indie research.">
+  <meta name="robots" content="index,follow">
+  <title>Frontier Radar · Massive Magnetics</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/">MASSIVE MAGNETICS</a>
+    <div class="status"><span id="healthDot" class="dot"></span><span id="healthText">LOADING RADAR</span></div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <p class="eyebrow">PUBLIC AI FRONTIER INTELLIGENCE</p>
+      <h1>FRONTIER <span>RADAR</span></h1>
+      <p class="lede">Automated scanning of GitHub, Hugging Face, and arXiv for architectural discontinuities, compact intelligence, continual learning, agents, and generative audio.</p>
+      <div class="metrics">
+        <div><strong id="itemCount">—</strong><span>signals</span></div>
+        <div><strong id="sourceCount">—</strong><span>sources</span></div>
+        <div><strong id="lastScan">—</strong><span>last scan</span></div>
+        <div><strong id="errorCount">—</strong><span>source errors</span></div>
+      </div>
+    </section>
+
+    <section class="controls" aria-label="Radar filters">
+      <input id="search" type="search" placeholder="Filter title, author, summary…" autocomplete="off">
+      <select id="sourceFilter" aria-label="Source filter">
+        <option value="all">All sources</option>
+        <option value="github">GitHub</option>
+        <option value="huggingface">Hugging Face</option>
+        <option value="arxiv">arXiv</option>
+      </select>
+      <select id="minScore" aria-label="Minimum score">
+        <option value="0">All scores</option>
+        <option value="50">50+</option>
+        <option value="65" selected>65+</option>
+        <option value="80">80+</option>
+      </select>
+      <button id="copyHash" type="button">COPY FEED HASH</button>
+    </section>
+
+    <section class="legend">
+      <span><b>Score</b> = frontier relevance + recency + traction + indie signal + reproducibility.</span>
+      <span id="feedHash" class="hash">SHA256: —</span>
+    </section>
+
+    <section id="feed" class="feed" aria-live="polite"></section>
+  </main>
+
+  <footer>
+    <span>Massive Magnetics · Public-source competitive intelligence</span>
+    <span>No private surveillance. Evidence links point to original public sources.</span>
+  </footer>
+  <script src="./app.js" defer></script>
+</body>
+</html>

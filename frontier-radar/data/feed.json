@@ -1,0 +1,10 @@
+{
+  "schema_version": "frontier-radar-feed/0.1",
+  "generated_at": null,
+  "query_count": 10,
+  "source_count": 3,
+  "item_count": 0,
+  "errors": [],
+  "items": [],
+  "feed_sha256": "bootstrap"
+}
