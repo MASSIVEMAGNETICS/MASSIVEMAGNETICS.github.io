@@ -33,6 +33,8 @@ jobs:
         run: python -m unittest discover -s tests -v
       - name: Build sanitized site from registry
         run: python tools/build_site.py --output _site
+      - name: Include Frontier Radar public surface
+        run: cp -R frontier-radar _site/frontier-radar
       - name: Validate built site
         run: python tools/validate_registry.py --site _site
       - name: Configure Pages
