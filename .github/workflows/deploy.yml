@@ -16,25 +16,33 @@ concurrency:
 
 jobs:
   deploy:
+    timeout-minutes: 12
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
       - name: Setup Python
-        uses: actions/setup-python@v6
+        uses: actions/setup-python@v7
         with:
           python-version: '3.12'
-      - name: Scan Frontier Radar public sources
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: python tools/frontier_radar.py --output frontier-radar/data/feed.json
       - name: Validate canonical registry
         run: python tools/validate_registry.py
-      - name: Run registry tests
+      - name: Run site tests
         run: python -m unittest discover -s tests -v
+      - name: Validate committed Frontier Radar snapshot
+        run: |
+          if [ -f frontier-radar/data/feed.sha256 ]; then
+            python tools/validate_frontier_feed.py frontier-radar/data/feed.json \
+              --status frontier-radar/data/status.json \
+              --digest frontier-radar/data/feed.sha256
+          else
+            echo "V1.2 digest not committed yet; refresh workflow will create it."
+          fi
       - name: Build sanitized site from registry
         run: python tools/build_site.py --output _site
       - name: Include Frontier Radar public surface
@@ -42,7 +50,7 @@ jobs:
       - name: Validate built site
         run: python tools/validate_registry.py --site _site
       - name: Configure Pages
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@v6
       - name: Upload website
         uses: actions/upload-pages-artifact@v4
         with:
