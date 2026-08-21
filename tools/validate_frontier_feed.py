@@ -6,7 +6,10 @@ import json
 from datetime import datetime, timezone
 from pathlib import Path
 
-from tools.frontier_radar import validate_feed
+try:
+    from tools.frontier_radar import validate_feed
+except ModuleNotFoundError:
+    from frontier_radar import validate_feed
 
 
 def age_hours(value: str | None) -> float:

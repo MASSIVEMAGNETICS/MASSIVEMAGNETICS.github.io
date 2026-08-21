@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import json
+import subprocess
+import sys
 import tempfile
 import unittest
 from datetime import datetime, timezone
@@ -147,6 +149,18 @@ class FrontierRadarV12Tests(unittest.TestCase):
         feed["feed_sha256"] = sha256_json(payload)
         issues = validate_feed(feed)
         self.assertTrue(any("duplicate signal_id" in issue for issue in issues))
+
+    def test_validator_direct_script_entrypoint(self):
+        root = Path(__file__).resolve().parents[1]
+        result = subprocess.run(
+            [sys.executable, "tools/validate_frontier_feed.py", "--help"],
+            cwd=root,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("Frontier Radar V1.2", result.stdout)
 
     def test_failed_quality_gate_preserves_last_known_good_feed(self):
         with tempfile.TemporaryDirectory() as tmp:
