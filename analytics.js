@@ -4,7 +4,7 @@
   const EVENT_KEY = 'iambandobandz_click_events';
   const SESSION_KEY = 'iambandobandz_session_id';
   const MAX_LOCAL_EVENTS = 2000;
-  const musicHosts = ['spotify.com', 'music.apple.com', 'unitedmasters.com', 'audiomack.com'];
+  const musicHosts = ['youtube.com', 'youtu.be', 'spotify.com', 'music.apple.com', 'unitedmasters.com', 'audiomack.com'];
 
   function randomId() {
     if (window.crypto?.randomUUID) return window.crypto.randomUUID();
@@ -103,6 +103,7 @@
       isStripe,
       isRevenue,
       label,
+      platform: link.dataset.musicPlatform || (isMusic ? url.hostname.replace(/^www\./, '') : ''),
       path: link.dataset.revenuePath || (isMusic ? 'music' : isStripe ? 'checkout' : url.origin === location.origin ? 'internal' : 'external')
     };
   }
@@ -116,6 +117,7 @@
       label: info.label,
       destination: info.url.origin === location.origin ? info.url.pathname : info.url.hostname,
       path: info.path,
+      platform: info.platform,
       stage: link.dataset.loopStage || (info.isStripe ? 'checkout' : 'outbound'),
       sku: link.dataset.sku || '',
       format: link.dataset.format || ''

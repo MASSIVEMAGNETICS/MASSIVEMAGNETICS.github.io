@@ -218,7 +218,7 @@
     }
   });
 
-  const externalMusicHosts = ['spotify.com', 'music.apple.com', 'unitedmasters.com', 'audiomack.com'];
+  const externalMusicHosts = ['youtube.com', 'youtu.be', 'spotify.com', 'music.apple.com', 'unitedmasters.com', 'audiomack.com'];
   const revenueHosts = ['iambandobandz.store', 'book.stripe.com'];
   const musicEngagementKey = 'signal_music_engagement_count';
 
@@ -230,10 +230,12 @@
       const isRevenue = revenueHosts.some((host) => url.hostname.includes(host)) || Boolean(link.dataset.revenuePath);
       const label = (link.querySelector('h3')?.textContent || link.textContent || url.hostname).trim().replace(/\s+/g, ' ').slice(0, 80);
       const funnelPath = link.dataset.revenuePath || (isMusic ? 'music' : url.origin === location.origin ? 'internal' : 'external');
+      const platform = link.dataset.musicPlatform || (isMusic ? url.hostname.replace(/^www\./, '') : '');
       track(isRevenue ? 'revenue_path_click' : isMusic ? 'track_button_click' : 'link_click', {
         label,
         destination: url.origin === location.origin ? url.pathname : url.hostname,
         path: funnelPath,
+        platform,
         stage: link.dataset.loopStage || 'outbound'
       });
 
