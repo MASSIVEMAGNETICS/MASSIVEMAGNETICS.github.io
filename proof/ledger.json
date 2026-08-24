@@ -1,8 +1,8 @@
 {
   "schema_version": "1.0.0",
-  "ledger_version": "2026.08.20.2",
+  "ledger_version": "2026.08.24.1",
   "canonical_url": "https://iambandobandz.com/proof/",
-  "ledger_date": "2026-08-20",
+  "ledger_date": "2026-08-24",
   "purpose": "A bounded public record of independently checkable artifacts, releases, commits, deployments, and provenance.",
   "methodology": {
     "rule": "Every entry must identify exactly what the linked evidence proves. Evidence of existence is not evidence of commercial success, scientific validity, customer adoption, or capability beyond the cited artifact.",
@@ -138,18 +138,20 @@
     },
     {
       "id": "software-victor-heartbeat-v1-freeze",
-      "date": "2026-08-19",
+      "date": "2026-08-24",
       "date_precision": "day",
       "category": "software",
-      "title": "Victor Heartbeat v1 frozen architecture contract",
-      "claim": "An immutable dev-ville commit adds the frozen Victor Heartbeat v1 architecture contract, and four GitHub Actions workflows completed successfully on that exact commit. The containing pull request remains draft and unmerged, so this record proves the committed contract and exact-head CI evidence, not canonical merge into main or production autonomy.",
+      "title": "Victor Heartbeat v1 canonical architecture",
+      "claim": "Victor Heartbeat v1 is merged into dev-ville main with the reviewed Truth Compiler v1 pinned by immutable merge commit and SHA-256. The exact pre-merge Heartbeat, Driver, organ-contract, and consent-ledger workflows completed successfully. This proves the merged bounded architecture and tested integration path; it does not prove AGI, consciousness, unrestricted autonomy, or production reliability beyond the cited tests.",
       "proof_level": "IMMUTABLE_COMMIT",
-      "status": "PARTIAL",
+      "status": "VERIFIED",
       "evidence": [
-        {"label": "GitHub commit 9e11600", "url": "https://github.com/MASSIVEMAGNETICS/dev-ville/commit/9e116000bb5f0282fef8a2249c12ed2eab43d0b9", "authority": "GitHub"},
+        {"label": "Canonical Heartbeat merge commit 4e0f041", "url": "https://github.com/MASSIVEMAGNETICS/dev-ville/commit/4e0f04126673c2539c8712d6fa6b08e2485fa316", "authority": "GitHub"},
+        {"label": "Merged Truth Compiler v1 commit f08593e", "url": "https://github.com/MASSIVEMAGNETICS/truth-compiler-ai/commit/f08593e210b675a965215fc9cd4c77548511db05", "authority": "GitHub"},
         {"label": "Heartbeat pull request #18", "url": "https://github.com/MASSIVEMAGNETICS/dev-ville/pull/18", "authority": "GitHub"},
-        {"label": "Victor Canonical Heartbeat workflow run", "url": "https://github.com/MASSIVEMAGNETICS/dev-ville/actions/runs/32298309656", "authority": "GitHub"},
-        {"label": "Victor Driver Tests workflow run", "url": "https://github.com/MASSIVEMAGNETICS/dev-ville/actions/runs/32298309631", "authority": "GitHub"}
+        {"label": "Victor Canonical Heartbeat exact-head workflow", "url": "https://github.com/MASSIVEMAGNETICS/dev-ville/actions/runs/32738483288", "authority": "GitHub"},
+        {"label": "Victor Driver Tests exact-head workflow", "url": "https://github.com/MASSIVEMAGNETICS/dev-ville/actions/runs/32738483367", "authority": "GitHub"},
+        {"label": "Frozen architecture source commit 9e11600", "url": "https://github.com/MASSIVEMAGNETICS/dev-ville/commit/9e116000bb5f0282fef8a2249c12ed2eab43d0b9", "authority": "GitHub"}
       ]
     },
     {
