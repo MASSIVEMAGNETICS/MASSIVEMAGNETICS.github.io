@@ -19,22 +19,24 @@ A passing run verifies the deployed technical contract, not search-engine rankin
 
 ## Required live checks
 
-- [ ] `https://iambandobandz.com/` returns HTTP 200.
-- [ ] Homepage title begins with `iambandobandz`.
-- [ ] Homepage canonical URL is exactly `https://iambandobandz.com/`.
-- [ ] Open Graph site name is `iambandobandz`.
-- [ ] Built homepage contains no `Bando Bandz` artist alias.
-- [ ] Built homepage contains no spaced `I AM BANDO BANDZ` identity phrase.
-- [ ] `/robots.txt` points to `https://iambandobandz.com/sitemap.xml`.
-- [ ] `/sitemap.xml` contains every approved current public route and no planned/dead route.
-- [ ] `/site.webmanifest` uses `iambandobandz` as `short_name`.
-- [ ] `/identity.jsonld` exposes exactly one canonical `MusicGroup` named `iambandobandz`.
-- [ ] `/.well-known/iambandobandz.json` reports canonical brand and domain correctly.
-- [ ] `/llms.txt` declares the same canonical brand/domain.
-- [ ] `/portfolio/` canonical resolves to `iambandobandz.com`, not `massivemagnetics.github.io`.
-- [ ] `/portfolio/` no longer depends on `chatgpt.site` social metadata.
-- [ ] `/frontier-radar/` has an explicit canonical link to its `iambandobandz.com` route.
-- [ ] Existing `/store/`, `/network/`, and `/audit/` revenue paths still resolve.
+The automated verifier passed the following contract on 2026-08-25T00:43:03Z:
+
+- [x] `https://iambandobandz.com/` returns HTTP 200.
+- [x] Homepage title begins with `iambandobandz`.
+- [x] Homepage canonical URL is exactly `https://iambandobandz.com/`.
+- [x] Open Graph site name is `iambandobandz`.
+- [x] Built homepage contains no `Bando Bandz` artist alias.
+- [x] Built homepage contains no spaced `I AM BANDO BANDZ` identity phrase.
+- [x] `/robots.txt` points to `https://iambandobandz.com/sitemap.xml`.
+- [x] `/sitemap.xml` contains every approved current public route and no planned/dead route.
+- [x] `/site.webmanifest` uses `iambandobandz` as `short_name`.
+- [x] `/identity.jsonld` exposes exactly one canonical `MusicGroup` named `iambandobandz`.
+- [x] `/.well-known/iambandobandz.json` reports canonical brand and domain correctly.
+- [x] `/llms.txt` declares the same canonical brand/domain.
+- [x] `/portfolio/` canonical resolves to `iambandobandz.com`, not `massivemagnetics.github.io`.
+- [x] `/portfolio/` no longer depends on `chatgpt.site` social metadata.
+- [x] `/frontier-radar/` has an explicit canonical link to its `iambandobandz.com` route.
+- [x] Existing `/store/`, `/network/`, and `/audit/` revenue paths still resolve.
 
 ## Search-engine follow-up
 
@@ -84,7 +86,7 @@ This synchronization is a compatibility guard, not a replacement for the canonic
 
 ## Merge/deployment receipt
 
-Current implementation receipt:
+Completed implementation receipt:
 
 - canonical identity PR: #34
 - canonical identity merge SHA: `359649630ce6926df1b768ad939b51f3fc3d3f97`
@@ -92,7 +94,9 @@ Current implementation receipt:
 - remediation merge SHA: `b402ee82b6f5586e35605ef8138372363d2496c4`
 - synchronized public-source SHA: `81489a47c9ddef9e210fec9b96b8ef1f44bea276`
 - legacy Pages deployment run for synchronized source: `32794642099` — SUCCESS
-- live technical verification: pending the next explicit custom deploy/verifier cycle
-- Google canonical inspection status: pending
-- Bing canonical inspection status: pending
-- first observed branded-search position/date: pending
+- explicit custom deployment run: `32794708371` — SUCCESS
+- post-deploy verification run: `32794729018` — SUCCESS
+- verification completed: `2026-08-25T00:43:03Z`
+- Google canonical inspection status: pending webmaster-console submission/inspection
+- Bing canonical inspection status: pending webmaster-console submission/inspection
+- first observed branded-search position/date: pending search-engine indexing
