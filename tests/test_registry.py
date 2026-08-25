@@ -22,7 +22,8 @@ class RegistryTests(unittest.TestCase):
         graph = build_jsonld(load_registry())["@graph"]
         names = {node["name"] for node in graph}
         self.assertIn("Brandon Emery", names)
-        self.assertIn("IAMBANDOBANDZ", names)
+        self.assertIn("iambandobandz", names)
+        self.assertNotIn("Bando Bandz", json.dumps(graph))
 
     def test_build_is_sanitized_and_self_consistent(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -31,6 +32,7 @@ class RegistryTests(unittest.TestCase):
             self.assertEqual(validate_built_site(site), [])
             self.assertFalse((site / "registry" / "private").exists())
             manifest = json.loads((site / ".well-known" / "iambandobandz.json").read_text(encoding="utf-8"))
+            self.assertEqual(manifest["canonical_brand"], "iambandobandz")
             self.assertEqual(manifest["canonical_domain"], "https://iambandobandz.com/")
 
     def test_empire_revenue_routes_survive_sanitized_build(self) -> None:

@@ -1,0 +1,28 @@
+name: Post-Deploy Public Verification
+
+on:
+  workflow_run:
+    workflows: ["Deploy IAMBANDOBANDZ"]
+    types: [completed]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify-live-site:
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Checkout canonical main
+        uses: actions/checkout@v7
+        with:
+          ref: main
+          persist-credentials: false
+      - name: Setup Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+      - name: Verify deployed search and identity contract
+        run: python tools/verify_public_site.py --base-url https://iambandobandz.com/ --retries 8 --delay 20

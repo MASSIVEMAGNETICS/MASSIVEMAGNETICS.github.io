@@ -1,0 +1,41 @@
+name: Site Contract CI
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Setup Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+      - name: Validate canonical registry
+        run: python tools/validate_registry.py
+      - name: Run tests
+        run: python -m unittest discover -s tests -v
+      - name: Build sanitized site
+        run: python tools/build_site.py --output _site
+      - name: Include Frontier Radar public surface
+        run: cp -R frontier-radar _site/frontier-radar
+      - name: Validate built site
+        run: python tools/validate_registry.py --site _site
+      - name: Verify required public artifacts
+        run: |
+          test -f _site/llms.txt
+          test -f _site/identity.jsonld
+          test -f _site/.well-known/iambandobandz.json
+          test -f _site/frontier-radar/index.html
+          grep -Fq 'iambandobandz — Official Site' _site/index.html
+          ! grep -Fq 'Bando Bandz' _site/index.html

@@ -1,8 +1,9 @@
 {
   "schema_version": "1.0.0",
-  "registry_version": "2026.08.20.3",
+  "registry_version": "2026.08.24.1",
+  "canonical_brand": "iambandobandz",
   "canonical_domain": "https://iambandobandz.com/",
-  "site_name": "IAMBANDOBANDZ",
+  "site_name": "iambandobandz",
   "tagline": "The Signal Survives",
   "routes": [
     {"path": "/", "changefreq": "weekly", "priority": 1.0},
@@ -12,9 +13,16 @@
     {"path": "/signal/", "changefreq": "monthly", "priority": 0.9},
     {"path": "/store/", "changefreq": "weekly", "priority": 0.9},
     {"path": "/network/", "changefreq": "weekly", "priority": 0.85},
+    {"path": "/frontier-radar/", "changefreq": "daily", "priority": 0.8},
     {"path": "/portfolio/", "changefreq": "monthly", "priority": 0.7},
+    {"path": "/jesus-told-me/", "changefreq": "monthly", "priority": 0.6},
     {"path": "/privacy/", "changefreq": "yearly", "priority": 0.3},
     {"path": "/terms/", "changefreq": "yearly", "priority": 0.3}
+  ],
+  "planned_routes": [
+    "/radio/",
+    "/community/",
+    "/login/"
   ],
   "public_registry_base": "/registry/public/",
   "lead_capture": {

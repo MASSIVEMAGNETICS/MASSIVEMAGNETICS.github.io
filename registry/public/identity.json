@@ -1,5 +1,7 @@
 {
   "schema_version": "1.0.0",
+  "canonical_brand": "iambandobandz",
+  "canonical_url": "https://iambandobandz.com/",
   "canonical_person": "person:brandon-emery",
   "canonical_artist": "artist:iambandobandz",
   "canonical_domain": "domain:iambandobandz-com",
