@@ -66,6 +66,22 @@ If automated verification fails:
 4. Fix the source-of-truth registry/build path rather than hand-editing generated output.
 5. Re-run PR CI, deploy, and post-deploy verification.
 
+### 2026-08-25 initial live-verification incident
+
+The first post-deploy verification after canonical identity PR #34 failed even though both PR CI and the custom Pages deployment build passed. The live domain served the raw repository homepage/portfolio and returned 404 for generated-only `identity.jsonld` and `/.well-known/iambandobandz.json`.
+
+GitHub simultaneously emitted its built-in dynamic `pages build and deployment` workflow from `main`, proving that legacy branch publishing was active alongside the custom `Deploy IAMBANDOBANDZ` workflow. The remediation in PR #35 adds deterministic synchronization of search-critical generated output back into repository source so both publishing paths expose the same canonical identity contract.
+
+Search-critical source synchronization covers:
+
+- `index.html`
+- `portfolio/index.html`
+- `identity.jsonld`
+- `.well-known/iambandobandz.json`
+- `sitemap.xml`
+
+This synchronization is a compatibility guard, not a replacement for the canonical registry/build pipeline.
+
 ## Merge/deployment receipt
 
 Record after completion:
