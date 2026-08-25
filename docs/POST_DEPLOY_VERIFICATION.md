@@ -84,15 +84,15 @@ This synchronization is a compatibility guard, not a replacement for the canonic
 
 ## Merge/deployment receipt
 
-Record after completion:
+Current implementation receipt:
 
-- PR number:
-- merged commit SHA:
-- deployment run ID:
-- deployment conclusion:
-- post-deploy verification run ID:
-- verification conclusion:
-- verification timestamp (UTC):
-- Google canonical inspection status:
-- Bing canonical inspection status:
-- first observed branded-search position/date:
+- canonical identity PR: #34
+- canonical identity merge SHA: `359649630ce6926df1b768ad939b51f3fc3d3f97`
+- Pages split-brain remediation PR: #35
+- remediation merge SHA: `b402ee82b6f5586e35605ef8138372363d2496c4`
+- synchronized public-source SHA: `81489a47c9ddef9e210fec9b96b8ef1f44bea276`
+- legacy Pages deployment run for synchronized source: `32794642099` — SUCCESS
+- live technical verification: pending the next explicit custom deploy/verifier cycle
+- Google canonical inspection status: pending
+- Bing canonical inspection status: pending
+- first observed branded-search position/date: pending
