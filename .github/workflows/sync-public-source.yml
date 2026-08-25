@@ -1,0 +1,52 @@
+name: Sync Generated Public Source
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: sync-generated-public-source
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    if: ${{ !startsWith(github.event.head_commit.message, 'chore(site): sync generated public source') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - name: Setup Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+      - name: Validate canonical source
+        run: python tools/validate_registry.py
+      - name: Materialize generated search-critical source
+        run: python tools/sync_public_source.py
+      - name: Verify synchronized source
+        run: |
+          python -m unittest discover -s tests -v
+          test -f identity.jsonld
+          test -f .well-known/iambandobandz.json
+          grep -Fq 'iambandobandz — Official Site' index.html
+          ! grep -Fq 'Bando Bandz' index.html
+          ! grep -Fq 'massivemagnetics.github.io/portfolio' portfolio/index.html
+          ! grep -Fq 'chatgpt.site' portfolio/index.html
+      - name: Commit synchronized source when needed
+        shell: bash
+        run: |
+          if git diff --quiet -- index.html portfolio/index.html identity.jsonld .well-known/iambandobandz.json sitemap.xml; then
+            echo 'Generated public source already synchronized.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html portfolio/index.html identity.jsonld .well-known/iambandobandz.json sitemap.xml
+          git commit -m 'chore(site): sync generated public source'
+          git push origin HEAD:main
