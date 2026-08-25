@@ -42,46 +42,55 @@ def build_jsonld(registry: dict[str, Any]) -> dict[str, Any]:
     origin = identity["origin"]
     contacts = identity["public_contacts"]
 
+    person_node: dict[str, Any] = {
+        "@type": "Person",
+        "@id": "https://iambandobandz.com/#brandon-emery",
+        "name": person["name"],
+        "url": person["canonical_url"],
+        "email": f"mailto:{contacts['artist_email']}",
+        "telephone": contacts["phone"],
+        "address": {
+            "@type": "PostalAddress",
+            "addressLocality": origin["locality"],
+            "addressRegion": origin["region"],
+            "addressCountry": origin["country"],
+        },
+        "sameAs": [p["url"] for p in platforms if p["owner_entity"] in {person["id"], "lab:massive-magnetics"}],
+    }
+    if person.get("aliases"):
+        person_node["alternateName"] = person["aliases"]
+
     same_as_artist = [p["url"] for p in platforms if p["owner_entity"] == artist["id"]]
-    graph: list[dict[str, Any]] = [
-        {
-            "@type": "Person",
-            "@id": "https://iambandobandz.com/#brandon-emery",
-            "name": person["name"],
-            "alternateName": person.get("aliases", []),
-            "url": person["canonical_url"],
-            "email": f"mailto:{contacts['artist_email']}",
-            "telephone": contacts["phone"],
-            "address": {
-                "@type": "PostalAddress",
-                "addressLocality": origin["locality"],
-                "addressRegion": origin["region"],
-                "addressCountry": origin["country"],
-            },
-            "sameAs": [p["url"] for p in platforms if p["owner_entity"] in {person["id"], "lab:massive-magnetics"}],
-        },
-        {
-            "@type": "MusicGroup",
-            "@id": "https://iambandobandz.com/#iambandobandz",
-            "name": artist["name"],
-            "alternateName": artist.get("aliases", []),
-            "url": artist["canonical_url"],
-            "genre": ["Hip-Hop", "Rap", "Rust Belt Hip-Hop"],
-            "foundingLocation": {"@type": "Place", "name": "Lorain, Ohio"},
-            "sameAs": same_as_artist,
-        },
-    ]
+    artist_node: dict[str, Any] = {
+        "@type": "MusicGroup",
+        "@id": "https://iambandobandz.com/#iambandobandz",
+        "name": artist["name"],
+        "url": artist["canonical_url"],
+        "description": "Independent Rust Belt hip-hop artist and the canonical music identity represented by iambandobandz.com.",
+        "genre": ["Hip-Hop", "Rap", "Rust Belt Hip-Hop"],
+        "foundingLocation": {"@type": "Place", "name": "Lorain, Ohio"},
+        "sameAs": same_as_artist,
+        "mainEntityOfPage": {"@id": "https://iambandobandz.com/"},
+    }
+    if artist.get("aliases"):
+        artist_node["alternateName"] = artist["aliases"]
+
+    graph: list[dict[str, Any]] = [person_node, artist_node]
 
     for entity in registry["entities"]["entities"]:
         if entity["id"] in {person["id"], artist["id"]}:
             continue
         if entity["type"] in {"Organization", "WebSite", "SoftwareApplication"} and entity["status"] == "active":
-            graph.append({
+            node: dict[str, Any] = {
                 "@type": entity["type"],
                 "@id": f"https://iambandobandz.com/#{entity['id'].replace(':', '-')}",
                 "name": entity["name"],
                 "url": entity["canonical_url"],
-            })
+            }
+            if entity["id"] == "domain:iambandobandz-com":
+                node["about"] = {"@id": "https://iambandobandz.com/#iambandobandz"}
+                node["inLanguage"] = "en-US"
+            graph.append(node)
 
     return {"@context": "https://schema.org", "@graph": graph}
 
@@ -90,6 +99,7 @@ def build_public_manifest(registry: dict[str, Any]) -> dict[str, Any]:
     profile = registry["profile"]
     return {
         "registry_version": profile["registry_version"],
+        "canonical_brand": profile.get("canonical_brand", "iambandobandz"),
         "canonical_domain": profile["canonical_domain"],
         "counts": {
             "entities": len(registry["entities"]["entities"]),

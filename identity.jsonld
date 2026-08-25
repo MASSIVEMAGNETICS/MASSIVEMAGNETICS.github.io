@@ -1,0 +1,85 @@
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Person",
+      "@id": "https://iambandobandz.com/#brandon-emery",
+      "name": "Brandon Emery",
+      "url": "https://iambandobandz.com/",
+      "email": "mailto:bandobandz440@gmail.com",
+      "telephone": "+1-440-453-4945",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Lorain",
+        "addressRegion": "OH",
+        "addressCountry": "US"
+      },
+      "sameAs": [
+        "https://github.com/MASSIVEMAGNETICS"
+      ],
+      "alternateName": [
+        "Bando"
+      ]
+    },
+    {
+      "@type": "MusicGroup",
+      "@id": "https://iambandobandz.com/#iambandobandz",
+      "name": "iambandobandz",
+      "url": "https://iambandobandz.com/",
+      "description": "Independent Rust Belt hip-hop artist and the canonical music identity represented by iambandobandz.com.",
+      "genre": [
+        "Hip-Hop",
+        "Rap",
+        "Rust Belt Hip-Hop"
+      ],
+      "foundingLocation": {
+        "@type": "Place",
+        "name": "Lorain, Ohio"
+      },
+      "sameAs": [
+        "https://unitedmasters.com/a/iambandobandz",
+        "https://open.spotify.com/artist/51W2sGVZDY4QdvlpMrkxtC",
+        "https://music.apple.com/us/artist/iambandobandz/1771524530",
+        "https://www.instagram.com/iambandobandz/",
+        "https://audiomack.com/iambandobandz"
+      ],
+      "mainEntityOfPage": {
+        "@id": "https://iambandobandz.com/"
+      }
+    },
+    {
+      "@type": "Organization",
+      "@id": "https://iambandobandz.com/#network-b-heard-network",
+      "name": "B Heard Network",
+      "url": "https://iambandobandz.com/network/"
+    },
+    {
+      "@type": "Organization",
+      "@id": "https://iambandobandz.com/#lab-massive-magnetics",
+      "name": "Massive Magnetics",
+      "url": "https://github.com/MASSIVEMAGNETICS"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "@id": "https://iambandobandz.com/#runtime-victor",
+      "name": "Victor",
+      "url": "https://github.com/MASSIVEMAGNETICS"
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://iambandobandz.com/#domain-iambandobandz-com",
+      "name": "iambandobandz",
+      "url": "https://iambandobandz.com/",
+      "about": {
+        "@id": "https://iambandobandz.com/#iambandobandz"
+      },
+      "inLanguage": "en-US"
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://iambandobandz.com/#store-iambandobandz-store",
+      "name": "iambandobandz Store",
+      "url": "https://iambandobandz.com/store/"
+    }
+  ]
+}

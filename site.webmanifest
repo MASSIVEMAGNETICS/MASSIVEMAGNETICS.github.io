@@ -1,1 +1,21 @@
-{"name":"IAMBANDOBANDZ — The Signal Survives","short_name":"IAMBANDOBANDZ","description":"Official IAMBANDOBANDZ artist site.","start_url":"/","display":"standalone","background_color":"#080808","theme_color":"#080808","icons":[{"src":"/favicon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]}
+{
+  "id": "/",
+  "name": "iambandobandz — The Signal Survives",
+  "short_name": "iambandobandz",
+  "description": "Official iambandobandz artist, B Heard Network, and Massive Magnetics web property.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "lang": "en-US",
+  "background_color": "#080808",
+  "theme_color": "#080808",
+  "categories": ["music", "entertainment"],
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

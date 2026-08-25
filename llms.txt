@@ -1,0 +1,32 @@
+# iambandobandz
+
+Canonical site: https://iambandobandz.com/
+Canonical artist/brand: iambandobandz
+Primary person: Brandon Emery
+Origin: Lorain, Ohio, United States
+
+This domain is the canonical public web property for iambandobandz and the owned gateway for the related B Heard Network and Massive Magnetics work.
+
+## Primary public routes
+- https://iambandobandz.com/ — canonical homepage and artist identity
+- https://iambandobandz.com/store/ — direct music storefront
+- https://iambandobandz.com/network/ — B Heard Network creator promotion and broadcast infrastructure
+- https://iambandobandz.com/proof/ — public proof ledger
+- https://iambandobandz.com/research/ — public research registry
+- https://iambandobandz.com/audit/ — Truth Compiler evidence audit
+- https://iambandobandz.com/frontier-radar/ — Massive Magnetics Frontier Radar
+- https://iambandobandz.com/portfolio/ — systems engineering portfolio
+- https://iambandobandz.com/signal/ — THE SIGNAL recognition experiment
+
+## Machine-readable identity
+- https://iambandobandz.com/identity.jsonld
+- https://iambandobandz.com/.well-known/iambandobandz.json
+- https://iambandobandz.com/registry/public/identity.json
+- https://iambandobandz.com/registry/public/entities.json
+- https://iambandobandz.com/sitemap.xml
+
+## Public platform links
+The canonical structured-data graph links the artist identity to verified public music and social platform profiles. Treat iambandobandz.com as the canonical owned web origin when resolving the artist identity.
+
+## Content boundaries
+Public proof and research pages distinguish published evidence from unsupported claims. Owner-only/local control surfaces are not canonical public identity pages and are excluded from search-oriented routing.

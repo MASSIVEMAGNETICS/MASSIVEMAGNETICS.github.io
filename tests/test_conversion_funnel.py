@@ -8,13 +8,15 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class ConversionFunnelTests(unittest.TestCase):
-    def test_homepage_routes_cold_audit_traffic_through_evidence_page(self) -> None:
+    def test_homepage_preserves_truth_compiler_without_making_it_global_consumer_cta(self) -> None:
         index = (ROOT / "index.html").read_text(encoding="utf-8")
         self.assertIn('href="/audit/"', index)
-        self.assertIn('Inspect $97 audit', index)
-        self.assertIn('See the $97 repo audit', index)
+        self.assertIn('RUN THE TRUTH COMPILER', index)
+        self.assertIn('SEE EVIDENCE + START', index)
         self.assertIn('data-loop-stage="consider"', index)
         self.assertIn('data-revenue-path="truth-compiler"', index)
+        self.assertNotIn('Inspect $97 audit', index)
+        self.assertNotIn('See the $97 repo audit', index)
 
     def test_homepage_keeps_one_high_intent_direct_checkout_path(self) -> None:
         index = (ROOT / "index.html").read_text(encoding="utf-8")
@@ -32,10 +34,20 @@ class ConversionFunnelTests(unittest.TestCase):
         self.assertNotIn('class="release-gallery"', index)
         self.assertIn('href="/store/"', index)
 
-    def test_high_value_public_surfaces_are_first_class_navigation(self) -> None:
+    def test_consumer_navigation_prioritizes_working_owned_surfaces(self) -> None:
         index = (ROOT / "index.html").read_text(encoding="utf-8")
-        for route in ('/signal/', '/proof/', '/research/', '/audit/', '/store/', '/network/'):
+        for route in ('/store/', '/network/', '/proof/', '/research/'):
             self.assertIn(f'href="{route}"', index)
+        self.assertIn('href="#listen"', index)
+        self.assertIn('href="#contact"', index)
+
+    def test_research_and_experimental_surfaces_remain_reachable_and_indexable(self) -> None:
+        index = (ROOT / "index.html").read_text(encoding="utf-8")
+        profile = json.loads((ROOT / "registry" / "public" / "public-profile.json").read_text(encoding="utf-8"))
+        routes = {item["path"] for item in profile["routes"]}
+        self.assertIn('/audit/', routes)
+        self.assertIn('/signal/', routes)
+        self.assertIn('href="/audit/"', index)
 
     def test_registry_generates_commercial_routes_and_preserves_pinned_consent(self) -> None:
         profile = json.loads((ROOT / "registry" / "public" / "public-profile.json").read_text(encoding="utf-8"))

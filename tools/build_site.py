@@ -27,6 +27,7 @@ COPY_ITEMS = [
     "robots.txt",
     "script.js",
     "site.webmanifest",
+    "llms.txt",
     "social-card.svg",
     "social-card.webp",
     "store",
@@ -83,6 +84,69 @@ def inject_owner_analytics_link(path: Path) -> None:
     path.write_text(page, encoding="utf-8")
 
 
+def normalize_homepage_identity(index: str) -> str:
+    """Normalize the public homepage to the canonical brand/search contract.
+
+    Uppercase IAMBANDOBANDZ remains acceptable as visual styling. The semantic
+    identity token emitted to crawlers and structured data is iambandobandz.
+    """
+    index = re.sub(
+        r"<title>.*?</title>",
+        "<title>iambandobandz — Official Site | The Signal Survives</title>",
+        index,
+        count=1,
+        flags=re.DOTALL,
+    )
+    index = re.sub(
+        r'<meta name="description"[^>]*>',
+        '<meta name="description" content="Official website of iambandobandz: independent Rust Belt hip-hop, B Heard Network, Massive Magnetics, public proof, research, and direct music ownership.">',
+        index,
+        count=1,
+    )
+    index = re.sub(r'\s*<meta name="keywords"[^>]*>\s*', "\n", index, count=1)
+    index = re.sub(
+        r'<meta property="og:site_name"[^>]*>',
+        '<meta property="og:site_name" content="iambandobandz">',
+        index,
+        count=1,
+    )
+    index = re.sub(
+        r'<meta property="og:title"[^>]*>',
+        '<meta property="og:title" content="iambandobandz — The Signal Survives">',
+        index,
+        count=1,
+    )
+    index = re.sub(
+        r'<meta name="twitter:title"[^>]*>',
+        '<meta name="twitter:title" content="iambandobandz — The Signal Survives">',
+        index,
+        count=1,
+    )
+    index = index.replace('aria-label="IAMBANDOBANDZ home"', 'aria-label="iambandobandz home"')
+    index = index.replace('<p class="eyebrow">“I AM BANDO BANDZ”</p>', '<p class="eyebrow">iambandobandz</p>')
+
+    old_nav = '<a href="/signal/">Signal</a><a href="#listen">Listen</a><a href="#empire">Empire</a><a href="/proof/">Proof</a><a href="/research/">Research</a><a href="#contact">Contact</a>'
+    new_nav = '<a href="#listen">Listen</a><a href="/store/">Store</a><a href="/network/">Creators</a><a href="/proof/">Proof</a><a href="/research/">Lab</a><a href="#contact">Contact</a>'
+    index = index.replace(old_nav, new_nav)
+
+    old_header_cta = '<a class="header-cta" href="/audit/" data-revenue-path="truth-compiler" data-loop-stage="consider">Inspect $97 audit</a>'
+    new_header_cta = '<a class="header-cta" href="/store/" data-revenue-path="store" data-loop-stage="buy">Own the music</a>'
+    index = index.replace(old_header_cta, new_header_cta)
+
+    old_hero_actions = '<div class="hero-actions"><a class="button button-primary" href="/audit/" data-revenue-path="truth-compiler" data-loop-stage="consider">See the $97 repo audit →</a><a class="button button-ghost" href="/store/" data-revenue-path="store" data-loop-stage="buy">Own the music →</a></div>'
+    new_hero_actions = '<div class="hero-actions"><a class="button button-primary" href="https://www.youtube.com/channel/UCIaEOclqKUzIVPfkEuGzEEQ" target="_blank" rel="noopener noreferrer" data-music-platform="youtube">Listen on YouTube →</a><a class="button button-ghost" href="/store/" data-revenue-path="store" data-loop-stage="buy">Own the music →</a></div>'
+    index = index.replace(old_hero_actions, new_hero_actions)
+
+    index = index.replace('<dt>Artist identity</dt><dd>IAMBANDOBANDZ</dd>', '<dt>Artist identity</dt><dd>iambandobandz</dd>')
+    index = index.replace('<p class="lead">IAMBANDOBANDZ is Brandon Emery:', '<p class="lead">iambandobandz is Brandon Emery:')
+    index = index.replace('<article><span>HUMAN SIGNAL / 01</span><h3>IAMBANDOBANDZ</h3>', '<article><span>HUMAN SIGNAL / 01</span><h3>iambandobandz</h3>')
+    index = index.replace('<footer><strong>IAMBANDOBANDZ</strong>', '<footer><strong>iambandobandz</strong>')
+
+    if "Bando Bandz" in index or "I AM BANDO BANDZ" in index:
+        raise RuntimeError("legacy artist alias leaked into built homepage")
+    return index
+
+
 def build(output: Path) -> None:
     registry = load_registry()
     if output.exists():
@@ -109,6 +173,7 @@ def build(output: Path) -> None:
     if not script_pattern.search(index):
         raise RuntimeError("homepage JSON-LD block not found")
     index = script_pattern.sub(replacement, index, count=1)
+    index = normalize_homepage_identity(index)
 
     # Keep the proof surface reachable from the canonical homepage without
     # forcing the source homepage to duplicate deployment-only routing logic.

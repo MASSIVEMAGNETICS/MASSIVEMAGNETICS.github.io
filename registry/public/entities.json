@@ -5,7 +5,7 @@
       "id": "person:brandon-emery",
       "type": "Person",
       "name": "Brandon Emery",
-      "aliases": ["Bando", "Bando Bandz"],
+      "aliases": ["Bando"],
       "status": "active",
       "canonical_url": "https://iambandobandz.com/",
       "relationships": [
@@ -17,8 +17,8 @@
     {
       "id": "artist:iambandobandz",
       "type": "MusicGroup",
-      "name": "IAMBANDOBANDZ",
-      "aliases": ["Bando Bandz"],
+      "name": "iambandobandz",
+      "aliases": [],
       "status": "active",
       "canonical_url": "https://iambandobandz.com/",
       "relationships": [
@@ -32,7 +32,7 @@
       "type": "Organization",
       "name": "B Heard Network",
       "status": "active",
-      "canonical_url": "https://www.facebook.com/BHeardNetworkLLC/",
+      "canonical_url": "https://iambandobandz.com/network/",
       "relationships": [{"predicate": "founded_by", "target": "person:brandon-emery"}]
     },
     {
@@ -66,7 +66,7 @@
     {
       "id": "domain:iambandobandz-com",
       "type": "WebSite",
-      "name": "iambandobandz.com",
+      "name": "iambandobandz",
       "status": "active",
       "canonical_url": "https://iambandobandz.com/",
       "relationships": [{"predicate": "represents", "target": "artist:iambandobandz"}]
@@ -74,9 +74,9 @@
     {
       "id": "store:iambandobandz-store",
       "type": "WebSite",
-      "name": "iambandobandz.store",
-      "status": "planned",
-      "canonical_url": "https://iambandobandz.store/",
+      "name": "iambandobandz Store",
+      "status": "active",
+      "canonical_url": "https://iambandobandz.com/store/",
       "relationships": [{"predicate": "commerce_for", "target": "artist:iambandobandz"}]
     }
   ]

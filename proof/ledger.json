@@ -1,8 +1,8 @@
 {
   "schema_version": "1.0.0",
-  "ledger_version": "2026.08.20.2",
+  "ledger_version": "2026.08.24.2",
   "canonical_url": "https://iambandobandz.com/proof/",
-  "ledger_date": "2026-08-20",
+  "ledger_date": "2026-08-24",
   "purpose": "A bounded public record of independently checkable artifacts, releases, commits, deployments, and provenance.",
   "methodology": {
     "rule": "Every entry must identify exactly what the linked evidence proves. Evidence of existence is not evidence of commercial success, scientific validity, customer adoption, or capability beyond the cited artifact.",
@@ -138,18 +138,83 @@
     },
     {
       "id": "software-victor-heartbeat-v1-freeze",
-      "date": "2026-08-19",
+      "date": "2026-08-24",
       "date_precision": "day",
       "category": "software",
-      "title": "Victor Heartbeat v1 frozen architecture contract",
-      "claim": "An immutable dev-ville commit adds the frozen Victor Heartbeat v1 architecture contract, and four GitHub Actions workflows completed successfully on that exact commit. The containing pull request remains draft and unmerged, so this record proves the committed contract and exact-head CI evidence, not canonical merge into main or production autonomy.",
+      "title": "Victor Heartbeat v1 canonical architecture",
+      "claim": "Victor Heartbeat v1 is merged into dev-ville main with the reviewed Truth Compiler v1 pinned by immutable merge commit and SHA-256. The exact pre-merge Heartbeat, Driver, organ-contract, and consent-ledger workflows completed successfully. This proves the merged bounded architecture and tested integration path; it does not prove AGI, consciousness, unrestricted autonomy, or production reliability beyond the cited tests.",
       "proof_level": "IMMUTABLE_COMMIT",
-      "status": "PARTIAL",
+      "status": "VERIFIED",
       "evidence": [
-        {"label": "GitHub commit 9e11600", "url": "https://github.com/MASSIVEMAGNETICS/dev-ville/commit/9e116000bb5f0282fef8a2249c12ed2eab43d0b9", "authority": "GitHub"},
+        {"label": "Canonical Heartbeat merge commit 4e0f041", "url": "https://github.com/MASSIVEMAGNETICS/dev-ville/commit/4e0f04126673c2539c8712d6fa6b08e2485fa316", "authority": "GitHub"},
+        {"label": "Merged Truth Compiler v1 commit f08593e", "url": "https://github.com/MASSIVEMAGNETICS/truth-compiler-ai/commit/f08593e210b675a965215fc9cd4c77548511db05", "authority": "GitHub"},
         {"label": "Heartbeat pull request #18", "url": "https://github.com/MASSIVEMAGNETICS/dev-ville/pull/18", "authority": "GitHub"},
-        {"label": "Victor Canonical Heartbeat workflow run", "url": "https://github.com/MASSIVEMAGNETICS/dev-ville/actions/runs/32298309656", "authority": "GitHub"},
-        {"label": "Victor Driver Tests workflow run", "url": "https://github.com/MASSIVEMAGNETICS/dev-ville/actions/runs/32298309631", "authority": "GitHub"}
+        {"label": "Victor Canonical Heartbeat exact-head workflow", "url": "https://github.com/MASSIVEMAGNETICS/dev-ville/actions/runs/32738483288", "authority": "GitHub"},
+        {"label": "Victor Driver Tests exact-head workflow", "url": "https://github.com/MASSIVEMAGNETICS/dev-ville/actions/runs/32738483367", "authority": "GitHub"},
+        {"label": "Frozen architecture source commit 9e11600", "url": "https://github.com/MASSIVEMAGNETICS/dev-ville/commit/9e116000bb5f0282fef8a2249c12ed2eab43d0b9", "authority": "GitHub"}
+      ]
+    },
+    {
+      "id": "software-victor-rcp-v1",
+      "date": "2026-08-24",
+      "date_precision": "day",
+      "category": "software",
+      "title": "Victor bounded Remediation Control Plane v1",
+      "claim": "RCP v1 is merged into dev-ville main on top of canonical Victor Heartbeat after fresh RCP, Heartbeat, Driver, organ-contract, and consent-ledger workflows passed on the rebased exact head. The implementation is bounded to governed remediation and draft-PR publication; this record does not claim merge, deploy, secret, fund, organization-permission, or self-verification authority.",
+      "proof_level": "IMMUTABLE_COMMIT",
+      "status": "VERIFIED",
+      "evidence": [
+        {"label": "RCP merge commit f10c24f", "url": "https://github.com/MASSIVEMAGNETICS/dev-ville/commit/f10c24fe102814d4163c3a8242a36dfc923a6ccd", "authority": "GitHub"},
+        {"label": "Canonical RCP pull request #20", "url": "https://github.com/MASSIVEMAGNETICS/dev-ville/pull/20", "authority": "GitHub"},
+        {"label": "RCP exact-head tests", "url": "https://github.com/MASSIVEMAGNETICS/dev-ville/actions/runs/32740053423", "authority": "GitHub"},
+        {"label": "Heartbeat regression on RCP head", "url": "https://github.com/MASSIVEMAGNETICS/dev-ville/actions/runs/32740053344", "authority": "GitHub"}
+      ]
+    },
+    {
+      "id": "software-victor-operator-v01",
+      "date": "2026-08-24",
+      "date_precision": "day",
+      "category": "software",
+      "title": "Victor Operator v0.1 bounded local execution substrate",
+      "claim": "Victor Operator v0.1 is merged into VICTOR-SSI main after dedicated cross-platform Operator CI and the repaired component-capability matrix both passed on the rebased exact head. The runtime is a bounded local execution substrate and does not own Victor identity, cognition, final authority, independent verification, or canonical history; hosted cognition remains fail-closed.",
+      "proof_level": "IMMUTABLE_COMMIT",
+      "status": "VERIFIED",
+      "evidence": [
+        {"label": "Operator merge commit eadc4fe", "url": "https://github.com/MASSIVEMAGNETICS/VICTOR-SSI/commit/eadc4fe5ac86c86c321fbc9d541eb5d5bc52e9bb", "authority": "GitHub"},
+        {"label": "Capability-matrix repair 13482ba", "url": "https://github.com/MASSIVEMAGNETICS/VICTOR-SSI/commit/13482baedbaf6d737fbe4035f23b363c23829fb8", "authority": "GitHub"},
+        {"label": "Canonical Operator pull request #20", "url": "https://github.com/MASSIVEMAGNETICS/VICTOR-SSI/pull/20", "authority": "GitHub"},
+        {"label": "Operator exact-head workflow", "url": "https://github.com/MASSIVEMAGNETICS/VICTOR-SSI/actions/runs/32740354956", "authority": "GitHub"},
+        {"label": "Capability matrix exact-head workflow", "url": "https://github.com/MASSIVEMAGNETICS/VICTOR-SSI/actions/runs/32740355002", "authority": "GitHub"}
+      ]
+    },
+    {
+      "id": "software-shared-completion-fabric-v1",
+      "date": "2026-08-24",
+      "date_precision": "day",
+      "category": "software",
+      "title": "Shared Completion Fabric v1 portfolio intelligence",
+      "claim": "SCF-1 is merged into starpower-core after Python 3.11 and 3.12 lint/tests, a public MASSIVEMAGNETICS owner-repository portfolio scan, leverage summary, and artifact publication passed on the exact head. SCF is advisory portfolio intelligence; its automatic mutation boundary is limited to allowlisted support-file creation. The public owner scan does not prove visibility of private or otherwise non-visible repositories.",
+      "proof_level": "IMMUTABLE_COMMIT",
+      "status": "VERIFIED",
+      "evidence": [
+        {"label": "SCF merge commit 3d8999e", "url": "https://github.com/MASSIVEMAGNETICS/starpower-core/commit/3d8999e45a601392d45a6e8703932a5c1522f7dd", "authority": "GitHub"},
+        {"label": "SCF pull request #5", "url": "https://github.com/MASSIVEMAGNETICS/starpower-core/pull/5", "authority": "GitHub"},
+        {"label": "SCF exact-head workflow", "url": "https://github.com/MASSIVEMAGNETICS/starpower-core/actions/runs/32741246754", "authority": "GitHub"}
+      ]
+    },
+    {
+      "id": "software-victoros-android-v01",
+      "date": "2026-08-24",
+      "date_precision": "day",
+      "category": "software",
+      "title": "VictorOS Android v0.1 permissionless baseline",
+      "claim": "VictorOS Android v0.1 is merged after the exact-head workflow built a non-empty debug APK and verified the merged APK requests zero Android permissions, disables normal application backup, and disables cleartext traffic. Physical-device install, OEM/runtime behavior, and force-stop/restart continuity have not yet been recorded as evidence and are not claimed by this entry.",
+      "proof_level": "IMMUTABLE_COMMIT",
+      "status": "VERIFIED",
+      "evidence": [
+        {"label": "VictorOS Android merge commit 3b5194a", "url": "https://github.com/MASSIVEMAGNETICS/victorOS/commit/3b5194a856fbc811e067435b02919b473bf637be", "authority": "GitHub"},
+        {"label": "VictorOS Android pull request #3", "url": "https://github.com/MASSIVEMAGNETICS/victorOS/pull/3", "authority": "GitHub"},
+        {"label": "Android exact-head APK workflow", "url": "https://github.com/MASSIVEMAGNETICS/victorOS/actions/runs/32538397537", "authority": "GitHub"}
       ]
     },
     {
