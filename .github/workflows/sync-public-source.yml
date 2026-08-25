@@ -13,7 +13,7 @@ concurrency:
 
 jobs:
   sync:
-    if: ${{ !startsWith(github.event.head_commit.message, 'chore(site): sync generated public source') }}
+    if: "${{ !startsWith(github.event.head_commit.message, 'chore(site): sync generated public source') }}"
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
