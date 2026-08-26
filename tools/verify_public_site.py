@@ -14,9 +14,9 @@ EXPECTED_STOREFRONT_CHECKOUTS = 18
 EXPECTED_STOREFRONT_FORMATS = {"digital", "cd", "signed_cd"}
 EXPECTED_RELEASE_ARTWORK = {
     "/assets/releases/one-man-show.webp",
-    "/assets/releases/generations.webp",
+    "/assets/releases/generations.svg",
     "/assets/releases/exit-velocity.webp",
-    "/assets/releases/steel-city.webp",
+    "/assets/releases/steel-city-fire.webp",
     "/assets/releases/nowhere-left-to-go.webp",
     "/assets/releases/crybaby-deluxe.webp",
 }
@@ -153,7 +153,11 @@ def verify(base_url: str) -> list[str]:
 
         for artwork_path in EXPECTED_RELEASE_ARTWORK:
             artwork = fetch_bytes(urljoin(base, artwork_path.lstrip("/")))
-            if len(artwork) < 1000 or not artwork.startswith(b"RIFF") or artwork[8:12] != b"WEBP":
+            if artwork_path.endswith(".svg"):
+                valid_artwork = len(artwork) >= 1000 and b"<svg" in artwork and b"GENERATIONS" in artwork
+            else:
+                valid_artwork = len(artwork) >= 1000 and artwork.startswith(b"RIFF") and artwork[8:12] == b"WEBP"
+            if not valid_artwork:
                 errors.append(f"storefront artwork is missing or invalid: {artwork_path}")
         if commerce.get("schema_version") != "1.0.0" or commerce.get("status") != "active":
             errors.append("storefront commerce registry is not active")
