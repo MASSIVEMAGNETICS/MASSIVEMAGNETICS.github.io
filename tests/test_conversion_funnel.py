@@ -80,7 +80,7 @@ class ConversionFunnelTests(unittest.TestCase):
         self.assertIn('href="/privacy/"', network)
         self.assertIn('href="/terms/"', network)
 
-\n
+
     def test_storefront_revenue_contract_is_active_and_attributed(self) -> None:
         commerce = json.loads((ROOT / "store" / "commerce.json").read_text(encoding="utf-8"))
         assets = json.loads((ROOT / "store" / "assets" / "assets.json").read_text(encoding="utf-8"))
