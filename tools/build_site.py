@@ -13,6 +13,7 @@ COPY_ITEMS = [
     ".nojekyll",
     "CNAME",
     "analytics.js",
+    "assets",
     "favicon.svg",
     "index.html",
     "audit",
@@ -158,6 +159,15 @@ def build(output: Path) -> None:
         if not source.exists():
             raise FileNotFoundError(f"required deploy source missing: {item}")
         copy_item(source, output / item)
+
+    # The storefront historically kept two artwork trees. Publish one stable
+    # root URL for every release while preserving higher-quality canonical art.
+    public_releases = output / "assets" / "releases"
+    public_releases.mkdir(parents=True, exist_ok=True)
+    for source in sorted((ROOT / "store" / "assets" / "releases").glob("*.webp")):
+        destination = public_releases / source.name
+        if not destination.exists():
+            shutil.copy2(source, destination)
 
     # Publish only the explicitly public registry partition.
     shutil.copytree(ROOT / "registry" / "public", output / "registry" / "public")
