@@ -172,7 +172,7 @@ def verify(base_url: str) -> list[str]:
             "COMMERCE_REGISTRY_URL",
             "client_reference_id",
             "buy.stripe.com",
-            "data-checkout",
+            "dataset.checkout",
         ):
             if required_token not in store_js:
                 errors.append(f"storefront checkout hydrator missing {required_token}")
