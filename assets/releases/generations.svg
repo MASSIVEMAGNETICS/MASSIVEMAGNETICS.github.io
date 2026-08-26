@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 900" role="img" aria-labelledby="title desc">
+  <title id="title">GENERATIONS by IAMBANDOBANDZ</title>
+  <desc id="desc">Official storefront release card for the GENERATIONS YouTube Topic preview.</desc>
+  <defs>
+    <radialGradient id="glow" cx="50%" cy="42%" r="70%">
+      <stop offset="0" stop-color="#4d101d"/>
+      <stop offset=".52" stop-color="#18050a"/>
+      <stop offset="1" stop-color="#050505"/>
+    </radialGradient>
+    <linearGradient id="signal" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#ff174f"/>
+      <stop offset="1" stop-color="#8b001f"/>
+    </linearGradient>
+    <pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse">
+      <path d="M48 0H0V48" fill="none" stroke="#fff" stroke-opacity=".035"/>
+    </pattern>
+  </defs>
+  <rect width="900" height="900" fill="url(#glow)"/>
+  <rect width="900" height="900" fill="url(#grid)"/>
+  <circle cx="450" cy="358" r="244" fill="none" stroke="#ff174f" stroke-opacity=".12" stroke-width="2"/>
+  <circle cx="450" cy="358" r="194" fill="none" stroke="#ff174f" stroke-opacity=".2" stroke-width="2"/>
+  <path d="M240 438C318 294 374 240 450 240s132 54 210 198" fill="none" stroke="url(#signal)" stroke-width="12" stroke-linecap="round"/>
+  <path d="M286 438c62-104 108-146 164-146s102 42 164 146" fill="none" stroke="#f4eee9" stroke-opacity=".7" stroke-width="5" stroke-linecap="round"/>
+  <circle cx="450" cy="240" r="18" fill="#ff174f"/>
+  <text x="450" y="590" fill="#f4eee9" font-family="Arial,Helvetica,sans-serif" font-size="92" font-weight="900" text-anchor="middle" letter-spacing="3">GENERATIONS</text>
+  <text x="450" y="650" fill="#ff174f" font-family="Arial,Helvetica,sans-serif" font-size="28" font-weight="700" text-anchor="middle" letter-spacing="10">IAMBANDOBANDZ</text>
+  <line x1="170" y1="720" x2="730" y2="720" stroke="#fff" stroke-opacity=".18"/>
+  <text x="450" y="772" fill="#aaa2a5" font-family="Arial,Helvetica,sans-serif" font-size="22" text-anchor="middle" letter-spacing="7">OFFICIAL TOPIC PREVIEW</text>
+</svg>

@@ -142,9 +142,9 @@ class ConversionFunnelTests(unittest.TestCase):
         self.assertNotIn("https://i.ytimg.com/vi/", store_html)
         for artwork in (
             "one-man-show.webp",
-            "generations.webp",
+            "generations.svg",
             "exit-velocity.webp",
-            "steel-city.webp",
+            "steel-city-fire.webp",
             "nowhere-left-to-go.webp",
             "crybaby-deluxe.webp",
         ):
@@ -159,6 +159,9 @@ class ConversionFunnelTests(unittest.TestCase):
 
     def test_pages_build_publishes_stable_release_artwork_paths(self) -> None:
         build = (ROOT / "tools" / "build_site.py").read_text(encoding="utf-8")
+        generations = (ROOT / "assets" / "releases" / "generations.svg").read_text(encoding="utf-8")
+        self.assertIn("GENERATIONS", generations)
+        self.assertIn("OFFICIAL TOPIC PREVIEW", generations)
         self.assertIn('"assets",', build)
         self.assertIn('ROOT / "store" / "assets" / "releases"', build)
         self.assertIn("if not destination.exists()", build)
