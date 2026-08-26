@@ -115,5 +115,36 @@ class ConversionFunnelTests(unittest.TestCase):
         self.assertIn("ref: main", workflow)
 
 
+    def test_storefront_uses_verified_topic_album_previews(self) -> None:
+        assets = json.loads((ROOT / "store" / "assets" / "assets.json").read_text(encoding="utf-8"))
+        store_html = (ROOT / "store" / "index.html").read_text(encoding="utf-8")
+        store_js = (ROOT / "store" / "store.js").read_text(encoding="utf-8")
+
+        expected = {
+            "IBB-OMS-2026": ("olH5942yddM", "OLAK5uy_m3j3wtewn4BJMOe4btGq9jPZEnPa-m6Cs"),
+            "IBB-GEN-2026": ("foRJ8q8x_q8", "OLAK5uy_nsmPNSHpSiPhRiTU3u4rbCvrp_m6eFRRc"),
+            "IBB-EV-2026": ("4TgHn9RKERo", "OLAK5uy_mDogzoVxHLGG5qjeN97te2Zx8ATY4nZkU"),
+            "IBB-SC-2026": ("1-pZ5uzTRpA", "OLAK5uy_m7rYCjq-KW8XXL1XM3cjIz558gWTiARmM"),
+            "IBB-NLTG-2026": ("vK4PWv-mmuk", "OLAK5uy_mjJeIVVNumnWcQ5VLXe3fhVPAicibcZlY"),
+            "IBB-CB-DLX-2025": ("CemdQwlEMMc", "OLAK5uy_nMXGRDwiYwvd-Dlj5pa_LVi0quPHjWFKY"),
+        }
+        products = {product["sku"]: product for product in assets["products"]}
+        self.assertEqual(set(products), set(expected))
+        for sku, (video_id, playlist_id) in expected.items():
+            preview = products[sku]["preview"]
+            self.assertEqual(preview["provider"], "youtube_topic")
+            self.assertEqual(preview["channel_id"], "UCIaEOclqKUzIVPfkEuGzEEQ")
+            self.assertEqual(preview["video_id"], video_id)
+            self.assertEqual(preview["playlist_id"], playlist_id)
+            self.assertIn(f'data-youtube-video="{video_id}"', store_html)
+            self.assertIn(f'data-youtube-playlist="{playlist_id}"', store_html)
+
+        self.assertEqual(store_html.count("https://i.ytimg.com/vi/"), 8)
+        self.assertIn("https://www.youtube-nocookie.com/embed/", store_js)
+        self.assertIn("pointerenter", store_js)
+        self.assertIn("pointerleave", store_js)
+        self.assertIn("playsinline", store_js)
+
+
 if __name__ == "__main__":
     unittest.main()
