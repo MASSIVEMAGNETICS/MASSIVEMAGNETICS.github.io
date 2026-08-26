@@ -80,6 +80,40 @@ class ConversionFunnelTests(unittest.TestCase):
         self.assertIn('href="/privacy/"', network)
         self.assertIn('href="/terms/"', network)
 
+\n
+    def test_storefront_revenue_contract_is_active_and_attributed(self) -> None:
+        commerce = json.loads((ROOT / "store" / "commerce.json").read_text(encoding="utf-8"))
+        assets = json.loads((ROOT / "store" / "assets" / "assets.json").read_text(encoding="utf-8"))
+        store_js = (ROOT / "store" / "store.js").read_text(encoding="utf-8")
+
+        self.assertEqual(commerce["status"], "active")
+        self.assertEqual(set(commerce["formats"]), {"digital", "cd", "signed_cd"})
+        self.assertTrue(
+            all(
+                details["checkout_url"].startswith("https://buy.stripe.com/")
+                for details in commerce["formats"].values()
+            )
+        )
+
+        products = {product["sku"]: product for product in assets["products"]}
+        self.assertEqual(set(commerce["catalog_skus"]), set(products))
+        checkout_count = sum(
+            1
+            for sku in commerce["catalog_skus"]
+            for format_name in products[sku]["formats"]
+            if format_name in commerce["formats"]
+        )
+        self.assertEqual(checkout_count, 18)
+        for token in ("COMMERCE_REGISTRY_URL", "client_reference_id", "buy.stripe.com", "data-checkout"):
+            self.assertIn(token, store_js)
+
+    def test_custom_deploy_recovers_after_automated_pages_publish(self) -> None:
+        workflow = (ROOT / ".github" / "workflows" / "deploy.yml").read_text(encoding="utf-8")
+        self.assertIn('"Frontier Radar Refresh"', workflow)
+        self.assertIn('"pages build and deployment"', workflow)
+        self.assertIn("github.event.workflow_run.conclusion == 'success'", workflow)
+        self.assertIn("ref: main", workflow)
+
 
 if __name__ == "__main__":
     unittest.main()
