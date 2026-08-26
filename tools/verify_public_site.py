@@ -12,6 +12,14 @@ from urllib.request import Request, urlopen
 USER_AGENT = "iambandobandz-public-verifier/1.1"
 EXPECTED_STOREFRONT_CHECKOUTS = 18
 EXPECTED_STOREFRONT_FORMATS = {"digital", "cd", "signed_cd"}
+EXPECTED_RELEASE_ARTWORK = {
+    "/assets/releases/one-man-show.webp",
+    "/assets/releases/generations.webp",
+    "/assets/releases/exit-velocity.webp",
+    "/assets/releases/steel-city.webp",
+    "/assets/releases/nowhere-left-to-go.webp",
+    "/assets/releases/crybaby-deluxe.webp",
+}
 REQUIRED_SITEMAP_ROUTES = {
     "/",
     "/proof/",
@@ -28,12 +36,16 @@ REQUIRED_SITEMAP_ROUTES = {
 }
 
 
-def fetch_text(url: str, timeout: int = 20) -> str:
+def fetch_bytes(url: str, timeout: int = 20) -> bytes:
     request = Request(url, headers={"User-Agent": USER_AGENT, "Accept": "*/*"})
     with urlopen(request, timeout=timeout) as response:  # noqa: S310 - fixed owner-controlled URLs
         if response.status != 200:
             raise RuntimeError(f"HTTP {response.status}: {url}")
-        return response.read().decode("utf-8")
+        return response.read()
+
+
+def fetch_text(url: str, timeout: int = 20) -> str:
+    return fetch_bytes(url, timeout=timeout).decode("utf-8")
 
 
 def verify(base_url: str) -> list[str]:
@@ -134,8 +146,15 @@ def verify(base_url: str) -> list[str]:
         assets = json.loads(get("/store/assets/assets.json"))
         store_js = get("/store/store.js")
 
-        if '<script src="/store/store.js" defer></script>' not in store:
-            errors.append("storefront checkout hydrator is not loaded")
+        if '<script src="/store/store.js?v=2026.08.25.2" defer></script>' not in store:
+            errors.append("storefront checkout hydrator is not loaded at the current version")
+        if '<link rel="stylesheet" href="/store/styles.css?v=2026.08.25.2">' not in store:
+            errors.append("storefront stylesheet is not loaded at the current version")
+
+        for artwork_path in EXPECTED_RELEASE_ARTWORK:
+            artwork = fetch_bytes(urljoin(base, artwork_path.lstrip("/")))
+            if len(artwork) < 1000 or not artwork.startswith(b"RIFF") or artwork[8:12] != b"WEBP":
+                errors.append(f"storefront artwork is missing or invalid: {artwork_path}")
         if commerce.get("schema_version") != "1.0.0" or commerce.get("status") != "active":
             errors.append("storefront commerce registry is not active")
         if commerce.get("canonical_path") != "https://iambandobandz.com/store/":
@@ -173,6 +192,8 @@ def verify(base_url: str) -> list[str]:
             "client_reference_id",
             "buy.stripe.com",
             "dataset.checkout",
+            "youtube-nocookie.com",
+            "installTopicPreview",
         ):
             if required_token not in store_js:
                 errors.append(f"storefront checkout hydrator missing {required_token}")

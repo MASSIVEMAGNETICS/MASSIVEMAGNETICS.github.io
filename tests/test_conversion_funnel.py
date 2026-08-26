@@ -139,11 +139,30 @@ class ConversionFunnelTests(unittest.TestCase):
             self.assertIn(f'data-youtube-video="{video_id}"', store_html)
             self.assertIn(f'data-youtube-playlist="{playlist_id}"', store_html)
 
-        self.assertEqual(store_html.count("https://i.ytimg.com/vi/"), 8)
+        self.assertNotIn("https://i.ytimg.com/vi/", store_html)
+        for artwork in (
+            "one-man-show.webp",
+            "generations.webp",
+            "exit-velocity.webp",
+            "steel-city.webp",
+            "nowhere-left-to-go.webp",
+            "crybaby-deluxe.webp",
+        ):
+            self.assertIn(f'/assets/releases/{artwork}', store_html)
+        self.assertIn('/store/styles.css?v=2026.08.25.2', store_html)
+        self.assertIn('/store/store.js?v=2026.08.25.2', store_html)
         self.assertIn("https://www.youtube-nocookie.com/embed/", store_js)
         self.assertIn("pointerenter", store_js)
         self.assertIn("pointerleave", store_js)
         self.assertIn("playsinline", store_js)
+
+
+    def test_pages_build_publishes_stable_release_artwork_paths(self) -> None:
+        build = (ROOT / "tools" / "build_site.py").read_text(encoding="utf-8")
+        self.assertIn('"assets",', build)
+        self.assertIn('ROOT / "store" / "assets" / "releases"', build)
+        self.assertIn("if not destination.exists()", build)
+        self.assertIn("shutil.copy2(source, destination)", build)
 
 
 if __name__ == "__main__":
