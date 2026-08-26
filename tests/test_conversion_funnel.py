@@ -104,7 +104,7 @@ class ConversionFunnelTests(unittest.TestCase):
             if format_name in commerce["formats"]
         )
         self.assertEqual(checkout_count, 18)
-        for token in ("COMMERCE_REGISTRY_URL", "client_reference_id", "buy.stripe.com", "data-checkout"):
+        for token in ("COMMERCE_REGISTRY_URL", "client_reference_id", "buy.stripe.com", "dataset.checkout"):
             self.assertIn(token, store_js)
 
     def test_custom_deploy_recovers_after_automated_pages_publish(self) -> None:
