@@ -4,8 +4,9 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 from pathlib import Path
-from urllib.parse import urlparse
+from urllib.parse import parse_qs, urlparse
 
 ROOT = Path(__file__).resolve().parent.parent
 STORE = ROOT / "store"
@@ -21,6 +22,7 @@ REQUIRED_SKUS = {
     "IBB-CB-DLX-2025",
 }
 REQUIRED_FORMATS = {"digital", "cd", "signed_cd"}
+YOUTUBE_TOPIC_CHANNEL_ID = "UCIaEOclqKUzIVPfkEuGzEEQ"
 
 
 def fail(message: str) -> None:
@@ -98,6 +100,37 @@ def validate_asset_registry() -> None:
             fail(f"product {sku} is absent from store/index.html")
         if product.get("art_asset") not in ids:
             fail(f"product {sku} references unknown art asset")
+
+        preview = product.get("preview") or {}
+        if preview.get("provider") != "youtube_topic":
+            fail(f"product {sku} preview must use youtube_topic")
+        if preview.get("channel_id") != YOUTUBE_TOPIC_CHANNEL_ID:
+            fail(f"product {sku} preview points to the wrong Topic channel")
+        video_id = preview.get("video_id") or ""
+        playlist_id = preview.get("playlist_id") or ""
+        if not re.fullmatch(r"[A-Za-z0-9_-]{11}", video_id):
+            fail(f"product {sku} has invalid YouTube video_id")
+        if not re.fullmatch(r"OLAK5uy[A-Za-z0-9_-]+", playlist_id):
+            fail(f"product {sku} has invalid YouTube album playlist_id")
+
+        watch = urlparse(preview.get("watch_url") or "")
+        watch_query = parse_qs(watch.query)
+        if (
+            watch.scheme != "https"
+            or watch.netloc != "www.youtube.com"
+            or watch.path != "/watch"
+            or watch_query.get("v") != [video_id]
+            or watch_query.get("list") != [playlist_id]
+        ):
+            fail(f"product {sku} has an invalid Topic watch_url")
+
+        thumbnail = urlparse(preview.get("thumbnail_url") or "")
+        if (
+            thumbnail.scheme != "https"
+            or thumbnail.netloc != "i.ytimg.com"
+            or thumbnail.path != f"/vi/{video_id}/hqdefault.jpg"
+        ):
+            fail(f"product {sku} has an invalid YouTube thumbnail_url")
         formats = set(product.get("formats") or [])
         if not REQUIRED_FORMATS.issubset(formats):
             fail(f"product {sku} does not expose all launch formats")
@@ -158,7 +191,7 @@ def validate_site_boundary() -> None:
         fail(f"CNAME boundary changed unexpectedly: {cname!r}")
 
     script = (STORE / "store.js").read_text(encoding="utf-8")
-    for required in ("/store/commerce.json", "client_reference_id", "checkout_start"):
+    for required in ("/store/commerce.json", "client_reference_id", "checkout_start", "youtube-nocookie.com", "installTopicPreview"):
         if required not in script:
             fail(f"store.js missing commerce binding: {required}")
 
@@ -167,7 +200,7 @@ def main() -> int:
     validate_site_boundary()
     validate_asset_registry()
     validate_commerce_registry()
-    print("Store validation passed: assets, hashes, SKUs, Stripe commerce, attribution, and CNAME are consistent.")
+    print("Store validation passed: assets, hashes, SKUs, Topic previews, Stripe commerce, attribution, and CNAME are consistent.")
     return 0
 
 
