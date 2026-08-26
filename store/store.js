@@ -4,6 +4,8 @@
   const ASSET_REGISTRY_URL = '/store/assets/assets.json';
   const COMMERCE_REGISTRY_URL = '/store/commerce.json';
   const FORMAT_ORDER = ['digital', 'cd', 'signed_cd'];
+  const TOPIC_CHANNEL_ID = 'UCIaEOclqKUzIVPfkEuGzEEQ';
+  const YOUTUBE_EMBED_ORIGIN = 'https://www.youtube-nocookie.com/embed/';
 
   function validCheckout(format) {
     if (!format || !format.checkout_url || !Number.isInteger(format.price_cents) || format.price_cents <= 0) {
@@ -87,6 +89,117 @@
     }
   }
 
+
+  function validTopicPreview(product) {
+    const preview = product && product.preview;
+    return Boolean(
+      preview &&
+      preview.provider === 'youtube_topic' &&
+      preview.channel_id === TOPIC_CHANNEL_ID &&
+      /^[A-Za-z0-9_-]{11}$/.test(preview.video_id || '') &&
+      /^OLAK5uy[A-Za-z0-9_-]+$/.test(preview.playlist_id || '')
+    );
+  }
+
+  function previewEmbedUrl(preview) {
+    const url = new URL(preview.video_id, YOUTUBE_EMBED_ORIGIN);
+    url.searchParams.set('list', preview.playlist_id);
+    url.searchParams.set('autoplay', '1');
+    url.searchParams.set('mute', '1');
+    url.searchParams.set('playsinline', '1');
+    url.searchParams.set('rel', '0');
+    return url.toString();
+  }
+
+  function installTopicPreview(card, product) {
+    if (!validTopicPreview(product) || card.querySelector('.release-media')) return;
+
+    const trigger = card.querySelector('.cover-link');
+    if (!trigger) return;
+
+    const preview = product.preview;
+    const shell = document.createElement('div');
+    shell.className = 'release-media';
+    trigger.before(shell);
+    shell.appendChild(trigger);
+    trigger.classList.add('preview-trigger');
+    trigger.href = preview.watch_url;
+    trigger.dataset.youtubeVideo = preview.video_id;
+    trigger.dataset.youtubePlaylist = preview.playlist_id;
+    trigger.setAttribute('aria-label', `Preview ${product.title} from the IAMBANDOBANDZ Topic channel`);
+
+    const badge = document.createElement('span');
+    badge.className = 'preview-badge';
+    badge.setAttribute('aria-hidden', 'true');
+    badge.textContent = '▶ PREVIEW';
+    trigger.appendChild(badge);
+
+    let pinned = false;
+
+    function unloadPreview(restoreFocus = false) {
+      shell.querySelector('.youtube-preview')?.remove();
+      shell.querySelector('.preview-close')?.remove();
+      shell.removeAttribute('data-preview-active');
+      shell.removeAttribute('data-preview-mode');
+      pinned = false;
+      if (restoreFocus) trigger.focus();
+    }
+
+    function loadPreview(mode) {
+      if (shell.querySelector('.youtube-preview')) {
+        if (mode === 'pinned') {
+          pinned = true;
+          shell.dataset.previewMode = 'pinned';
+        }
+        return;
+      }
+
+      const frame = document.createElement('iframe');
+      frame.className = 'youtube-preview';
+      frame.src = previewEmbedUrl(preview);
+      frame.title = `${product.title} — IAMBANDOBANDZ Topic preview`;
+      frame.loading = 'eager';
+      frame.allow = 'autoplay; encrypted-media; picture-in-picture';
+      frame.referrerPolicy = 'strict-origin-when-cross-origin';
+      frame.allowFullscreen = true;
+
+      const close = document.createElement('button');
+      close.className = 'preview-close';
+      close.type = 'button';
+      close.textContent = 'Close preview';
+      close.setAttribute('aria-label', `Close ${product.title} preview`);
+      close.addEventListener('click', () => unloadPreview(true));
+
+      shell.append(frame, close);
+      shell.dataset.previewActive = 'true';
+      shell.dataset.previewMode = mode;
+      pinned = mode === 'pinned';
+      if (pinned) close.focus();
+    }
+
+    trigger.addEventListener('click', (event) => {
+      event.preventDefault();
+      loadPreview('pinned');
+    });
+
+    shell.addEventListener('pointerenter', () => {
+      if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+        loadPreview('hover');
+      }
+    });
+
+    shell.addEventListener('pointerleave', () => {
+      if (!pinned) unloadPreview();
+    });
+
+    shell.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && shell.dataset.previewActive === 'true') {
+        event.preventDefault();
+        unloadPreview(true);
+      }
+    });
+  }
+
   async function hydrateStore() {
     try {
       const [assetResponse, commerceResponse] = await Promise.all([
@@ -116,6 +229,7 @@
           return;
         }
         card.dataset.registryState = 'verified';
+        installTopicPreview(card, product);
 
         const purchase = card.querySelector('.buy-request');
         if (!purchase) return;
