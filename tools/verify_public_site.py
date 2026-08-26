@@ -5,11 +5,13 @@ import json
 import sys
 import time
 from urllib.error import HTTPError, URLError
-from urllib.parse import urljoin
+from urllib.parse import urljoin, urlparse
 from urllib.request import Request, urlopen
 
 
-USER_AGENT = "iambandobandz-public-verifier/1.0"
+USER_AGENT = "iambandobandz-public-verifier/1.1"
+EXPECTED_STOREFRONT_CHECKOUTS = 18
+EXPECTED_STOREFRONT_FORMATS = {"digital", "cd", "signed_cd"}
 REQUIRED_SITEMAP_ROUTES = {
     "/",
     "/proof/",
@@ -124,6 +126,58 @@ def verify(base_url: str) -> list[str]:
             errors.append("Frontier Radar canonical URL missing")
     except Exception as exc:  # noqa: BLE001
         errors.append(f"Frontier Radar unavailable: {exc}")
+
+
+    try:
+        store = get("/store/")
+        commerce = json.loads(get("/store/commerce.json"))
+        assets = json.loads(get("/store/assets/assets.json"))
+        store_js = get("/store/store.js")
+
+        if '<script src="/store/store.js" defer></script>' not in store:
+            errors.append("storefront checkout hydrator is not loaded")
+        if commerce.get("schema_version") != "1.0.0" or commerce.get("status") != "active":
+            errors.append("storefront commerce registry is not active")
+        if commerce.get("canonical_path") != "https://iambandobandz.com/store/":
+            errors.append("storefront commerce registry canonical path mismatch")
+
+        formats = commerce.get("formats", {})
+        if set(formats) != EXPECTED_STOREFRONT_FORMATS:
+            errors.append("storefront commerce formats drifted from digital/CD/signed CD")
+        for format_name, details in formats.items():
+            checkout_url = details.get("checkout_url", "")
+            parsed = urlparse(checkout_url)
+            if parsed.scheme != "https" or parsed.netloc != "buy.stripe.com":
+                errors.append(f"storefront {format_name} checkout is not an approved Stripe URL")
+            if not isinstance(details.get("price_cents"), int) or details["price_cents"] <= 0:
+                errors.append(f"storefront {format_name} price is missing or invalid")
+
+        catalog_skus = commerce.get("catalog_skus", [])
+        products = {item.get("sku"): item for item in assets.get("products", [])}
+        if set(catalog_skus) != set(products):
+            errors.append("storefront commerce SKU set does not match the asset registry")
+        checkout_count = sum(
+            1
+            for sku in catalog_skus
+            for format_name in products.get(sku, {}).get("formats", [])
+            if format_name in formats
+        )
+        if checkout_count != EXPECTED_STOREFRONT_CHECKOUTS:
+            errors.append(
+                f"storefront exposes {checkout_count} configured checkouts; "
+                f"expected {EXPECTED_STOREFRONT_CHECKOUTS}"
+            )
+
+        for required_token in (
+            "COMMERCE_REGISTRY_URL",
+            "client_reference_id",
+            "buy.stripe.com",
+            "data-checkout",
+        ):
+            if required_token not in store_js:
+                errors.append(f"storefront checkout hydrator missing {required_token}")
+    except Exception as exc:  # noqa: BLE001
+        errors.append(f"storefront revenue contract invalid or unavailable: {exc}")
 
     return errors
 
