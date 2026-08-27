@@ -1,0 +1,46 @@
+{
+  "schema_version": "store-sync/1.0",
+  "revision": "2026.08.27.1",
+  "authority": "store/sync-contract.json",
+  "policy": {
+    "single_writer": true,
+    "derived_registry": "store/assets/assets.json",
+    "derived_storefront": "store/index.html",
+    "commerce_registry": "store/commerce.json",
+    "rule": "The sync contract selects each SKU's canonical artwork. Commerce status is sourced only from commerce.json. Derived representations must reconcile before validation or deployment."
+  },
+  "releases": [
+    {
+      "sku": "IBB-OMS-2026",
+      "art_asset": "release.one_man_show.cover",
+      "public_art_path": "/assets/releases/one-man-show.webp"
+    },
+    {
+      "sku": "IBB-GEN-2026",
+      "art_asset": "release.generations.cover",
+      "public_art_path": "/assets/releases/generations.svg",
+      "width": 900,
+      "height": 900
+    },
+    {
+      "sku": "IBB-EV-2026",
+      "art_asset": "release.exit_velocity.cover",
+      "public_art_path": "/assets/releases/exit-velocity.webp"
+    },
+    {
+      "sku": "IBB-SC-2026",
+      "art_asset": "release.steel_city.cover",
+      "public_art_path": "/assets/releases/steel-city-fire.webp"
+    },
+    {
+      "sku": "IBB-NLTG-2026",
+      "art_asset": "release.nowhere_left_to_go.cover",
+      "public_art_path": "/assets/releases/nowhere-left-to-go.webp"
+    },
+    {
+      "sku": "IBB-CB-DLX-2025",
+      "art_asset": "release.crybaby.deluxe.cover",
+      "public_art_path": "/assets/releases/crybaby-deluxe.webp"
+    }
+  ]
+}
