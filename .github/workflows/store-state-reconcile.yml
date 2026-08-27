@@ -1,0 +1,55 @@
+name: Store State Reconciliation
+
+on:
+  push:
+    branches: [main, "sync/**"]
+    paths:
+      - "store/sync-contract.json"
+      - "store/assets/assets.json"
+      - "store/commerce.json"
+      - "store/index.html"
+      - "assets/releases/**"
+      - "tools/reconcile_store_state.py"
+      - "store/validate_store.py"
+      - ".github/workflows/store-state-reconcile.yml"
+  schedule:
+    - cron: "23 */6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: store-state-reconcile-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  reconcile:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout triggering branch
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - name: Setup Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - name: Reconcile derived registry
+        run: python tools/reconcile_store_state.py
+      - name: Validate reconciled state
+        run: |
+          python tools/reconcile_store_state.py --check
+          python store/validate_store.py
+      - name: Commit semantic reconciliation when needed
+        shell: bash
+        run: |
+          if git diff --quiet -- store/assets/assets.json; then
+            echo "No storefront state drift."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add store/assets/assets.json
+          git commit -m "chore(sync): reconcile canonical storefront state"
+          git push origin "HEAD:${GITHUB_REF_NAME}"

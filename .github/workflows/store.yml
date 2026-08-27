@@ -2,14 +2,18 @@ name: Validate Direct Store
 
 on:
   push:
-    branches: [main, "agent/**"]
+    branches: [main, "agent/**", "sync/**"]
     paths:
       - "store/**"
+      - "assets/releases/**"
+      - "tools/reconcile_store_state.py"
       - ".github/workflows/store.yml"
       - "CNAME"
   pull_request:
     paths:
       - "store/**"
+      - "assets/releases/**"
+      - "tools/reconcile_store_state.py"
       - ".github/workflows/store.yml"
       - "CNAME"
 
@@ -20,11 +24,13 @@ jobs:
   validate-store:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with:
-          python-version: "3.11"
-      - name: Compile validator
-        run: python -m py_compile store/validate_store.py
+          python-version: "3.12"
+      - name: Compile synchronization and validation gates
+        run: python -m py_compile tools/reconcile_store_state.py store/validate_store.py
+      - name: Prove committed state is reconciled
+        run: python tools/reconcile_store_state.py --check
       - name: Verify storefront contract
         run: python store/validate_store.py

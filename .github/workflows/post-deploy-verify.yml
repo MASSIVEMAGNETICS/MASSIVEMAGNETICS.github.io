@@ -26,3 +26,5 @@ jobs:
           python-version: '3.12'
       - name: Verify deployed search and identity contract
         run: python tools/verify_public_site.py --base-url https://iambandobandz.com/ --retries 8 --delay 20
+      - name: Verify deployed synchronization contract
+        run: python tools/verify_live_store_sync.py --base-url https://iambandobandz.com/ --retries 8 --delay 20
