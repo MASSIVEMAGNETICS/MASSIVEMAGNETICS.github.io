@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
   workflow_run:
-    workflows: ["Frontier Radar Refresh", "pages build and deployment", "Store State Reconciliation"]
+    workflows: ["Frontier Radar Refresh", "pages build and deployment"]
     types: [completed]
   workflow_dispatch:
 
