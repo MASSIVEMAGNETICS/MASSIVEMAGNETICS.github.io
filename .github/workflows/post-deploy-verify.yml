@@ -80,7 +80,7 @@ jobs:
       - name: Perform one bounded recovery deployment
         id: recovery_deployment
         if: ${{ steps.public_contract.outcome != 'success' || steps.store_contract.outcome != 'success' }}
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
 
       - name: Verify recovered live surface
         if: ${{ steps.public_contract.outcome != 'success' || steps.store_contract.outcome != 'success' }}
