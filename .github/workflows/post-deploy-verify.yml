@@ -4,16 +4,26 @@ on:
   workflow_run:
     workflows: ["Deploy IAMBANDOBANDZ"]
     types: [completed]
+  schedule:
+    - cron: "47 * * * *"
   workflow_dispatch:
 
 permissions:
   contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
 
 jobs:
   verify-live-site:
-    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    timeout-minutes: 20
+    environment:
+      name: github-pages
     steps:
       - name: Checkout canonical main
         uses: actions/checkout@v7
@@ -24,7 +34,56 @@ jobs:
         uses: actions/setup-python@v7
         with:
           python-version: '3.12'
+
       - name: Verify deployed search and identity contract
+        id: public_contract
+        continue-on-error: true
         run: python tools/verify_public_site.py --base-url https://iambandobandz.com/ --retries 8 --delay 20
       - name: Verify deployed synchronization contract
+        id: store_contract
+        continue-on-error: true
         run: python tools/verify_live_store_sync.py --base-url https://iambandobandz.com/ --retries 8 --delay 20
+
+      - name: Report healthy live surface
+        if: ${{ steps.public_contract.outcome == 'success' && steps.store_contract.outcome == 'success' }}
+        run: echo "Live public surface matches canonical contracts."
+
+      - name: Reconcile and validate source before bounded recovery
+        if: ${{ steps.public_contract.outcome != 'success' || steps.store_contract.outcome != 'success' }}
+        run: |
+          python tools/reconcile_store_state.py
+          python tools/reconcile_store_state.py --check
+          python store/validate_store.py
+          python tools/validate_registry.py
+          python -m unittest discover -s tests -v
+          if [ -f frontier-radar/data/feed.sha256 ]; then
+            python tools/validate_frontier_feed.py frontier-radar/data/feed.json \
+              --status frontier-radar/data/status.json \
+              --digest frontier-radar/data/feed.sha256
+          fi
+
+      - name: Build bounded recovery artifact
+        if: ${{ steps.public_contract.outcome != 'success' || steps.store_contract.outcome != 'success' }}
+        run: |
+          python tools/build_site.py --output _site
+          cp -R frontier-radar _site/frontier-radar
+          python tools/validate_registry.py --site _site
+
+      - name: Configure Pages for bounded recovery
+        if: ${{ steps.public_contract.outcome != 'success' || steps.store_contract.outcome != 'success' }}
+        uses: actions/configure-pages@v6
+      - name: Upload bounded recovery artifact
+        if: ${{ steps.public_contract.outcome != 'success' || steps.store_contract.outcome != 'success' }}
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+      - name: Perform one bounded recovery deployment
+        id: recovery_deployment
+        if: ${{ steps.public_contract.outcome != 'success' || steps.store_contract.outcome != 'success' }}
+        uses: actions/deploy-pages@v4
+
+      - name: Verify recovered live surface
+        if: ${{ steps.public_contract.outcome != 'success' || steps.store_contract.outcome != 'success' }}
+        run: |
+          python tools/verify_public_site.py --base-url https://iambandobandz.com/ --retries 8 --delay 20
+          python tools/verify_live_store_sync.py --base-url https://iambandobandz.com/ --retries 8 --delay 20
