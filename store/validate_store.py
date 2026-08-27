@@ -12,6 +12,7 @@ ROOT = Path(__file__).resolve().parent.parent
 STORE = ROOT / "store"
 REGISTRY_PATH = STORE / "assets" / "assets.json"
 COMMERCE_PATH = STORE / "commerce.json"
+SYNC_CONTRACT_PATH = STORE / "sync-contract.json"
 EXPECTED_CNAME = "iambandobandz.com"
 REQUIRED_SKUS = {
     "IBB-OMS-2026",
@@ -38,15 +39,34 @@ def sha256(path: Path) -> str:
 
 
 def local_asset_path(web_path: str) -> Path:
-    prefix = "/store/"
-    if not isinstance(web_path, str) or not web_path.startswith(prefix):
-        fail(f"asset path must be rooted under {prefix}: {web_path!r}")
-    candidate = ROOT / web_path.lstrip("/")
+    if not isinstance(web_path, str) or not web_path.startswith("/"):
+        fail(f"asset path must be site-rooted: {web_path!r}")
+    candidate = (ROOT / web_path.lstrip("/")).resolve()
     try:
-        candidate.resolve().relative_to(STORE.resolve())
+        candidate.relative_to(ROOT.resolve())
     except ValueError:
-        fail(f"asset escapes store root: {web_path}")
+        fail(f"asset escapes repository root: {web_path}")
+    allowed = (
+        (ROOT / "store" / "assets").resolve(),
+        (ROOT / "assets" / "releases").resolve(),
+    )
+    if not any(candidate == root or root in candidate.parents for root in allowed):
+        fail(f"asset is outside allowed storefront roots: {web_path}")
     return candidate
+
+
+def load_sync_contract() -> dict:
+    if not SYNC_CONTRACT_PATH.is_file():
+        fail("store/sync-contract.json is missing")
+    contract = json.loads(SYNC_CONTRACT_PATH.read_text(encoding="utf-8"))
+    if contract.get("schema_version") != "store-sync/1.0":
+        fail("unsupported store sync contract")
+    releases = contract.get("releases")
+    if not isinstance(releases, list) or not releases:
+        fail("store sync contract requires releases")
+    if {r.get("sku") for r in releases} != REQUIRED_SKUS:
+        fail("store sync contract SKU set drifted")
+    return contract
 
 
 def validate_asset_registry() -> None:
@@ -56,22 +76,30 @@ def validate_asset_registry() -> None:
     if data.get("schema_version") != "1.0.0":
         fail("unsupported asset schema_version")
 
+    contract = load_sync_contract()
+    commerce = json.loads(COMMERCE_PATH.read_text(encoding="utf-8"))
     storefront = data.get("storefront") or {}
     if storefront.get("payment_urls_fabricated") is not False:
         fail("payment_urls_fabricated must remain false")
     if storefront.get("dns_state") != "not_changed_by_this_branch":
         fail("store branch may not claim a DNS change")
+    if storefront.get("checkout_state") != commerce.get("status"):
+        fail("storefront checkout_state drifted from commerce registry")
+    if storefront.get("canonical_path") != commerce.get("canonical_path"):
+        fail("storefront canonical_path drifted from commerce registry")
 
     assets = data.get("assets")
     if not isinstance(assets, list) or not assets:
         fail("assets must be a non-empty list")
     ids: set[str] = set()
+    asset_by_id: dict[str, dict] = {}
     hash_errors: list[str] = []
     for asset in assets:
         asset_id = asset.get("id")
         if not asset_id or asset_id in ids:
             fail(f"missing or duplicate asset id: {asset_id!r}")
         ids.add(asset_id)
+        asset_by_id[asset_id] = asset
         path = local_asset_path(asset.get("path"))
         if not path.is_file():
             fail(f"registered asset is missing: {path.relative_to(ROOT)}")
@@ -87,19 +115,39 @@ def validate_asset_registry() -> None:
     products = data.get("products")
     if not isinstance(products, list):
         fail("products must be a list")
-    product_skus = [p.get("sku") for p in products]
-    if len(product_skus) != len(set(product_skus)):
+    product_by_sku = {p.get("sku"): p for p in products}
+    product_skus = list(product_by_sku)
+    if len(product_skus) != len(products):
         fail("product SKUs must be unique")
     if set(product_skus) != REQUIRED_SKUS:
         fail(f"catalog SKU set drifted: {sorted(product_skus)}")
 
     html = (STORE / "index.html").read_text(encoding="utf-8")
-    for product in products:
-        sku = product["sku"]
-        if f'data-sku="{sku}"' not in html:
-            fail(f"product {sku} is absent from store/index.html")
-        if product.get("art_asset") not in ids:
+    for release in contract["releases"]:
+        sku = release["sku"]
+        product = product_by_sku[sku]
+        asset_id = release["art_asset"]
+        public_path = release["public_art_path"]
+
+        if product.get("art_asset") != asset_id:
+            fail(f"product {sku} art_asset drifted from sync contract")
+        if asset_id not in ids:
             fail(f"product {sku} references unknown art asset")
+        if asset_by_id[asset_id].get("path") != public_path:
+            fail(f"registered artwork path drifted for {sku}")
+        if product.get("checkout_state") != commerce.get("status"):
+            fail(f"product {sku} checkout_state drifted from commerce registry")
+
+        marker = f'data-sku="{sku}"'
+        if marker not in html:
+            fail(f"product {sku} is absent from store/index.html")
+        start = html.index(marker)
+        end = html.find("</article>", start)
+        if end < 0:
+            fail(f"product {sku} article is malformed")
+        block = html[start:end]
+        if f'src="{public_path}"' not in block:
+            fail(f"rendered artwork path drifted for {sku}: expected {public_path}")
 
         preview = product.get("preview") or {}
         if preview.get("provider") != "youtube_topic":
@@ -182,6 +230,7 @@ def validate_site_boundary() -> None:
         "store/styles.css",
         "store/store.js",
         "store/commerce.json",
+        "store/sync-contract.json",
         "store/thanks/index.html",
     ):
         if not (ROOT / relative).is_file():
@@ -191,16 +240,25 @@ def validate_site_boundary() -> None:
         fail(f"CNAME boundary changed unexpectedly: {cname!r}")
 
     script = (STORE / "store.js").read_text(encoding="utf-8")
-    for required in ("/store/commerce.json", "client_reference_id", "checkout_start", "youtube-nocookie.com", "installTopicPreview"):
+    for required in (
+        "/store/commerce.json",
+        "client_reference_id",
+        "checkout_start",
+        "youtube-nocookie.com",
+        "installTopicPreview",
+    ):
         if required not in script:
             fail(f"store.js missing commerce binding: {required}")
 
 
 def main() -> int:
     validate_site_boundary()
-    validate_asset_registry()
     validate_commerce_registry()
-    print("Store validation passed: assets, hashes, SKUs, Topic previews, Stripe commerce, attribution, and CNAME are consistent.")
+    validate_asset_registry()
+    print(
+        "Store validation passed: sync contract, rendered artwork, asset hashes, SKUs, "
+        "Topic previews, Stripe commerce, attribution, and CNAME are consistent."
+    )
     return 0
 
 
