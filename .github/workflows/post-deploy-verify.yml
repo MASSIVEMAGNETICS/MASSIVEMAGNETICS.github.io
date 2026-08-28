@@ -74,13 +74,13 @@ jobs:
         uses: actions/configure-pages@v6
       - name: Upload bounded recovery artifact
         if: ${{ steps.public_contract.outcome != 'success' || steps.store_contract.outcome != 'success' }}
-        uses: actions/upload-pages-artifact@v4
+        uses: actions/upload-pages-artifact@v5
         with:
           path: _site
       - name: Perform one bounded recovery deployment
         id: recovery_deployment
         if: ${{ steps.public_contract.outcome != 'success' || steps.store_contract.outcome != 'success' }}
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
 
       - name: Verify recovered live surface
         if: ${{ steps.public_contract.outcome != 'success' || steps.store_contract.outcome != 'success' }}
