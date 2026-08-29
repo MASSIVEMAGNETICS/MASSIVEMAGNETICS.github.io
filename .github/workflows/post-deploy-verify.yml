@@ -77,6 +77,7 @@ jobs:
         uses: actions/upload-pages-artifact@v5
         with:
           path: _site
+          include-hidden-files: true
       - name: Perform one bounded recovery deployment
         id: recovery_deployment
         if: ${{ steps.public_contract.outcome != 'success' || steps.store_contract.outcome != 'success' }}
