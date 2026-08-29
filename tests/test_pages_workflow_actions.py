@@ -41,6 +41,23 @@ class PagesWorkflowActionGenerationTests(unittest.TestCase):
                 self.assertIn(action, deploy)
                 self.assertIn(action, recovery)
 
+    def test_pages_uploads_include_well_known_identity_files(self) -> None:
+        for relative_path in (
+            ".github/workflows/deploy.yml",
+            ".github/workflows/post-deploy-verify.yml",
+        ):
+            with self.subTest(workflow=relative_path):
+                workflow = self._read(relative_path)
+                upload_marker = "uses: actions/upload-pages-artifact@v5"
+                self.assertIn(upload_marker, workflow)
+                upload_section = workflow.split(upload_marker, 1)[1].split("uses: actions/deploy-pages@v5", 1)[0]
+                self.assertIn("include-hidden-files: true", upload_section)
+
+    def test_site_builder_emits_well_known_identity_manifest(self) -> None:
+        builder = self._read("tools/build_site.py")
+        self.assertIn('well_known = output / ".well-known"', builder)
+        self.assertIn('(well_known / "iambandobandz.json").write_text(', builder)
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)
