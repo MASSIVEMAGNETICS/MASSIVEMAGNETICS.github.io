@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#05070c" />
+  <title>Victor Experience / REM Consolidation Lab</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div class="noise"></div>
+  <header class="topbar">
+    <div><div class="eyebrow">MASSIVE MAGNETICS · VICTOR EXPERIENCE SYSTEM</div><h1>REM CONSOLIDATION LAB</h1><p>Experience is immutable. Interpretation is derived. Resonance ≠ truth.</p></div>
+    <div class="status-pill"><span></span> PUBLIC PROTOTYPE ONLINE</div>
+  </header>
+  <section id="metrics" class="metrics"></section>
+  <nav class="tabs" id="tabs">
+    <button data-tab="experience" class="active">Experience Buffer</button><button data-tab="sleep">Sleep Console</button><button data-tab="graph">The Light Graph</button><button data-tab="narrative">Narrative Memory</button><button data-tab="learning">Learning Candidates</button><button data-tab="chronos">Chronos Receipts</button>
+  </nav>
+  <main>
+    <section class="panel tab-panel active" id="tab-experience">
+      <div class="panel-head"><div><span class="kicker">WAKE</span><h2>Capture Experience</h2></div><div class="actions"><button id="seedDemo">Load demo</button><button id="exportBtn">Export JSON</button><label class="buttonlike">Import JSON<input id="importFile" type="file" accept="application/json" hidden></label></div></div>
+      <form id="experienceForm" class="experience-form">
+        <label>Event type<input name="eventType" value="observation" /></label>
+        <label class="span-2">Experience<textarea name="text" rows="3" placeholder="What happened? Record the observation, not the interpretation." required></textarea></label>
+        <label>Source / provenance<input name="source" placeholder="camera-A, user-report, sensor-log…" value="manual" /></label>
+        <label>Tags<input name="tags" placeholder="topic:light, visual, anomaly" /></label>
+        <label>Emotion <output data-out="emotionalWeight">0.20</output><input name="emotionalWeight" type="range" min="-1" max="1" step="0.01" value="0.2" /></label>
+        <label>Novelty <output data-out="novelty">0.70</output><input name="novelty" type="range" min="0" max="1" step="0.01" value="0.7" /></label>
+        <label>Salience <output data-out="salience">0.70</output><input name="salience" type="range" min="0" max="1" step="0.01" value="0.7" /></label>
+        <label>Prediction error <output data-out="predictionError">0.60</output><input name="predictionError" type="range" min="0" max="1" step="0.01" value="0.6" /></label>
+        <label>Evidence quality <output data-out="evidenceQuality">0.70</output><input name="evidenceQuality" type="range" min="0" max="1" step="0.01" value="0.7" /></label>
+        <div class="form-submit"><button class="primary" type="submit">Append immutable episode</button><span id="formMsg"></span></div>
+      </form>
+      <div class="section-title"><h3>Raw episodes</h3><span>append-only source ledger</span></div><div id="episodes" class="cards"></div>
+    </section>
+    <section class="panel tab-panel" id="tab-sleep">
+      <div class="panel-head"><div><span class="kicker">SLEEP</span><h2>NREM → REM Pipeline</h2></div></div>
+      <div class="sleep-grid">
+        <article class="sleep-card"><span>01</span><h3>NREM staging</h3><p>Ranks experiences by salience, novelty, prediction error, evidence and emotional intensity. Raw traces remain unchanged.</p><button id="runNrem" class="primary">Run NREM</button></article>
+        <article class="sleep-card"><span>02</span><h3>REM replay</h3><p>Replays staged episodes through The Light resonance graph, preserves contradictions and derives narrative/world-model candidates.</p><button id="runRem" class="primary">Run REM</button></article>
+        <article class="sleep-card"><span>03</span><h3>Verification</h3><p>Resonance is structural recurrence, not truth. Evidence quality, provenance diversity and contradiction pressure gate promotion.</p><button id="verifyAll">Verify all candidates</button></article>
+      </div><div id="sleepReport" class="console"></div>
+    </section>
+    <section class="panel tab-panel" id="tab-graph"><div class="panel-head"><div><span class="kicker">THE LIGHT</span><h2>Perceptual Resonance Graph</h2></div></div><div class="graph-layout"><svg id="graphSvg" viewBox="0 0 1000 620" role="img" aria-label="Experience resonance graph"></svg><aside id="nodeInspector" class="inspector"><h3>Node inspector</h3><p>Select a node to inspect source lineage.</p></aside></div></section>
+    <section class="panel tab-panel" id="tab-narrative"><div class="panel-head"><div><span class="kicker">DERIVED</span><h2>Narrative Memory</h2><p>What did it mean? Every abstraction retains its source episode IDs.</p></div></div><div id="narratives" class="cards"></div></section>
+    <section class="panel tab-panel" id="tab-learning"><div class="panel-head"><div><span class="kicker">VERIFY</span><h2>Learning Candidates</h2></div><button id="commitVerified" class="primary">Commit verified transitions</button></div><div id="candidates" class="cards"></div></section>
+    <section class="panel tab-panel" id="tab-chronos"><div class="panel-head"><div><span class="kicker">CHRONOS</span><h2>Receipt Chain</h2></div><div><button id="verifyChain">Verify chain</button> <button id="resetDerived" class="danger">Reset derived state</button></div></div><div id="chainStatus" class="console"></div><div id="chronos" class="cards"></div></section>
+  </main>
+  <footer><strong>Prototype boundary:</strong> This is a deterministic computational demonstration of memory lifecycle ideas. It does not claim biological consciousness, literal REM physiology, or quantum behavior.</footer>
+  <div id="toast" class="toast"></div><pre id="self-test" class="self-test" aria-live="polite"></pre>
+  <script type="module" src="./app.mjs"></script>
+</body>
+</html>
