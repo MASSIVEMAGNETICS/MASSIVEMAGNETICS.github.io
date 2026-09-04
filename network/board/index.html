@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#080808">
+  <meta name="color-scheme" content="dark">
+  <title>B Heard Board Alpha — B Heard Network</title>
+  <meta name="description" content="B Heard Board Alpha: a public creator message board for music drops, feedback, collaborations, opportunities, and B Heard Network community discussion.">
+  <meta name="robots" content="index,follow,max-image-preview:large">
+  <link rel="canonical" href="https://iambandobandz.com/network/board/">
+  <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/network/board/board.css">
+</head>
+<body>
+<a class="skip-link" href="#main">Skip to content</a>
+<header class="site-header">
+  <a class="wordmark" href="/network/" aria-label="B Heard Network home">B HEARD NETWORK</a>
+  <nav class="nav-links" aria-label="Board navigation"><a href="/network/board/" aria-current="page">Board</a><a href="/network/">Creator Promo</a><a href="/">Empire</a><a href="/proof/">Proof</a></nav>
+  <a class="header-cta" data-board-action="new-thread" href="https://github.com/MASSIVEMAGNETICS/MASSIVEMAGNETICS.github.io/issues/new?template=b-heard-board.yml">Start a thread ↗</a>
+</header>
+
+<main id="main">
+  <section class="board-hero" id="top">
+    <div class="board-grid" aria-hidden="true"></div>
+    <div class="board-hero-copy">
+      <p class="eyebrow">B HEARD NETWORK / COMMUNITY ALPHA / PUBLIC</p>
+      <h1>THE BOARD<br><em>IS OPEN.</em></h1>
+      <p class="board-lead">A deliberately simple message board before the full B Heard platform and app. Read without an account. A free GitHub account is currently required to start or reply to a thread.</p>
+      <div class="hero-actions">
+        <a class="button button-primary" data-board-action="new-thread" href="https://github.com/MASSIVEMAGNETICS/MASSIVEMAGNETICS.github.io/issues/new?template=b-heard-board.yml">Start a public thread ↗</a>
+        <a class="button button-ghost" href="#threads">Read the board</a>
+      </div>
+      <div class="alpha-contract" role="note">
+        <strong>ALPHA CONTRACT</strong>
+        <span>Threads + replies persist in the public MASSIVEMAGNETICS GitHub repository. The website is the branded read layer. No fake engagement, no hidden posting system, no claim that this is the final account backend.</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="board-section" id="threads">
+    <div class="board-heading">
+      <div>
+        <p class="eyebrow">Live community state</p>
+        <h2>PUBLIC THREADS</h2>
+      </div>
+      <div class="board-stats" aria-live="polite">
+        <div><span id="thread-count">—</span><small>Threads</small></div>
+        <div><span id="reply-count">—</span><small>Replies</small></div>
+        <div><span id="board-updated">—</span><small>Latest</small></div>
+      </div>
+    </div>
+
+    <div class="board-toolbar" aria-label="Board filters">
+      <div id="category-filters" class="category-filters">
+        <button type="button" class="category-chip active" data-category="ALL">All</button>
+        <button type="button" class="category-chip" data-category="GENERAL">General</button>
+        <button type="button" class="category-chip" data-category="INTRODUCE YOURSELF">Introductions</button>
+        <button type="button" class="category-chip" data-category="DROP YOUR MUSIC">Drop Your Music</button>
+        <button type="button" class="category-chip" data-category="FEEDBACK / REVIEWS">Feedback</button>
+        <button type="button" class="category-chip" data-category="PRODUCERS & ARTISTS">Collabs</button>
+        <button type="button" class="category-chip" data-category="OPPORTUNITIES">Opportunities</button>
+        <button type="button" class="category-chip" data-category="MASSIVE MAGNETICS / BUILDS">Builds</button>
+      </div>
+      <button type="button" class="board-refresh" id="board-refresh">Refresh</button>
+    </div>
+
+    <div id="board-status" class="board-status" role="status">Loading public threads…</div>
+    <div id="thread-list" class="thread-list" aria-live="polite"></div>
+
+    <noscript>
+      <div class="board-status">JavaScript is required for the live thread index. You can still use the public board directly on GitHub: <a href="https://github.com/MASSIVEMAGNETICS/MASSIVEMAGNETICS.github.io/issues?q=is%3Aissue+%5BBOARD%5D">open B Heard Board threads ↗</a></div>
+    </noscript>
+  </section>
+
+  <section class="board-section board-how" id="how-it-works">
+    <div class="board-heading">
+      <div><p class="eyebrow">Alpha mechanics</p><h2>OLD-SCHOOL SIMPLE.<br>REAL PERSISTENCE.</h2></div>
+    </div>
+    <div class="board-cards">
+      <article><span>01 / READ</span><h3>Open by default</h3><p>Anyone can browse the thread index. Public discussion is intentionally visible so the community can exist before a private platform account system does.</p></article>
+      <article><span>02 / POST</span><h3>GitHub identity for Alpha</h3><p>Starting or replying to a thread currently uses GitHub authentication. That gives us real authorship and moderation without pretending we already operate a finished identity backend.</p></article>
+      <article><span>03 / MIGRATE</span><h3>Storage is replaceable</h3><p>The final B Heard account graph can replace this persistence layer later. The board categories, public URLs, community norms, and event contract survive the migration.</p></article>
+    </div>
+  </section>
+
+  <section class="board-section board-rules" id="rules">
+    <div class="board-heading">
+      <div><p class="eyebrow">Community boundary</p><h2>BE HEARD.<br>DON'T BURY PEOPLE.</h2></div>
+    </div>
+    <div class="rules-grid">
+      <div><b>Do</b><p>Share your work, give useful feedback, collaborate, ask real questions, post legitimate opportunities, and disagree with ideas without turning people into targets.</p></div>
+      <div><b>Don't</b><p>No spam floods, impersonation, doxxing, threats, scams, manufactured engagement, malware, illegal sales, or posting private information without permission.</p></div>
+      <div><b>Moderation</b><p>Threads are public repository issues. B Heard Network may edit labels, close, lock, or remove material that violates the board boundary or applicable platform rules.</p></div>
+    </div>
+  </section>
+
+  <section class="contact-section board-conversion" id="promotion">
+    <p class="eyebrow">Creator → community → campaign</p>
+    <h2>POST IT.<br><em>THEN PUSH IT.</em></h2>
+    <p>Dropping music on the board is free. If you want a bounded B Heard creator-promotion campaign, the existing $9.99 service remains the paid lane. Promotion work and outcomes are measured; streams, placements, followers, and algorithmic results are never guaranteed.</p>
+    <div class="contact-actions">
+      <a class="button button-primary" data-board-action="creator-promo" href="https://buy.stripe.com/14AaEWgU5dz23Y5aD7gbm09">Start $9.99 creator campaign ↗</a>
+      <a class="button button-ghost" href="/network/">Read the service boundary</a>
+    </div>
+  </section>
+
+  <section class="board-disclosure" aria-label="Board privacy disclosure">
+    <strong>Public-data notice.</strong> Threads, replies, GitHub usernames, avatars, timestamps, and reactions used by this Alpha are public GitHub data. Do not post information you expect to remain private. GitHub's own terms and privacy policy also apply when you post or reply there. B Heard's site <a href="/privacy/">Privacy</a> and <a href="/terms/">Terms</a> remain applicable to this web surface.
+  </section>
+</main>
+
+<footer><strong>B HEARD NETWORK / BOARD ALPHA</strong><span>© 2026 B Heard Network</span><span><a href="/privacy/">Privacy</a> · <a href="/terms/">Terms</a> · <a href="/proof/">Proof</a></span><a href="#top">Back to top ↑</a></footer>
+
+<script src="/network/board/board.js" defer></script>
+<script src="/analytics.js" defer></script>
+</body>
+</html>
