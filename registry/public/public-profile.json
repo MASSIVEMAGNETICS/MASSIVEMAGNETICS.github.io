@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0.0",
-  "registry_version": "2026.08.24.1",
+  "registry_version": "2026.09.03.1",
   "canonical_brand": "iambandobandz",
   "canonical_domain": "https://iambandobandz.com/",
   "site_name": "iambandobandz",
@@ -13,6 +13,7 @@
     {"path": "/signal/", "changefreq": "monthly", "priority": 0.9},
     {"path": "/store/", "changefreq": "weekly", "priority": 0.9},
     {"path": "/network/", "changefreq": "weekly", "priority": 0.85},
+    {"path": "/network/board/", "changefreq": "daily", "priority": 0.85},
     {"path": "/frontier-radar/", "changefreq": "daily", "priority": 0.8},
     {"path": "/portfolio/", "changefreq": "monthly", "priority": 0.7},
     {"path": "/jesus-told-me/", "changefreq": "monthly", "priority": 0.6},
