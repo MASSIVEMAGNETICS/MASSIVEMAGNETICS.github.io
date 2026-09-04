@@ -1,0 +1,63 @@
+name: B Heard Board thread
+description: Start a public thread on the B Heard Board Alpha
+title: "[BOARD] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## B Heard Board Alpha
+        This creates a **public** community thread. Your GitHub username, avatar, post, replies, timestamps, and reactions can be visible publicly. Do not post private information.
+
+        <!-- bheard-board:v1 -->
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: Category
+      description: Choose the closest board lane.
+      options:
+        - General
+        - Introduce Yourself
+        - Drop Your Music
+        - Feedback / Reviews
+        - Producers & Artists
+        - Opportunities
+        - B Heard Announcements
+        - Massive Magnetics / Builds
+    validations:
+      required: true
+
+  - type: input
+    id: display_name
+    attributes:
+      label: Display name
+      description: Artist, creator, project, or community name you want people to see.
+      placeholder: Your name or artist/project name
+    validations:
+      required: true
+
+  - type: input
+    id: music_link
+    attributes:
+      label: Music / project link
+      description: Optional public link relevant to this thread.
+      placeholder: https://...
+    validations:
+      required: false
+
+  - type: textarea
+    id: thread_body
+    attributes:
+      label: Thread
+      description: Say what you want the community to hear, answer, review, or collaborate on.
+      placeholder: Start the conversation...
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: conduct
+    attributes:
+      label: Public community boundary
+      options:
+        - label: I understand this is public and I will not post private information, doxxing, threats, scams, malware, illegal sales, impersonation, or manufactured engagement.
+          required: true
