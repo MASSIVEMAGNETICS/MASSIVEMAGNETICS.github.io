@@ -1,5 +1,5 @@
 {
-  "registry_version": "2026.08.24.1",
+  "registry_version": "2026.09.03.1",
   "canonical_brand": "iambandobandz",
   "canonical_domain": "https://iambandobandz.com/",
   "counts": {
@@ -12,6 +12,6 @@
     "identity": "b5b4f975595b903aed15aad9d095a00508d69fd1978bab244fce2a2a4c49b467",
     "platforms": "963c4e329c82b6ddcefa6ed3a302dc061e0ab08318d5fa3ce1bba424162452dd",
     "catalog": "322f49229c080f4a5309ad984439a7418f246835a21e071032f1125d29d47918",
-    "profile": "906b4fa2d599e7916d3793023d00edbd0974ce6ab3a7787fc73dba676b90e7b1"
+    "profile": "4b443138d8e7e7ff74987ddd131e537c212b002d885f8da0dafc06687aa12507"
   }
 }
