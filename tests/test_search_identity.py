@@ -47,6 +47,7 @@ class SearchIdentityContractTests(unittest.TestCase):
             "/signal/",
             "/store/",
             "/network/",
+            "/network/board/",
             "/frontier-radar/",
             "/portfolio/",
             "/jesus-told-me/",
