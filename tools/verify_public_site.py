@@ -9,7 +9,7 @@ from urllib.parse import urljoin, urlparse
 from urllib.request import Request, urlopen
 
 
-USER_AGENT = "iambandobandz-public-verifier/1.1"
+USER_AGENT = "iambandobandz-public-verifier/1.2"
 EXPECTED_STOREFRONT_CHECKOUTS = 18
 EXPECTED_STOREFRONT_FORMATS = {"digital", "cd", "signed_cd"}
 EXPECTED_RELEASE_ARTWORK = {
@@ -28,6 +28,7 @@ REQUIRED_SITEMAP_ROUTES = {
     "/signal/",
     "/store/",
     "/network/",
+    "/network/board/",
     "/frontier-radar/",
     "/portfolio/",
     "/jesus-told-me/",
@@ -139,6 +140,24 @@ def verify(base_url: str) -> list[str]:
     except Exception as exc:  # noqa: BLE001
         errors.append(f"Frontier Radar unavailable: {exc}")
 
+    try:
+        board = get("/network/board/")
+        board_js = get("/network/board/board.js")
+        board_css = get("/network/board/board.css")
+        if "<title>B Heard Board Alpha — B Heard Network</title>" not in board:
+            errors.append("B Heard Board Alpha title missing")
+        if '<link rel="canonical" href="https://iambandobandz.com/network/board/">' not in board:
+            errors.append("B Heard Board Alpha canonical URL missing")
+        if 'src="/network/board/board.js"' not in board or 'href="/network/board/board.css"' not in board:
+            errors.append("B Heard Board Alpha assets are not wired into the live page")
+        if "MASSIVEMAGNETICS/MASSIVEMAGNETICS.github.io" not in board_js:
+            errors.append("B Heard Board Alpha is not wired to the canonical public repository")
+        if "/issues?state=all" not in board_js:
+            errors.append("B Heard Board Alpha public thread adapter is missing")
+        if not board_css.strip():
+            errors.append("B Heard Board Alpha stylesheet is empty")
+    except Exception as exc:  # noqa: BLE001
+        errors.append(f"B Heard Board Alpha unavailable: {exc}")
 
     try:
         store = get("/store/")
