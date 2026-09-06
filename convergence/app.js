@@ -2,7 +2,6 @@
   'use strict';
 
   const USER = 'MASSIVEMAGNETICS';
-  const MAX_PUBLIC_PAGES = 5;
   const DAY = 86_400_000;
   const $ = (id) => document.getElementById(id);
   const clamp = (n, min = 0, max = 100) => Math.max(min, Math.min(max, n));
@@ -103,14 +102,23 @@
   }
 
   async function fetchPublicRepos() {
-    const collected = [];
-    for (let page = 1; page <= MAX_PUBLIC_PAGES; page += 1) {
+    const collected = new Map();
+    for (let page = 1; ; page += 1) {
       const batch = await fetchJson(`https://api.github.com/users/${USER}/repos?per_page=100&page=${page}&sort=updated&direction=desc`);
       if (!Array.isArray(batch)) throw new Error('GitHub repository response was not an array');
-      collected.push(...batch);
+
+      let added = 0;
+      for (const repo of batch) {
+        const identity = repo?.id || repo?.full_name || repo?.name;
+        if (!identity) throw new Error('GitHub repository response contained an item without a stable identity');
+        if (!collected.has(identity)) added += 1;
+        collected.set(identity, repo);
+      }
+
       if (batch.length < 100) break;
+      if (added === 0) throw new Error(`GitHub repository pagination repeated a full page at page ${page}; refusing an incomplete or non-terminating scan`);
     }
-    return [...new Map(collected.map((repo) => [repo.id || repo.full_name || repo.name,repo])).values()];
+    return [...collected.values()];
   }
 
   function evidenceRepoSet(ledger) {
