@@ -31,6 +31,14 @@ class ConvergenceDemoTests(unittest.TestCase):
         self.assertNotIn('method: "POST"', app)
         self.assertNotIn("api.github.com/repos/${USER}", app)
 
+    def test_public_repo_scan_is_not_artificially_page_capped(self) -> None:
+        app = (ROOT / "convergence" / "app.js").read_text(encoding="utf-8")
+        self.assertNotIn("MAX_PUBLIC_PAGES", app)
+        self.assertIn("for (let page = 1; ; page += 1)", app)
+        self.assertIn("if (batch.length < 100) break", app)
+        self.assertIn("pagination repeated a full page", app)
+        self.assertIn("const collected = new Map()", app)
+
     def test_demo_preserves_claim_and_human_boundaries(self) -> None:
         page = (ROOT / "convergence" / "index.html").read_text(encoding="utf-8")
         app = (ROOT / "convergence" / "app.js").read_text(encoding="utf-8")
