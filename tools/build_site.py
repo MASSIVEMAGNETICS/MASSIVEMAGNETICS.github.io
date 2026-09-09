@@ -17,6 +17,7 @@ COPY_ITEMS = [
     "favicon.svg",
     "index.html",
     "audit",
+    "convergence",
     "jesus-told-me",
     "network",
     "owner",
@@ -38,6 +39,7 @@ COPY_ITEMS = [
 
 ANALYTICS_PAGES = [
     "audit/index.html",
+    "convergence/index.html",
     "network/index.html",
     "proof/index.html",
     "research/index.html",

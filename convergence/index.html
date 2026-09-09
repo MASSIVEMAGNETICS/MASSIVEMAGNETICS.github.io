@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#050505">
+  <meta name="color-scheme" content="dark">
+  <title>Massive Magnetics Convergence Engine — Public Prototype</title>
+  <meta name="description" content="A public, evidence-bounded prototype that scans the Massive Magnetics public repository estate and composes high-leverage product candidates from verified capabilities.">
+  <meta name="robots" content="index,follow,max-image-preview:large">
+  <link rel="canonical" href="https://iambandobandz.com/convergence/">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/convergence/styles.css?v=2026.08.31.1">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Massive Magnetics">
+  <meta property="og:title" content="Convergence Engine — What can the portfolio become now?">
+  <meta property="og:description" content="Observe the frontier. Map the portfolio. Verify the evidence. Compose the next build.">
+  <meta property="og:url" content="https://iambandobandz.com/convergence/">
+  <meta property="og:image" content="https://iambandobandz.com/social-card.webp">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to analysis</a>
+
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="iambandobandz home">
+      <img src="/favicon.svg" alt="" width="44" height="44">
+      <span><strong>MASSIVE MAGNETICS</strong><small>CONVERGENCE ENGINE / V0</small></span>
+    </a>
+    <nav aria-label="Prototype navigation">
+      <a href="#candidate">Build candidate</a>
+      <a href="#genome">Portfolio genome</a>
+      <a href="#assemblies">Assemblies</a>
+      <a href="/proof/">Proof</a>
+    </nav>
+    <span class="live-pill" id="liveState">INITIALIZING</span>
+  </header>
+
+  <main id="main">
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">PUBLIC R&amp;D ORGANISM / EVIDENCE BEFORE HYPE</p>
+        <h1>WHAT CAN<br>ALL THESE PIECES<br><em>BECOME?</em></h1>
+        <p class="lead">This prototype reads the public Massive Magnetics repository estate, the Proof Ledger, Frontier Radar and live offer registries. It turns them into a capability graph and asks one bounded question: <strong>what is the strongest thing we can assemble next from parts that already exist?</strong></p>
+        <div class="hero-actions">
+          <button class="button primary" id="recomputeButton" type="button">RECOMPUTE CONVERGENCE</button>
+          <a class="button ghost" href="/frontier-radar/">OPEN FRONTIER RADAR ↗</a>
+        </div>
+        <p class="boundary">No private repository contents. No autonomous merges. No money movement. No claim is upgraded beyond its source evidence.</p>
+      </div>
+      <div class="orbital" aria-hidden="true">
+        <div class="orbit orbit-a"></div><div class="orbit orbit-b"></div><div class="orbit orbit-c"></div>
+        <div class="core">CONVERGE</div>
+        <span class="node n1">OBSERVE</span><span class="node n2">VERIFY</span><span class="node n3">COMPOSE</span><span class="node n4">PROVE</span><span class="node n5">SHIP</span>
+      </div>
+    </section>
+
+    <section class="metrics" aria-label="Live portfolio metrics">
+      <article><span>PUBLIC REPOS VISIBLE</span><strong id="repoCount">—</strong><small>GitHub public API only</small></article>
+      <article><span>PUBLIC PROOF ENTRIES</span><strong id="proofCount">—</strong><small>bounded evidence ledger</small></article>
+      <article><span>SELLABLE OFFERS</span><strong id="offerCount">—</strong><small>active source registries</small></article>
+      <article><span>FRONTIER SIGNALS</span><strong id="frontierCount">—</strong><small>latest validated snapshot</small></article>
+    </section>
+
+    <section class="panel candidate-panel" id="candidate">
+      <div class="section-heading">
+        <div><p class="eyebrow">HIGHEST-LEVERAGE ASSEMBLY</p><h2>THE MACHINE PICKS A BUILD.</h2></div>
+        <div class="score-ring"><span id="candidateScore">—</span><small>READINESS</small></div>
+      </div>
+      <div id="candidateContent" class="candidate-content" aria-live="polite">
+        <p class="loading">Scanning public portfolio and evidence anchors…</p>
+      </div>
+    </section>
+
+    <section class="panel" id="genome">
+      <div class="section-heading">
+        <div><p class="eyebrow">PORTFOLIO GENOME</p><h2>REPOSITORIES ARE PARTS, NOT PRODUCTS.</h2></div>
+        <p class="section-note">Classification is a transparent heuristic over public GitHub metadata plus explicit proof anchors. It is prioritization, not a legal, scientific or commercial conclusion.</p>
+      </div>
+      <div id="classGrid" class="class-grid"></div>
+      <div class="capability-wrap">
+        <h3>Capability density</h3>
+        <div id="capabilityBars" class="capability-bars"></div>
+      </div>
+    </section>
+
+    <section class="panel" id="assemblies">
+      <div class="section-heading">
+        <div><p class="eyebrow">SYNTHESIS QUEUE</p><h2>OTHER THINGS THE ESTATE CAN BECOME.</h2></div>
+        <p class="section-note">Each assembly requires multiple capability classes. The engine chooses the highest-readiness public repo for each role and exposes missing organs instead of pretending they exist.</p>
+      </div>
+      <div id="assemblyGrid" class="assembly-grid"></div>
+    </section>
+
+    <section class="panel split-panel">
+      <div>
+        <p class="eyebrow">EVIDENCE CHAIN</p>
+        <h2>WHY TRUST THE OUTPUT?</h2>
+        <div id="proofSummary" class="stack-list"></div>
+      </div>
+      <div>
+        <p class="eyebrow">COMMERCIAL STATE</p>
+        <h2>CAN ANY OF IT MAKE MONEY?</h2>
+        <div id="commerceSummary" class="stack-list"></div>
+      </div>
+    </section>
+
+    <section class="panel architecture">
+      <p class="eyebrow">BOUNDARY-PRESERVING ARCHITECTURE</p>
+      <h2>OBSERVE → MAP → VERIFY → COMPOSE → HUMAN DECISION.</h2>
+      <div class="flow" role="img" aria-label="Frontier Radar and public GitHub feed portfolio intelligence, Truth Compiler verifies evidence, Convergence Engine composes candidates, human approval remains required before execution">
+        <div><strong>01</strong><span>FRONTIER RADAR</span><small>outside signals</small></div><i>→</i>
+        <div><strong>02</strong><span>PORTFOLIO GENOME</span><small>internal public assets</small></div><i>→</i>
+        <div><strong>03</strong><span>TRUTH / PROOF</span><small>evidence boundary</small></div><i>→</i>
+        <div><strong>04</strong><span>CONVERGENCE</span><small>candidate assembly</small></div><i>→</i>
+        <div><strong>05</strong><span>HUMAN GATE</span><small>build / kill / defer</small></div>
+      </div>
+      <p class="architecture-note">The frontier move is not adding another intelligence model. It is making the portfolio itself computational: every repository becomes a typed capability node; every proof artifact raises confidence; every missing dependency stays visible; every candidate can be traced back to the parts that produced it.</p>
+    </section>
+  </main>
+
+  <footer>
+    <div><strong>MASSIVE MAGNETICS // CONVERGENCE ENGINE</strong><span>Public prototype V0 · generated recommendations are advisory.</span></div>
+    <div><a href="/proof/">Proof</a><a href="/research/">Research</a><a href="/audit/">Truth Compiler</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a></div>
+  </footer>
+
+  <noscript><div class="noscript">JavaScript is required because this demo computes its portfolio graph in your browser from public evidence.</div></noscript>
+  <script src="/convergence/app.js?v=2026.08.31.1" defer></script>
+</body>
+</html>
