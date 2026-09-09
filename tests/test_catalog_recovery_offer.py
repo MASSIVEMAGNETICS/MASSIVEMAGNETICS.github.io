@@ -31,6 +31,9 @@ class CatalogRecoveryOfferTests(unittest.TestCase):
         self.assertEqual(self.offer["checkout"]["status"], "pending_live_payment_link")
         self.assertIsNone(self.offer["checkout"]["checkout_url"])
         self.assertEqual(urlparse(self.offer["request_url"]).scheme, "mailto")
+        self.assertEqual(self.offer["delivery"]["release_version"], "0.1.0")
+        self.assertTrue(self.offer["delivery"]["checksums_included"])
+        self.assertFalse(self.offer["delivery"]["code_signed"])
 
     def test_page_fails_closed_and_explains_price_refund_and_limits(self) -> None:
         page = (ROOT / "catalog-recovery" / "index.html").read_text(encoding="utf-8")
@@ -59,7 +62,12 @@ class CatalogRecoveryOfferTests(unittest.TestCase):
             ):
                 self.assertTrue((site / relative).is_file(), relative)
             page = (site / "catalog-recovery" / "index.html").read_text(encoding="utf-8")
+            thanks = (site / "catalog-recovery" / "thanks" / "index.html").read_text(
+                encoding="utf-8"
+            )
             self.assertIn('src="/analytics.js"', page)
+            self.assertIn("catalog-recovery-v0.1.0", thanks)
+            self.assertIn("SHA256SUMS.txt", thanks)
             sitemap = (site / "sitemap.xml").read_text(encoding="utf-8")
             self.assertIn("https://iambandobandz.com/catalog-recovery/", sitemap)
 
