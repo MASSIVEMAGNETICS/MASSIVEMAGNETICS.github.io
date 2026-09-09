@@ -24,6 +24,7 @@ REQUIRED_SITEMAP_ROUTES = {
     "/",
     "/proof/",
     "/audit/",
+    "/catalog-recovery/",
     "/research/",
     "/signal/",
     "/store/",
@@ -139,6 +140,36 @@ def verify(base_url: str) -> list[str]:
             errors.append("Frontier Radar canonical URL missing")
     except Exception as exc:  # noqa: BLE001
         errors.append(f"Frontier Radar unavailable: {exc}")
+
+    try:
+        recovery = get("/catalog-recovery/")
+        offer = json.loads(get("/catalog-recovery/offer.json"))
+        recovery_js = get("/catalog-recovery/offer.js")
+        if '<link rel="canonical" href="https://iambandobandz.com/catalog-recovery/">' not in recovery:
+            errors.append("Catalog Recovery canonical URL missing")
+        if offer.get("offer_code") != "catalog_recovery_founding_79":
+            errors.append("Catalog Recovery offer identity mismatch")
+        if offer.get("price_cents") != 7900 or offer.get("billing") != "one_time":
+            errors.append("Catalog Recovery price or billing contract mismatch")
+        checkout = offer.get("checkout") or {}
+        if offer.get("status") == "active":
+            parsed = urlparse(str(checkout.get("checkout_url", "")))
+            if (
+                checkout.get("status") != "active"
+                or parsed.scheme != "https"
+                or parsed.netloc not in {"buy.stripe.com", "book.stripe.com"}
+            ):
+                errors.append("active Catalog Recovery offer lacks an approved Stripe Payment Link")
+        elif offer.get("status") == "checkout_pending":
+            if checkout.get("checkout_url") is not None:
+                errors.append("pending Catalog Recovery offer must not expose a checkout URL")
+        else:
+            errors.append("Catalog Recovery offer status is invalid")
+        for token in ("isStripePaymentLink", "request-only", "offer.price_cents !== 7900"):
+            if token not in recovery_js:
+                errors.append(f"Catalog Recovery checkout hydrator missing {token}")
+    except Exception as exc:  # noqa: BLE001
+        errors.append(f"Catalog Recovery offer contract invalid or unavailable: {exc}")
 
     try:
         board = get("/network/board/")

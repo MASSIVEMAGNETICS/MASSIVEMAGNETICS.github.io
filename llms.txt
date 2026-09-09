@@ -14,6 +14,7 @@ This domain is the canonical public web property for iambandobandz and the owned
 - https://iambandobandz.com/proof/ — public proof ledger
 - https://iambandobandz.com/research/ — public research registry
 - https://iambandobandz.com/audit/ — Truth Compiler evidence audit
+- https://iambandobandz.com/catalog-recovery/ — local-first audio catalog recovery offer, scope, and purchase status
 - https://iambandobandz.com/frontier-radar/ — Massive Magnetics Frontier Radar
 - https://iambandobandz.com/portfolio/ — systems engineering portfolio
 - https://iambandobandz.com/signal/ — THE SIGNAL recognition experiment

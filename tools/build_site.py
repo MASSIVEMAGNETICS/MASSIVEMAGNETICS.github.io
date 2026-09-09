@@ -15,8 +15,10 @@ COPY_ITEMS = [
     "analytics.js",
     "assets",
     "favicon.svg",
+    "frontier-radar",
     "index.html",
     "audit",
+    "catalog-recovery",
     "jesus-told-me",
     "network",
     "owner",
@@ -38,6 +40,7 @@ COPY_ITEMS = [
 
 ANALYTICS_PAGES = [
     "audit/index.html",
+    "catalog-recovery/index.html",
     "network/index.html",
     "proof/index.html",
     "research/index.html",
