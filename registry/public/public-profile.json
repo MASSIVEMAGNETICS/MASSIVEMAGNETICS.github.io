@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0.0",
-  "registry_version": "2026.09.03.1",
+  "registry_version": "2026.09.09.1",
   "canonical_brand": "iambandobandz",
   "canonical_domain": "https://iambandobandz.com/",
   "site_name": "iambandobandz",
@@ -9,6 +9,7 @@
     {"path": "/", "changefreq": "weekly", "priority": 1.0},
     {"path": "/proof/", "changefreq": "weekly", "priority": 0.95},
     {"path": "/audit/", "changefreq": "weekly", "priority": 0.95},
+    {"path": "/catalog-recovery/", "changefreq": "weekly", "priority": 0.95},
     {"path": "/research/", "changefreq": "weekly", "priority": 0.9},
     {"path": "/signal/", "changefreq": "monthly", "priority": 0.9},
     {"path": "/store/", "changefreq": "weekly", "priority": 0.9},

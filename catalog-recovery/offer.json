@@ -1,0 +1,48 @@
+{
+  "schema_version": "1.0.0",
+  "registry_version": "2026.09.09.1",
+  "status": "checkout_pending",
+  "offer_code": "catalog_recovery_founding_79",
+  "name": "Founding Catalog Recovery Session",
+  "price_cents": 7900,
+  "currency": "USD",
+  "billing": "one_time",
+  "canonical_path": "https://iambandobandz.com/catalog-recovery/",
+  "checkout": {
+    "provider": "stripe_payment_link",
+    "status": "pending_live_payment_link",
+    "checkout_url": null,
+    "success_url": "https://iambandobandz.com/catalog-recovery/thanks/"
+  },
+  "request_url": "mailto:bandobandz440@gmail.com?subject=Founding%20Catalog%20Recovery%20Session&body=Tell%20me%20your%20computer%20type%20and%20rough%20audio-file%20count.%20Do%20not%20attach%20audio.",
+  "ideal_customer": "An independent creator with hundreds or thousands of original, unreleased, exported, backed-up, or AI-assisted audio versions spread across local folders.",
+  "scope": {
+    "catalog_roots": 1,
+    "maximum_audio_files": 10000,
+    "guided_session_minutes": 60,
+    "support_days": 7,
+    "source_audio_uploaded": false,
+    "source_audio_modified": false
+  },
+  "deliverables": [
+    "local searchable SQLite catalog",
+    "CSV and JSON inventory",
+    "SHA-256 exact-duplicate groups",
+    "metadata and technical-field inventory",
+    "corrupt and unreadable-file issue report",
+    "checksum scan receipt",
+    "guided local setup and report review",
+    "seven calendar days of email support"
+  ],
+  "limitations": [
+    "Exact duplicates are byte-for-byte matches, not similar-sounding recordings or alternate encodes.",
+    "The service does not delete, rename, move, retag, repair, or decide which source file to keep.",
+    "The service does not determine copyright ownership, licensing status, or royalty entitlement.",
+    "Scan time depends on storage speed, total bytes, file condition, and computer availability.",
+    "Unsigned preview executables may trigger operating-system security warnings until signed release packages are available."
+  ],
+  "refund_terms": "Request a cancellation before the guided session for a full refund. If the tool cannot produce a readable catalog on the supported system and no usable report is delivered, request a full refund within seven calendar days. A completed usable catalog is not refundable solely because it finds few or no duplicates. Non-waivable consumer rights still apply.",
+  "support_terms": "Email support covers installation, one scan or resume attempt, opening the catalog, and reading the included reports for seven calendar days after delivery. New features, audio repair, metadata correction, file reorganization, and additional catalog roots require a separate scope.",
+  "technical_proof": "https://github.com/MASSIVEMAGNETICS/truth-compiler-ai",
+  "sample_report": "https://github.com/MASSIVEMAGNETICS/truth-compiler-ai/tree/main/examples/sample-report"
+}

@@ -43,6 +43,7 @@ class SearchIdentityContractTests(unittest.TestCase):
             "/",
             "/proof/",
             "/audit/",
+            "/catalog-recovery/",
             "/research/",
             "/signal/",
             "/store/",
