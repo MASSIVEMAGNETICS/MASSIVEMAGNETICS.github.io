@@ -1,6 +1,6 @@
 {
   "schema_version": "1.0.0",
-  "registry_version": "2026.09.09.1",
+  "registry_version": "2026.09.09.2",
   "status": "checkout_pending",
   "offer_code": "catalog_recovery_founding_79",
   "name": "Founding Catalog Recovery Session",
@@ -43,6 +43,13 @@
   ],
   "refund_terms": "Request a cancellation before the guided session for a full refund. If the tool cannot produce a readable catalog on the supported system and no usable report is delivered, request a full refund within seven calendar days. A completed usable catalog is not refundable solely because it finds few or no duplicates. Non-waivable consumer rights still apply.",
   "support_terms": "Email support covers installation, one scan or resume attempt, opening the catalog, and reading the included reports for seven calendar days after delivery. New features, audio repair, metadata correction, file reorganization, and additional catalog roots require a separate scope.",
+  "delivery": {
+    "release_version": "0.1.0",
+    "release_url": "https://github.com/MASSIVEMAGNETICS/truth-compiler-ai/releases/tag/catalog-recovery-v0.1.0",
+    "platforms": ["Windows", "macOS", "Linux"],
+    "checksums_included": true,
+    "code_signed": false
+  },
   "technical_proof": "https://github.com/MASSIVEMAGNETICS/truth-compiler-ai",
   "sample_report": "https://github.com/MASSIVEMAGNETICS/truth-compiler-ai/tree/main/examples/sample-report"
 }
