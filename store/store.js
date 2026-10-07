@@ -87,6 +87,23 @@
     if (catalogNote) {
       catalogNote.textContent = 'Every checkout is bound to the canonical commerce registry and carries the selected release SKU into Stripe for reconciliation.';
     }
+
+    const howSteps = document.querySelectorAll('.how ol li');
+    if (howSteps.length >= 3) {
+      const checkoutHeading = howSteps[1].querySelector('h3');
+      const checkoutCopy = howSteps[1].querySelector('p');
+      const fulfillmentHeading = howSteps[2].querySelector('h3');
+      const fulfillmentCopy = howSteps[2].querySelector('p');
+
+      if (checkoutHeading) checkoutHeading.textContent = 'Check out securely.';
+      if (checkoutCopy) {
+        checkoutCopy.textContent = 'Select digital, CD, or signed CD and complete the live Stripe checkout. The release SKU and selected format stay attached to the order for reconciliation.';
+      }
+      if (fulfillmentHeading) fulfillmentHeading.textContent = 'Keep the receipt.';
+      if (fulfillmentCopy) {
+        fulfillmentCopy.textContent = 'The Stripe receipt is the traceable purchase record for fulfillment and support. U.S. shipping is included on physical orders.';
+      }
+    }
   }
 
 
