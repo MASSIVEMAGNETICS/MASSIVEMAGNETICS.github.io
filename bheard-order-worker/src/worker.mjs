@@ -23,7 +23,7 @@ export async function verifyStripeSignature(raw, header, secret, now = Date.now(
   if (!signatures.length) return false;
   const key = await crypto.subtle.importKey('raw', new TextEncoder().encode(secret),
     { name: 'HMAC', hash: 'SHA-256' }, false, ['verify']);
-  const payload = new TextEncoder().encode(`${{timestamp}.${{raw}`);
+  const payload = new TextEncoder().encode(`${timestamp}.${raw}`);
   for (const signature of signatures) {
     if (await crypto.subtle.verify('HMAC', key, signature, payload)) return true;
   }
@@ -52,8 +52,8 @@ export function extractIntake(session) {
 
 async function retrieveSession(sessionId, secret) {
   if (!/^cs_(live|test)_[A-Za-z0-9]+$/.test(sessionId)) throw new Error('invalid_session_id');
-  const response = await fetch(`https://api.stripe.com/v1/checkout/sessions/${{encodeURIComponent(sessionId)}`, {
-    headers: { authorization: `Bearer ${{secret}` }, signal: AbortSignal.timeout(8000),
+  const response = await fetch(`https://api.stripe.com/v1/checkout/sessions/${encodeURIComponent(sessionId)}`, {
+    headers: { authorization: `Bearer ${secret}` }, signal: AbortSignal.timeout(8000),
   });
   if (!response.ok) throw new Error('stripe_session_unavailable');
   return response.json();
