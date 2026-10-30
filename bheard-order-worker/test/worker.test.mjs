@@ -39,7 +39,7 @@ function db() {
     },
   };
 }
-async function send({ ev = event, fetched = session, database = db(), header, raw, fetchError = false } = {}) {
+async function send({ ev = event, fetched = session, database = db(), header, raw, fetchError = false, testMode = false } = {}) {
   const payload = raw ?? JSON.stringify(ev);
   const signature = header ?? await signedHeader(payload);
   const original = globalThis.fetch;
@@ -53,7 +53,7 @@ async function send({ ev = event, fetched = session, database = db(), header, ra
     const response = await worker.fetch(new Request('https://bheard.example/webhooks/stripe', {
       method: 'POST', headers: { 'stripe-signature': signature }, body: payload,
     }), { STRIPE_WEBHOOK_SECRET: secret, STRIPE_SECRET_KEY: stripeKey,
-      BHEARD_PAYMENT_LINK_ID: paymentLink, DB: database });
+      BHEARD_PAYMENT_LINK_ID: paymentLink, BHEARD_EXPECT_LIVEMODE: testMode ? 'false' : 'true', DB: database });
     return { status: response.status, data: await response.json(), database };
   } finally { globalThis.fetch = original; }
 }
@@ -116,4 +116,13 @@ test('wrong event type is ignored', async () => {
 test('ledger outage returns 503 for Stripe retry', async () => {
   const database = db(); database.batch = async () => { throw new Error('database_down'); };
   assert.equal((await send({ database })).status, 503);
+});
+
+test('isolated test-mode configuration accepts test events and rejects live events', async () => {
+  const testEvent = { ...event, id: 'evt_TEST456', livemode: false, data: { object: { object: 'checkout.session', id: 'cs_test_ABC123' } } };
+  const testSession = { ...session, id: 'cs_test_ABC123', livemode: false };
+  const database = db();
+  assert.equal((await send({ ev: testEvent, fetched: testSession, database, testMode: true })).data.action, 'order_recorded');
+  assert.equal(database.orders.size, 1);
+  assert.equal((await send({ database, testMode: true })).status, 400);
 });
