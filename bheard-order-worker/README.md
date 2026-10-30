@@ -8,7 +8,7 @@ This **undeployed** Cloudflare Worker receives signed Stripe Checkout events for
 - Route: `POST /webhooks/stripe` on a separately authorized B Heard backend origin.
 - D1 database binding: `DB`; apply `migrations/0001_orders.sql` before activation.
 - Secret bindings: `STRIPE_WEBHOOK_SECRET`, `STRIPE_SECRET_KEY` (live credentials only in deployed secrets, never committed).
-- Plaintext environment binding: `BHEARD_PAYMENT_LINK_ID` = `plink_1U5HMjCpO4d12HbZcK2NQg5p`.
+- Plaintext environment binding: `BHEARD_PAYMENT_LINK_ID` = `plink_1U5HMjCpO4d12HbZcK2NQg5p` for live mode. `BHEARD_EXPECT_LIVEMODE` defaults to `true`; set to `false` **only** in an isolated test environment with test keys and a test Payment Link ID.
 - Only `checkout.session.completed` and `checkout.session.async_payment_succeeded` are candidates. The handler verifies the raw-body HMAC and freshness, then fetches the authoritative Checkout Session from Stripe. It checks live mode, exact Payment Link, offer metadata, $9.99 USD and paid status before writing.
 - D1 atomic batch and primary-key constraints make duplicate session deliveries order-idempotent. Invalid creator intake is recorded as `needs_intake` for manual resolution. No order is automatically fulfilled.
 - A transient Stripe API or D1 failure returns 503 to trigger retry. Do not enable the live webhook until there is monitoring and a manual Stripe-session reconciliation/replay process; Stripe's retry window is finite.
