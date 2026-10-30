@@ -75,7 +75,8 @@ export default {
       return json({ error: 'invalid_signature' }, 400);
     let event;
     try { event = JSON.parse(raw); } catch { return json({ error: 'invalid_json' }, 400); }
-    if (!event || typeof event.id !== 'string' || !/^evt_[A-Za-z0-9]+$/.test(event.id) || event.livemode !== true)
+    const expectedLive = env.BHEARD_EXPECT_LIVEMODE !== 'false';
+    if (!event || typeof event.id !== 'string' || !/^evt_[A-Za-z0-9]+$/.test(event.id) || event.livemode !== expectedLive)
       return json({ error: 'invalid_event' }, 400);
     if (!['checkout.session.completed', 'checkout.session.async_payment_succeeded'].includes(event.type))
       return json({ received: true, action: 'ignored_event_type' });
@@ -85,7 +86,7 @@ export default {
     let session;
     try { session = await retrieveSession(eventSession.id, env.STRIPE_SECRET_KEY); }
     catch { return json({ error: 'upstream_unavailable' }, 503); }
-    if (session.id !== eventSession.id || session.livemode !== true ||
+    if (session.id !== eventSession.id || session.livemode !== expectedLive ||
         session.payment_link !== env.BHEARD_PAYMENT_LINK_ID ||
         session.currency !== 'usd' || session.amount_total !== 999 ||
         session.metadata?.offer_code !== OFFER)
