@@ -107,6 +107,26 @@ test('invalid creator URL never marks order ready', () => {
     { key: 'campaign_goal', type: 'dropdown', dropdown: { value: 'reach' } },
   ] }).state, 'needs_intake');
 });
+test('nonpublic and non-HTTPS release URLs remain needs_intake, not fulfillment-ready', () => {
+  const baseFields = [
+    { key: 'artist_name', type: 'text', text: { value: 'Example Artist' } },
+    { key: 'release_url', type: 'text', text: { value: '' } },
+    { key: 'campaign_goal', type: 'dropdown', dropdown: { value: 'reach' } },
+  ];
+  const intakeFor = (releaseUrl) => extractIntake({ custom_fields: [
+    baseFields[0], { ...baseFields[1], text: { value: releaseUrl } }, baseFields[2],
+  ] });
+  for (const releaseUrl of [
+    'http://example.org/release', 'https://localhost/a', 'https://localhost./a',
+    'https://127.0.0.1/a', 'https://192.168.1.1/a', 'https://[::1]/a',
+    'https://music.local/a', 'https://intranet/a', 'https://a.internal/a',
+    'https://u:p@example.org/a', 'https://2130706433/a', 'https://0x7f000001/a',
+  ]) {
+    assert.equal(intakeFor(releaseUrl).state, 'needs_intake', releaseUrl);
+  }
+  assert.equal(intakeFor('https://example.org/release').state, 'paid_pending_fulfillment');
+});
+
 test('wrong event type is ignored', async () => {
   const database = db();
   const result = await send({ database, ev: { ...event, type: 'charge.succeeded' } });
