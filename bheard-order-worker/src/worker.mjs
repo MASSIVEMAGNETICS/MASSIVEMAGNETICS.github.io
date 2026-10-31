@@ -43,8 +43,14 @@ export function extractIntake(session) {
   let validUrl = false;
   try {
     const url = new URL(release);
-    validUrl = ['https:', 'http:'].includes(url.protocol) && !!url.hostname &&
-      !url.username && !url.password && !['localhost', '127.0.0.1', '::1'].includes(url.hostname);
+    const hostname = url.hostname.toLowerCase().replace(/\.$/, '');
+    const localSuffixes = ['.localhost', '.local', '.internal', '.lan', '.home', '.test', '.invalid'];
+    // Reject IP literals and local names before an order can be marked fulfillment-ready.
+    // Any future network fetch must independently verify resolved IPs and redirect targets.
+    validUrl = url.protocol === 'https:' && !url.username && !url.password &&
+      hostname.includes('.') && !hostname.startsWith('[') &&
+      !/^\d+\.\d+\.\d+\.\d+$/.test(hostname) &&
+      !localSuffixes.some(suffix => hostname.endsWith(suffix));
   } catch { /* Invalid URLs are recorded for manual intake repair. */ }
   const valid = artist.length >= 1 && validUrl && GOALS.has(goal);
   return { artist, release, goal, state: valid ? 'paid_pending_fulfillment' : 'needs_intake' };
