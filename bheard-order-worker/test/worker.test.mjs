@@ -121,6 +121,9 @@ test('nonpublic and non-HTTPS release URLs remain needs_intake, not fulfillment-
     'https://127.0.0.1/a', 'https://192.168.1.1/a', 'https://[::1]/a',
     'https://music.local/a', 'https://intranet/a', 'https://a.internal/a',
     'https://u:p@example.org/a', 'https://2130706433/a', 'https://0x7f000001/a',
+    'https://artist.onion/release', 'https://artist.alt/release',
+    'https://home.arpa/release', 'https://artist.example/release',
+    'https://studio.localdomain/release',
   ]) {
     assert.equal(intakeFor(releaseUrl).state, 'needs_intake', releaseUrl);
   }
