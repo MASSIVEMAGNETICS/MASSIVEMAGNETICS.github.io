@@ -37,8 +37,10 @@ function getCustomField(fields, key) {
 }
 
 export function extractIntake(session) {
-  const artist = getCustomField(session.custom_fields, 'artist_name').slice(0, 80);
-  const release = getCustomField(session.custom_fields, 'release_url').slice(0, 200);
+  const rawArtist = getCustomField(session.custom_fields, 'artist_name');
+  const rawRelease = getCustomField(session.custom_fields, 'release_url');
+  const artist = rawArtist.slice(0, 80);
+  const release = rawRelease.slice(0, 200);
   const goal = getCustomField(session.custom_fields, 'campaign_goal');
   let validUrl = false;
   try {
@@ -53,7 +55,9 @@ export function extractIntake(session) {
       !/^\d+\.\d+\.\d+\.\d+$/.test(hostname) &&
       !nonpublicSuffixes.some(suffix => hostname.endsWith(suffix));
   } catch { /* Invalid URLs are recorded for manual intake repair. */ }
-  const valid = artist.length >= 1 && validUrl && GOALS.has(goal);
+  // Truncated URLs may point at a different resource: retain a bounded preview but require repair.
+  const valid = rawArtist.length >= 1 && rawArtist.length <= 80 &&
+    rawRelease.length <= 200 && validUrl && GOALS.has(goal);
   return { artist, release, goal, state: valid ? 'paid_pending_fulfillment' : 'needs_intake' };
 }
 
