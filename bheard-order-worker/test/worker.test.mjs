@@ -149,3 +149,21 @@ test('isolated test-mode configuration accepts test events and rejects live even
   assert.equal(database.orders.size, 1);
   assert.equal((await send({ database, testMode: true })).status, 400);
 });
+
+test('overlength intake is quarantined rather than silently accepted after truncation', () => {
+  const fields = (artist, release) => ({ custom_fields: [
+    { key: 'artist_name', type: 'text', text: { value: artist } },
+    { key: 'release_url', type: 'text', text: { value: release } },
+    { key: 'campaign_goal', type: 'dropdown', dropdown: { value: 'reach' } },
+  ] });
+  const prefix = 'https://example.org/';
+  const validMaxUrl = prefix + 'x'.repeat(200 - prefix.length);
+  assert.equal(extractIntake(fields('A'.repeat(80), validMaxUrl)).state, 'paid_pending_fulfillment');
+  const tooLongUrl = validMaxUrl + '/truncated-target';
+  const rejectedUrl = extractIntake(fields('Example Artist', tooLongUrl));
+  assert.equal(rejectedUrl.state, 'needs_intake');
+  assert.equal(rejectedUrl.release.length, 200);
+  const rejectedArtist = extractIntake(fields('A'.repeat(81), prefix + 'release'));
+  assert.equal(rejectedArtist.state, 'needs_intake');
+  assert.equal(rejectedArtist.artist.length, 80);
+});
