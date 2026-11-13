@@ -1,0 +1,33 @@
+name: B Heard order intake contract
+"on":
+  pull_request:
+    paths:
+      - 'bheard-order-worker/**'
+      - '.github/workflows/bheard-order-worker-ci.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Run offline signed-webhook regression tests
+        run: node --test bheard-order-worker/test/*.test.mjs
+      - name: Validate SQLite migration contract
+        run: |
+          python3 - <<'PY'
+          import sqlite3
+          from pathlib import Path
+          sql = Path('bheard-order-worker/migrations/0001_orders.sql').read_text()
+          db = sqlite3.connect(':memory:')
+          db.executescript(sql)
+          db.execute("INSERT INTO bheard_orders (stripe_session_id, stripe_event_id, artist_name, release_url, campaign_goal, status, amount_cents, currency) VALUES ('cs_live_test', 'evt_test', 'A', 'https://example.org', 'reach', 'paid_pending_fulfillment', 999, 'usd')")
+          db.execute("INSERT OR IGNORE INTO bheard_orders (stripe_session_id, stripe_event_id, artist_name, release_url, campaign_goal, status, amount_cents, currency) VALUES ('cs_live_test', 'evt_other', 'B', 'https://example.org', 'reach', 'paid_pending_fulfillment', 999, 'usd')")
+          assert db.execute('SELECT COUNT(*) FROM bheard_orders').fetchone()[0] == 1
+          print('D1-compatible SQLite migration smoke: PASS')
+          PY
