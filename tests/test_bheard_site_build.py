@@ -99,15 +99,25 @@ class BHeardIndependentSiteBuildTests(unittest.TestCase):
     def test_independent_checkout_is_disabled_until_payment_and_fulfillment_are_verified(self) -> None:
         home = self.read("index.html")
         promo = self.read("network/index.html")
-        for page in (home, promo):
+        board = self.read("network/board/index.html")
+        thanks = self.read("network/thanks/index.html")
+        for page in (home, promo, board, thanks):
             self.assertNotIn("buy.stripe.com/", page)
+            self.assertNotIn("checkout_start", page)
+
+        for page in (home, promo, board):
             self.assertIn('href="#campaign-launch-gate"', page)
             self.assertIn('id="campaign-launch-gate"', page)
             self.assertIn("No payment is taken from this independent site.", page)
-            self.assertNotIn("checkout_start", page)
             self.assertNotIn("handled through secure Stripe checkout", page)
 
         self.assertNotIn("Secure Stripe checkout active", promo)
+        self.assertNotIn("Stripe Checkout collects the creator/project information", promo)
+        self.assertNotIn("campaign fields and payment are attached to the order", promo)
+        self.assertNotIn("existing $9.99 service remains the paid lane", board)
+        self.assertIn("Paid creator-promotion checkout is not enabled on the independent site yet", board)
+        self.assertIn('data-board-action="campaign-availability"', board)
+        self.assertNotIn('data-board-action="creator-promo"', board)
         self.assertNotIn("Stripe Checkout collects the creator/project information", promo)
         self.assertNotIn("campaign fields and payment are attached to the order", promo)
         self.assertNotIn("checkout_start", promo)

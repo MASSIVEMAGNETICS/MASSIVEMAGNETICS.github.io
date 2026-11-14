@@ -108,6 +108,20 @@ def enforce_independent_checkout_gate(page: str, source_relative: str) -> str:
             "independent checkout/order claim",
         )
 
+    if source_relative == "network/board/index.html":
+        page = replace_once(
+            page,
+            "Dropping music on the board is free. If you want a bounded B Heard creator-promotion campaign, the existing $9.99 service remains the paid lane. Promotion work and outcomes are measured; streams, placements, followers, and algorithmic results are never guaranteed.",
+            "Dropping music on the board is free. Paid creator-promotion checkout is not enabled on the independent site yet. Availability, intake, approved policies, and fulfillment must be verified before the paid service is offered here.",
+            "independent board paid-service claim",
+        )
+        page = replace_once(
+            page,
+            'data-board-action="creator-promo"',
+            'data-board-action="campaign-availability"',
+            "independent board campaign action",
+        )
+
     if source_relative == "beheardnetwork/index.html":
         page = replace_once(
             page,
@@ -201,7 +215,7 @@ def rewrite_page(source_relative: str, destination_relative: str, output: Path) 
     source = ROOT / source_relative
     page = source.read_text(encoding="utf-8")
 
-    if source_relative in ("beheardnetwork/index.html", "network/index.html"):
+    if source_relative in ("beheardnetwork/index.html", "network/index.html", "network/board/index.html"):
         page = enforce_independent_checkout_gate(page, source_relative)
 
     if source_relative == "network/thanks/index.html":
@@ -302,6 +316,13 @@ def build(output: Path) -> Path:
             rewrite_page(source_relative, destination_relative, output)
         else:
             copy_source(source_relative, output / destination_relative)
+
+    # Fail closed if any copied HTML route still exposes the unverified Stripe URL.
+    for html_path in output.rglob("*.html"):
+        if "buy.stripe.com/" in html_path.read_text(encoding="utf-8"):
+            raise RuntimeError(
+                f"unverified checkout URL remains in independent output: {html_path.relative_to(output)}"
+            )
 
     offer_path = output / "network" / "offer.json"
     offer = json.loads(offer_path.read_text(encoding="utf-8"))
