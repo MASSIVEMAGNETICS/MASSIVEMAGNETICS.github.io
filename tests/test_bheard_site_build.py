@@ -74,9 +74,19 @@ class BHeardIndependentSiteBuildTests(unittest.TestCase):
         self.assertIn("community for independent artists", source_home)
         self.assertIn("community for independent artists", home)
 
-    def test_canonical_logo_uses_red_black_white_globe_and_headphones(self) -> None:
+    def test_canonical_logo_uses_red_black_white_globe_headphones_and_waves(self) -> None:
         logo = self.read("assets/bheard-network-logo.svg")
-        for token in ("B HEARD", "NETWORK", "#D71920", "#FFFFFF", "#090909", "<ellipse", "<rect"):
+        for token in (
+            "B HEARD",
+            "NETWORK",
+            "#D71920",
+            "#FFFFFF",
+            "#090909",
+            "#BFC3C8",
+            'class="broadcast-wave"',
+            'id="globe"',
+            'id="headphones"',
+        ):
             with self.subTest(token=token):
                 self.assertIn(token, logo)
 
