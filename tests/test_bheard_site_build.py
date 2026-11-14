@@ -65,7 +65,7 @@ class BHeardIndependentSiteBuildTests(unittest.TestCase):
     def test_unverified_member_count_is_not_published(self) -> None:
         home = self.read("index.html")
         self.assertNotIn("20,000-member", home)
-        self.assertIn("independent-artist community", home)
+        self.assertIn("community for independent artists", home)
 
     def test_canonical_logo_uses_red_black_white_globe_and_headphones(self) -> None:
         logo = self.read("assets/bheard-network-logo.svg")
