@@ -66,9 +66,12 @@ class BHeardIndependentSiteBuildTests(unittest.TestCase):
         self.assertNotIn('href="/proof/"', board)
         self.assertIn('href="https://iambandobandz.com/proof/"', promo)
 
-    def test_unverified_member_count_is_not_published(self) -> None:
+    def test_unverified_member_count_is_not_published_in_source_or_build(self) -> None:
+        source_home = (ROOT / "beheardnetwork" / "index.html").read_text(encoding="utf-8")
         home = self.read("index.html")
+        self.assertNotIn("20,000-member", source_home)
         self.assertNotIn("20,000-member", home)
+        self.assertIn("community for independent artists", source_home)
         self.assertIn("community for independent artists", home)
 
     def test_canonical_logo_uses_red_black_white_globe_and_headphones(self) -> None:
