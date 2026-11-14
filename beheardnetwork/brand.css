@@ -1,0 +1,44 @@
+:root {
+  --rust: #D71920;
+  --signal: #D71920;
+  --paper: #FFFFFF;
+}
+
+.hero:after {
+  content: "B HEARD NETWORK";
+}
+
+.wordmark {
+  display: flex;
+  align-items: center;
+  gap: .65rem;
+  min-width: 0;
+}
+
+.wordmark .bheard-logo {
+  display: block;
+  width: 2.8rem;
+  height: 2.8rem;
+  flex: none;
+  object-fit: contain;
+}
+
+.wordmark span {
+  white-space: nowrap;
+}
+
+.bheard-return-brand {
+  margin: 1rem 0 1.5rem;
+}
+
+@media (max-width: 520px) {
+  .wordmark {
+    gap: .4rem;
+    font-size: .68rem;
+  }
+
+  .wordmark .bheard-logo {
+    width: 2.25rem;
+    height: 2.25rem;
+  }
+}
