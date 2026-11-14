@@ -180,5 +180,25 @@ class BHeardIndependentSiteBuildTests(unittest.TestCase):
         self.assertEqual((unmarked / "keep.txt").read_text(encoding="utf-8"), "keep")
 
 
+
+    def test_independent_paid_launch_gates_are_documented(self) -> None:
+        deployment = (ROOT / "beheardnetwork" / "README.md").read_text(encoding="utf-8")
+        required = (
+            "Commercial and fulfillment launch gate",
+            "DRAFT / not published",
+            "B Heard-specific policy",
+            "refund policy",
+            "privacy notice",
+            "section 8.4",
+            "fulfillment owner",
+            "Verified paid Checkout Session",
+            "closing receipt",
+        )
+        for token in required:
+            with self.subTest(token=token):
+                self.assertIn(token, deployment)
+
+
+
 if __name__ == "__main__":
     unittest.main()
