@@ -72,9 +72,11 @@ class BHeardIndependentSiteBuildTests(unittest.TestCase):
             page = self.read(relative)
             with self.subTest(page=relative):
                 self.assertIn('<button class="menu-toggle" type="button"', page)
+                self.assertIn('aria-label="Toggle navigation"', page)
                 self.assertIn('aria-controls="primary-nav"', page)
                 self.assertIn('<nav id="primary-nav" class="nav-links"', page)
                 self.assertIn("nav.classList.toggle('open', open)", page)
+                self.assertIn("if (event.target.closest('a[href]')) setOpen(false)", page)
                 self.assertIn("event.key === 'Escape'", page)
 
         styles = self.read("styles.css")
