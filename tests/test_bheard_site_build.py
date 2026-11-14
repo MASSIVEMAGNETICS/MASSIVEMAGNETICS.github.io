@@ -61,6 +61,10 @@ class BHeardIndependentSiteBuildTests(unittest.TestCase):
         self.assertIn('href="/network/"', home)
         self.assertIn('href="https://iambandobandz.com/privacy/"', board)
         self.assertIn('href="https://iambandobandz.com/terms/"', board)
+        self.assertNotIn('href="/proof/"', home)
+        self.assertNotIn('href="/proof/"', promo)
+        self.assertNotIn('href="/proof/"', board)
+        self.assertIn('href="https://iambandobandz.com/proof/"', promo)
 
     def test_unverified_member_count_is_not_published(self) -> None:
         home = self.read("index.html")
@@ -84,7 +88,7 @@ class BHeardIndependentSiteBuildTests(unittest.TestCase):
         script = self.read("network/board/board.js")
         self.assertIn("free GitHub account", board)
         self.assertIn("const REPO = 'MASSIVEMAGNETICS/MASSIVEMAGNETICS.github.io';", script)
-        self.assertIn("https://api.github.com/repos/\${REPO}/issues", script)
+        self.assertIn("https://api.github.com/repos/${REPO}/issues", script)
         self.assertNotIn("Authorization:", script)
 
     def test_analytics_is_bheard_scoped_and_browser_local_by_default(self) -> None:
