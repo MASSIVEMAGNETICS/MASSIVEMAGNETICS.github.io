@@ -96,6 +96,25 @@ class BHeardIndependentSiteBuildTests(unittest.TestCase):
         self.assertEqual(offer["price_cents"], 999)
         self.assertEqual(offer["canonical_path"], "https://bheardnetwork.com/network/")
 
+    def test_independent_checkout_is_disabled_until_payment_and_fulfillment_are_verified(self) -> None:
+        home = self.read("index.html")
+        promo = self.read("network/index.html")
+        for page in (home, promo):
+            self.assertNotIn("buy.stripe.com/", page)
+            self.assertIn('href="#campaign-launch-gate"', page)
+            self.assertIn('id="campaign-launch-gate"', page)
+            self.assertIn("No payment is taken from this independent site.", page)
+
+        self.assertNotIn("Secure Stripe checkout active", promo)
+        self.assertNotIn("Stripe Checkout collects the creator/project information", promo)
+        self.assertNotIn("campaign fields and payment are attached to the order", promo)
+        self.assertNotIn("checkout_start", promo)
+
+        offer = json.loads(self.read("network/offer.json"))
+        self.assertFalse(offer["checkout_enabled"])
+        self.assertEqual(offer["checkout_status"], "pending_independent_verification")
+        self.assertNotIn("checkout_url", offer["stripe"])
+
     def test_board_is_explicitly_github_backed_not_first_party_auth(self) -> None:
         board = self.read("network/board/index.html")
         script = self.read("network/board/board.js")

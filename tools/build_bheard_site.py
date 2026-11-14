@@ -86,6 +86,77 @@ def replace_once(value: str, old: str, new: str, label: str) -> str:
     return value.replace(old, new, 1)
 
 
+def enforce_independent_checkout_gate(page: str, source_relative: str) -> str:
+    """Keep the independent candidate from accepting payment before its full revenue loop is verified."""
+    if source_relative == "network/index.html":
+        page = replace_once(
+            page,
+            "Secure Stripe checkout active",
+            "Independent campaign checkout not enabled",
+            "independent checkout status",
+        )
+        page = replace_once(
+            page,
+            "Stripe Checkout collects the creator/project information attached to the order.",
+            "The independent site's required creator/project intake fields and their persistence have not yet been verified.",
+            "independent creator intake claim",
+        )
+        page = replace_once(
+            page,
+            "handled through secure Stripe checkout.",
+            "enabled only after the independent payment and fulfillment gates are cleared.",
+            "independent checkout security claim",
+        )
+        page = replace_once(
+            page,
+            "Checkout is hosted by Stripe. Your campaign fields and payment are attached to the order so the promotion can be reconciled without guessing which creator or release paid.",
+            "The independent payment link, required intake fields, webhook/order intake, and fulfillment process have not yet been verified. No campaign is accepted or started from this page until a paid order and complete intake are independently reconciled.",
+            "independent checkout/order claim",
+        )
+        legacy_click_script = """<script>
+  document.querySelectorAll('a[href^="https://buy.stripe.com/"]').forEach((link) => {
+    link.addEventListener('click', () => {
+      window.dataLayer = window.dataLayer || [];
+      window.dataLayer.push({ event: 'checkout_start', funnel: 'bheard-network', offer_code: 'bheard_creator_promo_v1', value: 9.99, currency: 'USD' });
+    });
+  });
+</script>"""
+        page = replace_once(
+            page, legacy_click_script, "", "independent checkout click tracking"
+        )
+
+    checkout_link_pattern = re.compile(
+        r'(<a\b[^>]*\bhref=")(https://buy\.stripe\.com/[^"]+)("[^>]*>)(.*?)(</a>)',
+        re.IGNORECASE | re.DOTALL,
+    )
+    page, replaced = checkout_link_pattern.subn(
+        lambda match: (
+            match.group(1)
+            + "#campaign-launch-gate"
+            + match.group(3)
+            + "Campaign checkout pending"
+            + match.group(5)
+        ),
+        page,
+    )
+    if replaced < 1:
+        raise RuntimeError(
+            f"{source_relative}: expected at least one Stripe checkout link, found {replaced}"
+        )
+
+    notice = """<section class="contact-section" id="campaign-launch-gate">
+  <p class="eyebrow">PAID CAMPAIGN LAUNCH GATE</p>
+  <h2>CHECKOUT<br><em>NOT ENABLED YET.</em></h2>
+  <p>The independent B Heard site is not accepting paid campaigns yet. The payment link, required intake fields, webhook/order intake, approved policies, and fulfillment capacity must be verified before checkout can be enabled. No payment is taken from this independent site.</p>
+  <div class="contact-actions"><a class="button button-primary" href="mailto:bandobandz440@gmail.com?subject=B%20Heard%20campaign%20availability">Check campaign availability</a></div>
+</section>
+"""
+    page = replace_once(page, "</main>", notice + "</main>", "independent checkout launch gate")
+    if "buy.stripe.com/" in page or "checkout_start" in page:
+        raise RuntimeError(f"{source_relative}: checkout remained exposed after gating")
+    return page
+
+
 def ensure_legacy_or_safe(value: str, legacy: str, safe: str, label: str) -> str:
     """Upgrade one legacy anchor or accept exactly one already-hardened anchor."""
     legacy_count = value.count(legacy)
@@ -125,6 +196,9 @@ def copy_source(source_relative: str, destination: Path) -> None:
 def rewrite_page(source_relative: str, destination_relative: str, output: Path) -> None:
     source = ROOT / source_relative
     page = source.read_text(encoding="utf-8")
+
+    if source_relative in ("beheardnetwork/index.html", "network/index.html"):
+        page = enforce_independent_checkout_gate(page, source_relative)
 
     if source_relative == "network/thanks/index.html":
         page = enforce_checkout_return_boundary(page)
@@ -230,6 +304,11 @@ def build(output: Path) -> Path:
     if offer.get("offer_code") != "bheard_creator_promo_v1":
         raise RuntimeError("unexpected B Heard offer code; refusing to rewrite registry")
     offer["canonical_path"] = f"{ORIGIN}/network/"
+    offer["checkout_enabled"] = False
+    offer["checkout_status"] = "pending_independent_verification"
+    stripe = offer.get("stripe")
+    if isinstance(stripe, dict):
+        stripe.pop("checkout_url", None)
     offer_path.write_text(json.dumps(offer, indent=2) + "\n", encoding="utf-8")
 
     (output / "robots.txt").write_text(

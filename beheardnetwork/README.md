@@ -22,6 +22,7 @@ The builder emits `https://bheardnetwork.com` as the proposed canonical origin. 
 
 - The board is a public GitHub-Issues read layer. Posting/replying requires a GitHub account. There is no first-party B Heard identity provider or creator-profile database.
 - The $9.99 creator-promotion link is an external Stripe Payment Link. This build does not inspect the Stripe account, create a payment, or prove the link is active.
+- In this independent candidate, paid checkout is deliberately disabled: generated pages replace Stripe links with a launch-gate notice, and generated `network/offer.json` sets `checkout_enabled: false` and omits `checkout_url`. Re-enable only after the Payment Link fields and return URLs, signed webhook/D1 order intake, approved B Heard policies, and a named fulfillment operator with real delivery capacity are verified. This build-only gate does not change the existing artist-site page or Stripe account.
 - The signed Stripe-to-D1 Worker in PR #57 is a separate unmerged candidate. No Worker, D1 database, R2 bucket, secret, webhook, or production resource is provisioned here.
 - The checkout-return correction in PR #56 remains a separate review item. A redirect is not payment verification.
 - No production audio ingestion, durable media library, or real uploaded-track player is included. The Library prototype is not part of this build.
