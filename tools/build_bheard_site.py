@@ -48,12 +48,70 @@ INDEPENDENT_WORDMARK = (
     '<span>B HEARD NETWORK</span></a>'
 )
 
+LEGACY_CHECKOUT_COPY = (
+    "If Stripe redirected you here after completing checkout, keep the Stripe receipt "
+    "sent to your checkout email. That receipt is the payment record."
+)
+SAFE_CHECKOUT_COPY = (
+    "You have returned from Stripe Checkout. This page cannot confirm whether a payment "
+    "succeeded. Keep any Stripe receipt you receive; campaign intake and promotion begin "
+    "only after payment and required information are independently verified."
+)
+LEGACY_INTAKE_COPY = (
+    "Your creator name, release/project URL, and campaign goal were collected in Stripe "
+    "Checkout and are used to reconcile the campaign intake. For support, email "
+    '<a href="mailto:bandobandz440@gmail.com?subject=B%20Heard%20campaign%20support">'
+    "bandobandz440@gmail.com</a>."
+)
+SAFE_INTAKE_COPY = (
+    "If you submitted creator information in Stripe Checkout, it will be reconciled "
+    "against a verified paid order before promotion begins. For support, email "
+    '<a href="mailto:bandobandz440@gmail.com?subject=B%20Heard%20campaign%20support">'
+    "bandobandz440@gmail.com</a>."
+)
+LEGACY_CHECKOUT_EVENT = (
+    "window.dataLayer.push({ event: 'checkout_return', funnel: 'bheard-network', "
+    "offer_code: 'bheard_creator_promo_v1' });"
+)
+SAFE_CHECKOUT_EVENT = (
+    "window.dataLayer.push({ event: 'checkout_return_unverified', funnel: 'bheard-network', "
+    "offer_code: 'bheard_creator_promo_v1' });"
+)
+
 
 def replace_once(value: str, old: str, new: str, label: str) -> str:
     count = value.count(old)
     if count != 1:
         raise RuntimeError(f"{label}: expected one exact source anchor, found {count}")
     return value.replace(old, new, 1)
+
+
+def ensure_legacy_or_safe(value: str, legacy: str, safe: str, label: str) -> str:
+    """Upgrade one legacy anchor or accept exactly one already-hardened anchor."""
+    legacy_count = value.count(legacy)
+    safe_count = value.count(safe)
+    if legacy_count == 1 and safe_count == 0:
+        return replace_once(value, legacy, safe, label)
+    if legacy_count == 0 and safe_count == 1:
+        return value
+    raise RuntimeError(
+        f"{label}: expected exactly one legacy or safe anchor; "
+        f"found legacy={legacy_count}, safe={safe_count}"
+    )
+
+
+def enforce_checkout_return_boundary(page: str) -> str:
+    """Never let a Stripe redirect or browser event masquerade as payment proof."""
+    page = ensure_legacy_or_safe(
+        page, LEGACY_CHECKOUT_COPY, SAFE_CHECKOUT_COPY, "checkout return payment boundary"
+    )
+    page = ensure_legacy_or_safe(
+        page, LEGACY_INTAKE_COPY, SAFE_INTAKE_COPY, "checkout return intake boundary"
+    )
+    page = ensure_legacy_or_safe(
+        page, LEGACY_CHECKOUT_EVENT, SAFE_CHECKOUT_EVENT, "checkout return telemetry"
+    )
+    return page
 
 
 def copy_source(source_relative: str, destination: Path) -> None:
@@ -68,9 +126,12 @@ def rewrite_page(source_relative: str, destination_relative: str, output: Path) 
     source = ROOT / source_relative
     page = source.read_text(encoding="utf-8")
 
+    if source_relative == "network/thanks/index.html":
+        page = enforce_checkout_return_boundary(page)
+
     canonical = CANONICAL_URLS.get(destination_relative)
     if canonical:
-        pattern = re.compile(r'<link rel="canonical" href="[^"]+"\s*/?>')
+        pattern = re.compile(r'<link rel="canonical" href="[^"]+"\\s*/?>')
         page, count = pattern.subn(
             f'<link rel="canonical" href="{canonical}">', page, count=1
         )
