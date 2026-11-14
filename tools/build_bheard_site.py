@@ -131,7 +131,7 @@ def rewrite_page(source_relative: str, destination_relative: str, output: Path) 
 
     canonical = CANONICAL_URLS.get(destination_relative)
     if canonical:
-        pattern = re.compile(r'<link rel="canonical" href="[^"]+"\\s*/?>')
+        pattern = re.compile(r'<link rel="canonical" href="[^"]+"\s*/?>')
         page, count = pattern.subn(
             f'<link rel="canonical" href="{canonical}">', page, count=1
         )
