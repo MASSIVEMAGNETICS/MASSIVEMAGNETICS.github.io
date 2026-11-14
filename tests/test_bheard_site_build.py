@@ -103,11 +103,42 @@ class BHeardIndependentSiteBuildTests(unittest.TestCase):
         self.assertIn("bheard:analytics-endpoint", analytics)
         self.assertNotIn("iambandobandz_click_events", analytics)
 
-    def test_checkout_return_is_noindex_and_not_a_payment_verification_event(self) -> None:
+    def test_checkout_return_is_explicitly_unverified_and_not_a_payment_event(self) -> None:
         page = self.read("network/thanks/index.html")
         self.assertIn('content="noindex,nofollow"', page)
+        self.assertIn("This page cannot confirm whether a payment succeeded.", page)
+        self.assertIn("only after payment and required information are independently verified", page)
+        self.assertIn("event: 'checkout_return_unverified'", page)
+        self.assertNotIn("That receipt is the payment record.", page)
+        self.assertNotIn("event: 'checkout_return'", page)
         self.assertNotIn("payment_verified", page)
         self.assertIn("B HEARD NETWORK", page)
+
+    def test_checkout_return_boundary_upgrades_legacy_and_accepts_safe_source(self) -> None:
+        legacy = "\n".join((
+            f"<p>{build_bheard_site.LEGACY_CHECKOUT_COPY}</p>",
+            f"<p>{build_bheard_site.LEGACY_INTAKE_COPY}</p>",
+            build_bheard_site.LEGACY_CHECKOUT_EVENT,
+        ))
+        expected = "\n".join((
+            f"<p>{build_bheard_site.SAFE_CHECKOUT_COPY}</p>",
+            f"<p>{build_bheard_site.SAFE_INTAKE_COPY}</p>",
+            build_bheard_site.SAFE_CHECKOUT_EVENT,
+        ))
+        self.assertEqual(build_bheard_site.enforce_checkout_return_boundary(legacy), expected)
+        self.assertEqual(build_bheard_site.enforce_checkout_return_boundary(expected), expected)
+
+    def test_checkout_return_boundary_rejects_missing_or_ambiguous_anchors(self) -> None:
+        safe_copy = f"<p>{build_bheard_site.SAFE_CHECKOUT_COPY}</p>"
+        legacy_copy = f"<p>{build_bheard_site.LEGACY_CHECKOUT_COPY}</p>"
+        with self.assertRaises(RuntimeError):
+            build_bheard_site.enforce_checkout_return_boundary(safe_copy)
+        with self.assertRaises(RuntimeError):
+            build_bheard_site.enforce_checkout_return_boundary(
+                legacy_copy + safe_copy + "\n" +
+                f"<p>{build_bheard_site.LEGACY_INTAKE_COPY}</p>\n" +
+                build_bheard_site.LEGACY_CHECKOUT_EVENT
+            )
 
     def test_baseline_security_headers_are_present(self) -> None:
         headers = self.read("_headers")
