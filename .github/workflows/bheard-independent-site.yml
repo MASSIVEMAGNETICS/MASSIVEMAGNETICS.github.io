@@ -1,0 +1,42 @@
+name: B Heard Independent Static Site
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'beheardnetwork/**'
+      - 'network/**'
+      - 'styles.css'
+      - 'tools/build_bheard_site.py'
+      - 'tests/test_bheard_site_build.py'
+      - '.github/workflows/bheard-independent-site.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Setup Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+      - name: Run B Heard independent-site tests
+        run: python -m unittest discover -s tests -p 'test_bheard_site_build.py' -v
+      - name: Build independent static root
+        run: python tools/build_bheard_site.py --output dist/bheardnetwork-ci
+      - name: Verify independent routes and logo
+        run: |
+          test -f dist/bheardnetwork-ci/index.html
+          test -f dist/bheardnetwork-ci/network/index.html
+          test -f dist/bheardnetwork-ci/network/board/index.html
+          test -f dist/bheardnetwork-ci/assets/bheard-network-logo.svg
+          test -f dist/bheardnetwork-ci/_headers
+          grep -Fq 'https://bheardnetwork.com/' dist/bheardnetwork-ci/index.html
+          ! grep -Fq 'iambandobandz.com/beheardnetwork/' dist/bheardnetwork-ci/index.html
