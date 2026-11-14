@@ -24,10 +24,18 @@
     }
   }
 
+  function safeReferrer() {
+    try {
+      return document.referrer ? new URL(document.referrer).origin : '';
+    } catch (_) {
+      return '';
+    }
+  }
+
   function acquisition() {
     const query = new URLSearchParams(location.search);
     return {
-      referrer: document.referrer || '',
+      referrer: safeReferrer(),
       utm_source: query.get('utm_source') || '',
       utm_medium: query.get('utm_medium') || '',
       utm_campaign: query.get('utm_campaign') || ''
