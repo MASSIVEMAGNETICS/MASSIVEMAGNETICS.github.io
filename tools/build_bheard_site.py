@@ -203,6 +203,60 @@ def enforce_checkout_return_boundary(page: str) -> str:
     return page
 
 
+MOBILE_NAV_SCRIPT = """<script>
+(() => {
+  'use strict';
+  const button = document.querySelector('.menu-toggle');
+  const nav = document.querySelector('#primary-nav');
+  if (!button || !nav) return;
+  const setOpen = (open) => {
+    nav.classList.toggle('open', open);
+    button.setAttribute('aria-expanded', String(open));
+  };
+  button.addEventListener('click', () => {
+    setOpen(button.getAttribute('aria-expanded') !== 'true');
+  });
+  nav.addEventListener('click', (event) => {
+    if (event.target.closest('a[href]')) setOpen(false);
+  });
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') setOpen(false);
+  });
+})();
+</script>"""
+
+
+def ensure_mobile_navigation(page: str, source_relative: str) -> str:
+    """Add the accessible menu control required by the shared responsive CSS."""
+    if 'class="nav-links"' not in page:
+        return page
+    if 'class="menu-toggle"' in page or 'id="primary-nav"' in page:
+        raise RuntimeError(f"{source_relative}: mobile navigation is partially configured")
+
+    pattern = re.compile(
+        r'(<a class="wordmark"[^>]*>.*?</a>\s*)<nav class="nav-links"',
+        re.DOTALL,
+    )
+    page, count = pattern.subn(
+        lambda match: (
+            match.group(1)
+            + '<button class="menu-toggle" type="button" aria-label="Toggle navigation" '
+            + 'aria-expanded="false" aria-controls="primary-nav">MENU</button>\n  '
+            + '<nav id="primary-nav" class="nav-links"'
+        ),
+        page,
+        count=1,
+    )
+    if count != 1:
+        raise RuntimeError(f"{source_relative}: expected one wordmark/navigation pair, found {count}")
+    return replace_once(
+        page,
+        "</body>",
+        MOBILE_NAV_SCRIPT + "\n</body>",
+        f"{source_relative} mobile navigation",
+    )
+
+
 def copy_source(source_relative: str, destination: Path) -> None:
     source = ROOT / source_relative
     if not source.is_file():
@@ -234,6 +288,9 @@ def rewrite_page(source_relative: str, destination_relative: str, output: Path) 
         page = replace_once(page, HOME_WORDMARK, INDEPENDENT_WORDMARK, source_relative)
     elif source_relative == "network/board/index.html":
         page = replace_once(page, BOARD_WORDMARK, INDEPENDENT_WORDMARK, source_relative)
+
+    if source_relative in ("beheardnetwork/index.html", "network/index.html", "network/board/index.html"):
+        page = ensure_mobile_navigation(page, source_relative)
 
     # B Heard remains the destination root. Artist/Empire surfaces are explicit
     # cross-site links, never accidental root-relative paths on the B Heard host.

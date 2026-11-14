@@ -66,6 +66,21 @@ class BHeardIndependentSiteBuildTests(unittest.TestCase):
         self.assertNotIn('href="/proof/"', board)
         self.assertIn('href="https://iambandobandz.com/proof/"', promo)
 
+    def test_mobile_navigation_is_operable_on_all_independent_routes(self) -> None:
+        pages = ("index.html", "network/index.html", "network/board/index.html")
+        for relative in pages:
+            page = self.read(relative)
+            with self.subTest(page=relative):
+                self.assertIn('<button class="menu-toggle" type="button"', page)
+                self.assertIn('aria-controls="primary-nav"', page)
+                self.assertIn('<nav id="primary-nav" class="nav-links"', page)
+                self.assertIn("nav.classList.toggle('open', open)", page)
+                self.assertIn("event.key === 'Escape'", page)
+
+        styles = self.read("styles.css")
+        self.assertIn(".menu-toggle{display:block}", styles)
+        self.assertIn(".nav-links.open{display:flex}", styles)
+
     def test_unverified_member_count_is_not_published_in_source_or_build(self) -> None:
         source_home = (ROOT / "beheardnetwork" / "index.html").read_text(encoding="utf-8")
         home = self.read("index.html")
