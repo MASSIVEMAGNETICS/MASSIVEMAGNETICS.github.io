@@ -192,7 +192,7 @@ class BHeardIndependentSiteBuildTests(unittest.TestCase):
             "section 8.4",
             "fulfillment owner",
             "Verified paid Checkout Session",
-            "closing receipt",
+            "Closing receipt",
         )
         for token in required:
             with self.subTest(token=token):
