@@ -30,3 +30,22 @@ The builder emits `https://bheardnetwork.com` as the proposed canonical origin. 
 - `_headers` supplies baseline browser security headers. A restrictive CSP and HSTS require staging validation against the final origin and third-party integrations.
 
 This is a buildable static candidate, not a live or production-ready platform.
+
+
+## Commercial and fulfillment launch gate — NOT CLEARED
+
+The source artifact `network/terms/index.html` is marked **DRAFT / not published** and describes the offer at `iambandobandz.com/network/`. It is not an approved B Heard-specific policy for the proposed independent origin. This build intentionally does not copy that draft; the current privacy and terms links remain explicit cross-site links to the artist site.
+
+Do not enable the independent paid funnel until the owner approves and publishes B Heard-specific terms, refund policy, and privacy notice on the independent origin. The current draft's section 8.4 gives broad discretion to deny refunds; that clause requires owner/legal review before adoption. This note is an operational gate, not legal advice.
+
+No campaign fulfillment owner or current delivery capacity has been independently verified. Until that is documented, fulfillment must remain human-reviewed. A Stripe payment or browser redirect alone must never mark a campaign fulfilled.
+
+Required closure evidence:
+
+1. Verified paid Checkout Session and stable Stripe session ID.
+2. One durable D1 order record and validated creator intake.
+3. Named fulfillment operator and timestamped campaign assignment.
+4. Timestamped promotion actions and observed metrics, without guaranteed outcomes.
+5. Closing receipt delivered through an approved channel.
+6. Refund/dispute status reconciled against the same order.
+
