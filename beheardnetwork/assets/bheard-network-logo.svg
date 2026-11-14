@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 220" role="img" aria-label="B Heard Network logo: globe wearing headphones, B Heard above and Network below">
+  <defs>
+    <path id="bheard-top-arc" d="M 25,105 A 85,85 0 0 1 195,105"/>
+    <path id="bheard-bottom-arc" d="M 25,120 A 85,85 0 0 0 195,120"/>
+  </defs>
+  <text fill="#FFFFFF" font-family="Arial,Helvetica,sans-serif" font-size="26" font-weight="900" letter-spacing="2">
+    <textPath href="#bheard-top-arc" startOffset="50%" text-anchor="middle">B HEARD</textPath>
+  </text>
+  <circle cx="110" cy="110" r="56" fill="#090909" stroke="#FFFFFF" stroke-width="4"/>
+  <ellipse cx="110" cy="110" rx="24" ry="56" fill="none" stroke="#D71920" stroke-width="3"/>
+  <path d="M54 110 H166 M65 82 H155 M65 138 H155" fill="none" stroke="#D71920" stroke-width="3"/>
+  <path d="M52 109 C52 28 168 28 168 109" fill="none" stroke="#FFFFFF" stroke-width="10" stroke-linecap="round"/>
+  <rect x="42" y="94" width="20" height="42" rx="8" fill="#D71920" stroke="#FFFFFF" stroke-width="3"/>
+  <rect x="158" y="94" width="20" height="42" rx="8" fill="#D71920" stroke="#FFFFFF" stroke-width="3"/>
+  <text fill="#FFFFFF" font-family="Arial,Helvetica,sans-serif" font-size="22" font-weight="900" letter-spacing="2">
+    <textPath href="#bheard-bottom-arc" startOffset="50%" text-anchor="middle">NETWORK</textPath>
+  </text>
+</svg>
