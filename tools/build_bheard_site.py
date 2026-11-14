@@ -103,15 +103,17 @@ def enforce_independent_checkout_gate(page: str, source_relative: str) -> str:
         )
         page = replace_once(
             page,
-            "handled through secure Stripe checkout.",
-            "enabled only after the independent payment and fulfillment gates are cleared.",
-            "independent checkout security claim",
-        )
-        page = replace_once(
-            page,
             "Checkout is hosted by Stripe. Your campaign fields and payment are attached to the order so the promotion can be reconciled without guessing which creator or release paid.",
             "The independent payment link, required intake fields, webhook/order intake, and fulfillment process have not yet been verified. No campaign is accepted or started from this page until a paid order and complete intake are independently reconciled.",
             "independent checkout/order claim",
+        )
+
+    if source_relative in ("beheardnetwork/index.html", "network/index.html"):
+        page = replace_once(
+            page,
+            "handled through secure Stripe checkout.",
+            "enabled only after the independent payment and fulfillment gates are cleared.",
+            "independent checkout security claim",
         )
         legacy_click_script = """<script>
   document.querySelectorAll('a[href^="https://buy.stripe.com/"]').forEach((link) => {

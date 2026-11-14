@@ -104,6 +104,8 @@ class BHeardIndependentSiteBuildTests(unittest.TestCase):
             self.assertIn('href="#campaign-launch-gate"', page)
             self.assertIn('id="campaign-launch-gate"', page)
             self.assertIn("No payment is taken from this independent site.", page)
+            self.assertNotIn("checkout_start", page)
+            self.assertNotIn("handled through secure Stripe checkout", page)
 
         self.assertNotIn("Secure Stripe checkout active", promo)
         self.assertNotIn("Stripe Checkout collects the creator/project information", promo)
