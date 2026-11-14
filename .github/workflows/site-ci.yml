@@ -25,6 +25,8 @@ jobs:
         run: python tools/validate_registry.py
       - name: Run B Heard independent-site tests
         run: python -m unittest discover -s tests -p 'test_bheard_site_build.py' -v
+      - name: Run B Heard analytics host-boundary regressions
+        run: node --test tests/test_analytics_host_classification.mjs
       - name: Build independent B Heard static root
         run: python tools/build_bheard_site.py --output dist/bheardnetwork-ci
       - name: Verify independent B Heard root

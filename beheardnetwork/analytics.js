@@ -101,10 +101,16 @@
     return payload;
   }
 
+  function matchesHostOrSubdomain(hostname, domain) {
+    const candidate = String(hostname || '').toLowerCase().replace(/\.$/, '');
+    const root = String(domain || '').toLowerCase().replace(/\.$/, '');
+    return candidate === root || candidate.endsWith(`.${root}`);
+  }
+
   function classifyLink(link) {
     let url;
     try { url = new URL(link.href, location.href); } catch (_) { return null; }
-    const isMusic = musicHosts.some((host) => url.hostname.includes(host));
+    const isMusic = musicHosts.some((host) => matchesHostOrSubdomain(url.hostname, host));
     const isStripe = url.hostname === 'buy.stripe.com' || url.hostname === 'book.stripe.com';
     const isRevenue = Boolean(link.dataset.revenuePath) || isStripe;
     const label = (link.querySelector('h3')?.textContent || link.textContent || url.hostname)
