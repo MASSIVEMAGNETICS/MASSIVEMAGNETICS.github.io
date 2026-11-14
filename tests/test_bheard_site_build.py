@@ -56,7 +56,7 @@ class BHeardIndependentSiteBuildTests(unittest.TestCase):
         for page in (home, promo, board):
             self.assertNotIn("iambandobandz.com/beheardnetwork/", page)
             self.assertIn('href="https://iambandobandz.com/"', page)
-            self.assertIn('href="/assets/bheard-network-logo.svg"', page)
+            self.assertIn('src="/assets/bheard-network-logo.svg"', page)
         self.assertIn('href="/network/board/"', home)
         self.assertIn('href="/network/"', home)
         self.assertIn('href="https://iambandobandz.com/privacy/"', board)
@@ -83,7 +83,8 @@ class BHeardIndependentSiteBuildTests(unittest.TestCase):
         board = self.read("network/board/index.html")
         script = self.read("network/board/board.js")
         self.assertIn("free GitHub account", board)
-        self.assertIn("api.github.com/repos/MASSIVEMAGNETICS/MASSIVEMAGNETICS.github.io/issues", script)
+        self.assertIn("const REPO = 'MASSIVEMAGNETICS/MASSIVEMAGNETICS.github.io';", script)
+        self.assertIn("https://api.github.com/repos/\${REPO}/issues", script)
         self.assertNotIn("Authorization:", script)
 
     def test_analytics_is_bheard_scoped_and_browser_local_by_default(self) -> None:
