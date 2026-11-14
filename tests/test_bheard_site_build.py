@@ -103,6 +103,13 @@ class BHeardIndependentSiteBuildTests(unittest.TestCase):
         self.assertIn("bheard:analytics-endpoint", analytics)
         self.assertNotIn("iambandobandz_click_events", analytics)
 
+    def test_analytics_referrer_is_reduced_to_origin(self) -> None:
+        analytics = self.read("analytics.js")
+        self.assertIn("function safeReferrer()", analytics)
+        self.assertIn("new URL(document.referrer).origin", analytics)
+        self.assertIn("referrer: safeReferrer()", analytics)
+        self.assertNotIn("referrer: document.referrer", analytics)
+
     def test_checkout_return_is_explicitly_unverified_and_not_a_payment_event(self) -> None:
         page = self.read("network/thanks/index.html")
         self.assertIn('content="noindex,nofollow"', page)
