@@ -108,13 +108,15 @@ def enforce_independent_checkout_gate(page: str, source_relative: str) -> str:
             "independent checkout/order claim",
         )
 
-    if source_relative in ("beheardnetwork/index.html", "network/index.html"):
+    if source_relative == "beheardnetwork/index.html":
         page = replace_once(
             page,
             "handled through secure Stripe checkout.",
             "enabled only after the independent payment and fulfillment gates are cleared.",
             "independent checkout security claim",
         )
+
+    if source_relative in ("beheardnetwork/index.html", "network/index.html"):
         legacy_click_script = """<script>
   document.querySelectorAll('a[href^="https://buy.stripe.com/"]').forEach((link) => {
     link.addEventListener('click', () => {
