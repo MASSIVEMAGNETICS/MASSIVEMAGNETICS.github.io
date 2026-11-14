@@ -27,6 +27,17 @@ jobs:
         run: python -m unittest discover -s tests -v
       - name: Build sanitized site
         run: python tools/build_site.py --output _site
+      - name: Build independent B Heard static root
+        run: python tools/build_bheard_site.py --output _bheard_site
+      - name: Verify independent B Heard root
+        run: |
+          test -f _bheard_site/index.html
+          test -f _bheard_site/network/index.html
+          test -f _bheard_site/network/board/index.html
+          test -f _bheard_site/assets/bheard-network-logo.svg
+          test -f _bheard_site/_headers
+          grep -Fq 'https://bheardnetwork.com/' _bheard_site/index.html
+          ! grep -Fq 'iambandobandz.com/beheardnetwork/' _bheard_site/index.html
       - name: Include Frontier Radar public surface
         run: cp -R frontier-radar _site/frontier-radar
       - name: Validate built site
