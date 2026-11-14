@@ -85,8 +85,8 @@ def rewrite_page(source_relative: str, destination_relative: str, output: Path) 
     # B Heard remains the destination root. Artist/Empire surfaces are explicit
     # cross-site links, never accidental root-relative paths on the B Heard host.
     page = page.replace('<a href="/">Empire</a>', '<a href="https://iambandobandz.com/">Empire</a>')
-    page = page.replace('<a href="/store/">Store</a>', '<a href="https://iambandobandz.com/store/">Store</a>')
-    page = page.replace('<a href="/proof/">Proof</a>', '<a href="https://iambandobandz.com/proof/">Proof</a>')
+    page = page.replace('href="/store/"', 'href="https://iambandobandz.com/store/"')
+    page = page.replace('href="/proof/"', 'href="https://iambandobandz.com/proof/"')
     page = page.replace('href="/privacy/"', 'href="https://iambandobandz.com/privacy/"')
     page = page.replace('href="/terms/"', 'href="https://iambandobandz.com/terms/"')
     page = page.replace(
@@ -96,6 +96,7 @@ def rewrite_page(source_relative: str, destination_relative: str, output: Path) 
 
     # The source count was not independently verified. Do not publish it as fact.
     page = page.replace("a 20,000-member artist community", "a community for independent artists")
+    page = page.replace("A 20,000-member artist community", "A community for independent artists")
     page = page.replace("20,000-member artist community", "independent-artist community")
 
     styles_tag = '<link rel="stylesheet" href="/styles.css">'
