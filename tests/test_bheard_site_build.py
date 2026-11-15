@@ -26,7 +26,7 @@ class BHeardIndependentSiteBuildTests(unittest.TestCase):
     def read(self, relative: str) -> str:
         return (self.output / relative).read_text(encoding="utf-8")
 
-    def test_bheard_pages_publish_only_from_independent_root(self) -> None:
+    def test_independent_landing_and_promo_pages_publish_only_from_independent_root(self) -> None:
         with tempfile.TemporaryDirectory() as temp:
             artist_output = Path(temp) / "artist-site"
             build_site.build(artist_output)
