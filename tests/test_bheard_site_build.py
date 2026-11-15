@@ -209,8 +209,8 @@ class BHeardIndependentSiteBuildTests(unittest.TestCase):
         headers = self.read("_headers")
         lines = headers.splitlines()
 
-        # Cloudflare Pages _headers files use a path pattern followed by
-        # indented header declarations; C-style comments disable the rules.
+        # Cloudflare Pages parses `/*` as a catch-all path pattern. A trailing
+        # `*/` is another pattern, not a C-style comment delimiter.
         self.assertGreaterEqual(len(lines), 5)
         self.assertEqual(lines[0].strip(), "/*")
         self.assertNotIn("*/", headers)
