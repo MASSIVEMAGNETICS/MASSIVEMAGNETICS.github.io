@@ -167,3 +167,35 @@ test('overlength intake is quarantined rather than silently accepted after trunc
   assert.equal(rejectedArtist.state, 'needs_intake');
   assert.equal(rejectedArtist.artist.length, 80);
 });
+
+test('oversized streamed webhook body is cancelled before the remainder is read', async () => {
+  let pulls = 0;
+  let cancelled = false;
+  const stream = new ReadableStream({
+    pull(controller) {
+      pulls += 1;
+      if (pulls === 1) controller.enqueue(new Uint8Array(256 * 1024 + 1));
+      else controller.enqueue(new Uint8Array(1));
+    },
+    cancel() { cancelled = true; },
+  }, { highWaterMark: 0 });
+  const request = new Request('https://bheard.example/webhooks/stripe', {
+    method: 'POST',
+    headers: { 'stripe-signature': 'not-needed-for-size-rejection' },
+    body: stream,
+    duplex: 'half',
+  });
+  const database = db();
+  const response = await worker.fetch(request, {
+    STRIPE_WEBHOOK_SECRET: secret,
+    STRIPE_SECRET_KEY: stripeKey,
+    BHEARD_PAYMENT_LINK_ID: paymentLink,
+    DB: database,
+  });
+  assert.equal(response.status, 413);
+  assert.equal(pulls, 1);
+  assert.equal(cancelled, true);
+  assert.equal(database.orders.size, 0);
+});
+
+

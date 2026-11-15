@@ -61,6 +61,40 @@ export function extractIntake(session) {
   return { artist, release, goal, state: valid ? 'paid_pending_fulfillment' : 'needs_intake' };
 }
 
+async function readBodyLimited(request, maxBytes) {
+  const declaredLength = request.headers.get('content-length');
+  if (declaredLength && /^\d+$/.test(declaredLength) && Number(declaredLength) > maxBytes)
+    return null;
+
+  const reader = request.body?.getReader();
+  if (!reader) return new Uint8Array();
+  const chunks = [];
+  let total = 0;
+  try {
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      if (!(value instanceof Uint8Array)) throw new Error('invalid_body_chunk');
+      total += value.byteLength;
+      if (total > maxBytes) {
+        try { await reader.cancel(); } catch { /* Preserve the size rejection. */ }
+        return null;
+      }
+      chunks.push(value);
+    }
+  } finally {
+    reader.releaseLock();
+  }
+
+  const body = new Uint8Array(total);
+  let offset = 0;
+  for (const chunk of chunks) {
+    body.set(chunk, offset);
+    offset += chunk.byteLength;
+  }
+  return body;
+}
+
 async function retrieveSession(sessionId, secret) {
   if (!/^cs_(live|test)_[A-Za-z0-9]+$/.test(sessionId)) throw new Error('invalid_session_id');
   const response = await fetch(`https://api.stripe.com/v1/checkout/sessions/${encodeURIComponent(sessionId)}`, {
@@ -78,8 +112,8 @@ export default {
       return json({ error: 'service_unavailable' }, 503);
     let raw;
     try {
-      const body = await request.arrayBuffer();
-      if (body.byteLength > MAX_BODY_BYTES) return json({ error: 'payload_too_large' }, 413);
+      const body = await readBodyLimited(request, MAX_BODY_BYTES);
+      if (body === null) return json({ error: 'payload_too_large' }, 413);
       raw = new TextDecoder('utf-8', { fatal: true }).decode(body);
     } catch { return json({ error: 'invalid_body' }, 400); }
     if (!(await verifyStripeSignature(raw, request.headers.get('stripe-signature'), env.STRIPE_WEBHOOK_SECRET)))
