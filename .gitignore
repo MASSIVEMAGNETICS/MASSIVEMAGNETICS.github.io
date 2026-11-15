@@ -6,3 +6,6 @@ __pycache__/
 registry/private/*
 !registry/private/.gitignore
 !registry/private/README.md
+
+# Generated deterministic demo audio; rebuilt by the B Heard site/test pipeline.
+bheardnetwork/demo-media/

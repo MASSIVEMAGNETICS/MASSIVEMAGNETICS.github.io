@@ -8,6 +8,7 @@ import shutil
 from pathlib import Path
 
 from registry_lib import ROOT, build_jsonld, build_public_manifest, build_sitemap, load_registry
+from build_bheardnetwork import build_demo_assets
 
 COPY_ITEMS = [
     ".nojekyll",
@@ -158,6 +159,10 @@ def build(output: Path) -> None:
     if output.exists():
         shutil.rmtree(output)
     output.mkdir(parents=True)
+
+    # Demo audio/data are deterministic build outputs, not source binaries.
+    # Generate them before copying the B Heard static tree into the site.
+    build_demo_assets(ROOT / "bheardnetwork")
 
     for item in COPY_ITEMS:
         source = ROOT / item
