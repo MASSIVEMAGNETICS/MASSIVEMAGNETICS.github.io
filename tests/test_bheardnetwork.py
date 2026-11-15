@@ -117,6 +117,9 @@ class TestBheardNetworkTree(unittest.TestCase):
             site = Path(tmp) / "site"
             build(site)
             self.assertTrue((site / "assets" / "brand" / "b-heard-network.webp").is_file())
+            self.assertTrue((site / "bheardnetwork" / "demo-media" / "1.wav").is_file())
+            with wave.open(str(site / "bheardnetwork" / "demo-media" / "1.wav"), "rb") as wav:
+                self.assertEqual(wav.getnframes(), 3 * 22050)
             built_page = (site / "bheardnetwork" / "index.html").read_text(encoding="utf-8")
             self.assertIn('src="../assets/brand/b-heard-network.webp"', built_page)
 

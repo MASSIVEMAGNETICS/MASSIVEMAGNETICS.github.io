@@ -160,15 +160,15 @@ def build(output: Path) -> None:
         shutil.rmtree(output)
     output.mkdir(parents=True)
 
-    # Demo audio/data are deterministic build outputs, not source binaries.
-    # Generate them before copying the B Heard static tree into the site.
-    build_demo_assets(ROOT / "bheardnetwork")
-
     for item in COPY_ITEMS:
         source = ROOT / item
         if not source.exists():
             raise FileNotFoundError(f"required deploy source missing: {item}")
         copy_item(source, output / item)
+
+    # Demo audio/data are deterministic build outputs, not source binaries.
+    # Generate them in the sanitized artifact, leaving the source tree untouched.
+    build_demo_assets(output / "bheardnetwork")
 
     # The storefront historically kept two artwork trees. Publish one stable
     # root URL for every release while preserving higher-quality canonical art.

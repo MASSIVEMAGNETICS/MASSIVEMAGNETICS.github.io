@@ -199,8 +199,9 @@ This bounded correction:
 - extracts deterministic demo-data/WAV generation into
   `build_demo_assets()` and adds `--demo-assets-only`, which does not
   require the private v2 source directory;
-- makes `tools/build_site.py` materialize those generated assets before
-  copying the static tree;
+- makes `tools/build_site.py` materialize generated assets inside the
+  sanitized output tree after copying committed static files, without
+  mutating the source tree;
 - makes the tests generate the same assets before asserting their
   contents and checks repeat-generation hashes plus sanitized-site
   asset resolution;
