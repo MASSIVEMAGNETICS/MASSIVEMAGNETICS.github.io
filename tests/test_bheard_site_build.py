@@ -9,6 +9,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "tools"))
 import build_bheard_site  # noqa: E402
+import build_site  # noqa: E402
 
 
 class BHeardIndependentSiteBuildTests(unittest.TestCase):
@@ -24,6 +25,34 @@ class BHeardIndependentSiteBuildTests(unittest.TestCase):
 
     def read(self, relative: str) -> str:
         return (self.output / relative).read_text(encoding="utf-8")
+
+    def test_bheard_pages_publish_only_from_independent_root(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            artist_output = Path(temp) / "artist-site"
+            build_site.build(artist_output)
+
+            self.assertFalse((artist_output / "beheardnetwork").exists())
+            self.assertFalse((artist_output / "network").exists())
+
+            homepage = (artist_output / "index.html").read_text(encoding="utf-8")
+            self.assertNotIn('href="/network/"', homepage)
+            self.assertIn('href="https://bheardnetwork.com/"', homepage)
+
+            identity = json.loads((artist_output / "identity.jsonld").read_text(encoding="utf-8"))
+            bheard = next(
+                (
+                    item for item in identity.get("@graph", [])
+                    if item.get("@type") == "Organization" and item.get("name") == "B Heard Network"
+                ),
+                None,
+            )
+            self.assertIsNotNone(bheard)
+            self.assertEqual(bheard.get("url"), "https://bheardnetwork.com/")
+
+        # The separate B Heard builder still publishes these routes at its own root.
+        self.assertTrue((self.output / "index.html").is_file())
+        self.assertTrue((self.output / "network" / "index.html").is_file())
+        self.assertTrue((self.output / "network" / "board" / "index.html").is_file())
 
     def test_independent_routes_and_required_assets_exist(self) -> None:
         expected = (
