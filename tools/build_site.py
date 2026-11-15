@@ -15,6 +15,7 @@ COPY_ITEMS = [
     "analytics.js",
     "assets",
     "beheardnetwork",
+    "bheardnetwork",
     "favicon.svg",
     "frontier-radar",
     "index.html",
@@ -41,7 +42,6 @@ COPY_ITEMS = [
 
 ANALYTICS_PAGES = [
     "audit/index.html",
-    "beheardnetwork/index.html",
     "catalog-recovery/index.html",
     "network/index.html",
     "proof/index.html",

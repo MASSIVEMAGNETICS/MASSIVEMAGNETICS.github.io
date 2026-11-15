@@ -36,8 +36,8 @@ class ResearchRegistryTests(unittest.TestCase):
     def test_record_hashes_and_root_are_consistent(self) -> None:
         registry = self.load()
         records = registry["records"]
-        self.assertEqual(len(records), 13)
-        self.assertEqual(len({r["id"] for r in records}), 13)
+        self.assertEqual(len(records), 14)
+        self.assertEqual(len({r["id"] for r in records}), 14)
         for record in records:
             stored = record["record_sha256"]
             self.assertRegex(stored, HEX64)
@@ -53,14 +53,14 @@ class ResearchRegistryTests(unittest.TestCase):
         registry = self.load()
         records = registry["records"]
         counts = registry["counts"]
-        self.assertEqual(counts["registered_records"], 13)
-        for cls, expected in (("materialized", 7), ("active", 2), ("legacy", 3), ("deprecated", 1)):
+        self.assertEqual(counts["registered_records"], 14)
+        for cls, expected in (("materialized", 8), ("active", 2), ("legacy", 3), ("deprecated", 1)):
             self.assertEqual(sum(r["class"] == cls for r in records), expected)
             if cls != "deprecated":
                 self.assertEqual(counts[cls], expected)
         self.assertEqual(counts["deprecated_whitepapers"], 14)
-        self.assertEqual(counts["listed_whitepapers"], 26)
-        self.assertEqual(counts["materialized_artifacts"], 8)
+        self.assertEqual(counts["listed_whitepapers"], 27)
+        self.assertEqual(counts["materialized_artifacts"], 9)
         self.assertTrue(all(not a.get("public", False) for r in records if r["class"] == "deprecated" for a in r.get("artifacts", [])))
 
     def test_research_route_survives_sanitized_build(self) -> None:
