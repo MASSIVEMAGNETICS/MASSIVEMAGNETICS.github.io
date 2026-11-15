@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" role="img" aria-labelledby="title desc">
+  <title id="title">B Heard Network</title>
+  <desc id="desc">Red globe with white and silver headphones and red broadcast waves on a black field, with B Heard Network lettering.</desc>
+  <defs>
+    <linearGradient id="silver" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FFFFFF"/>
+      <stop offset=".48" stop-color="#BFC3C8"/>
+      <stop offset="1" stop-color="#666B72"/>
+    </linearGradient>
+    <clipPath id="globe-clip"><circle cx="120" cy="125" r="58"/></clipPath>
+  </defs>
+  <circle cx="120" cy="120" r="112" fill="#090909" stroke="#FFFFFF" stroke-width="2"/>
+  <text x="120" y="39" text-anchor="middle" fill="#FFFFFF" font-family="Arial,Helvetica,sans-serif" font-size="20" font-weight="900" letter-spacing="2.4">B HEARD</text>
+  <g class="broadcast-wave" fill="none" stroke="#D71920" stroke-width="4" stroke-linecap="round">
+    <path d="M48 91 C34 107 34 143 48 159"/>
+    <path d="M38 79 C17 103 17 147 38 171"/>
+    <path d="M28 68 C2 99 2 151 28 182"/>
+    <path d="M192 91 C206 107 206 143 192 159"/>
+    <path d="M202 79 C223 103 223 147 202 171"/>
+    <path d="M212 68 C238 99 238 151 212 182"/>
+  </g>
+  <g id="globe">
+    <circle cx="120" cy="125" r="58" fill="#090909" stroke="#FFFFFF" stroke-width="2.5"/>
+    <g clip-path="url(#globe-clip)">
+      <path d="M72 112 C83 99 86 91 98 87 L109 91 114 102 106 109 100 119 88 122 83 135 75 129Z" fill="#D71920"/>
+      <path d="M105 133 L116 139 122 153 117 166 121 179 113 191 105 176 102 160 96 147Z" fill="#D71920"/>
+      <path d="M125 96 L137 89 148 93 151 103 143 111 134 109 129 117 121 108Z" fill="#D71920"/>
+      <path d="M139 116 L153 113 165 123 163 141 154 153 147 147 143 134 134 126Z" fill="#D71920"/>
+      <path d="M151 91 L169 84 185 93 193 105 184 114 169 111 160 119 150 109Z" fill="#D71920"/>
+      <path d="M164 151 L177 154 183 163 174 170 161 166Z" fill="#D71920"/>
+      <path d="M120 67 C101 83 95 105 96 125 C97 147 105 166 120 183 C135 166 143 147 144 125 C145 105 139 83 120 67Z" fill="none" stroke="#FFFFFF" stroke-opacity=".55" stroke-width="1.5"/>
+      <path d="M64 125 H176 M72 101 C99 113 141 113 168 101 M72 149 C99 137 141 137 168 149" fill="none" stroke="#D71920" stroke-opacity=".7" stroke-width="1.5"/>
+    </g>
+  </g>
+  <g id="headphones">
+    <path d="M64 128 V109 C64 75 89 56 120 56 C151 56 176 75 176 109 V128" fill="none" stroke="url(#silver)" stroke-width="11" stroke-linecap="round"/>
+    <path d="M64 128 V109 C64 75 89 56 120 56 C151 56 176 75 176 109 V128" fill="none" stroke="#FFFFFF" stroke-opacity=".85" stroke-width="2.2" stroke-linecap="round"/>
+    <rect x="51" y="109" width="25" height="55" rx="10" fill="url(#silver)" stroke="#D71920" stroke-width="3"/>
+    <rect x="164" y="109" width="25" height="55" rx="10" fill="url(#silver)" stroke="#D71920" stroke-width="3"/>
+    <path d="M56 121 H71 M169 121 H184" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <text x="120" y="219" text-anchor="middle" fill="#FFFFFF" font-family="Arial,Helvetica,sans-serif" font-size="18" font-weight="900" letter-spacing="4">NETWORK</text>
+</svg>

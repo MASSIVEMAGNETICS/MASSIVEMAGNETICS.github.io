@@ -23,6 +23,21 @@ jobs:
           python-version: '3.12'
       - name: Validate canonical registry
         run: python tools/validate_registry.py
+      - name: Run B Heard independent-site tests
+        run: python -m unittest discover -s tests -p 'test_bheard_site_build.py' -v
+      - name: Run B Heard analytics host-boundary regressions
+        run: node --test tests/test_analytics_host_classification.mjs
+      - name: Build independent B Heard static root
+        run: python tools/build_bheard_site.py --output dist/bheardnetwork-ci
+      - name: Verify independent B Heard root
+        run: |
+          test -f dist/bheardnetwork-ci/index.html
+          test -f dist/bheardnetwork-ci/network/index.html
+          test -f dist/bheardnetwork-ci/network/board/index.html
+          test -f dist/bheardnetwork-ci/assets/bheard-network-logo.svg
+          test -f dist/bheardnetwork-ci/_headers
+          grep -Fq 'https://bheardnetwork.com/' dist/bheardnetwork-ci/index.html
+          ! grep -Fq 'iambandobandz.com/beheardnetwork/' dist/bheardnetwork-ci/index.html
       - name: Run tests
         run: python -m unittest discover -s tests -v
       - name: Build sanitized site
