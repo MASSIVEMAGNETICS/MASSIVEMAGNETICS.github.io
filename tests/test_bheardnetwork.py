@@ -10,6 +10,8 @@ from __future__ import annotations
 
 import hashlib
 import json
+from contextlib import redirect_stdout
+from io import StringIO
 import re
 import shutil
 import subprocess
@@ -22,7 +24,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 BH = ROOT / "bheardnetwork"
 sys.path.insert(0, str(ROOT / "tools"))
-from build_bheardnetwork import build_demo_assets
+from build_bheardnetwork import build_demo_assets, main as build_bheardnetwork_main
 from build_site import build
 
 V2_STATIC = (
@@ -166,6 +168,39 @@ class TestBheardNetworkTree(unittest.TestCase):
                 ["demo-data.js", "demo-media/1.wav", "demo-media/2.wav",
                  "demo-media/3.wav", "demo-media/4.wav"],
             )
+
+    def test_demo_assets_only_cli_runs_without_private_source(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            missing_source = root / "private-v2-source"
+            dest = root / "generated"
+            output = StringIO()
+            with redirect_stdout(output):
+                result = build_bheardnetwork_main([
+                    "--source", str(missing_source),
+                    "--dest", str(dest),
+                    "--demo-assets-only",
+                ])
+            self.assertEqual(result, 0)
+            self.assertFalse(missing_source.exists())
+            self.assertTrue((dest / "demo-data.js").is_file())
+            for track_id in range(1, 5):
+                self.assertTrue((dest / "demo-media" / f"{track_id}.wav").is_file())
+            self.assertIn("Built B Heard demo assets in", output.getvalue())
+            self.assertIn("demo-media/4.wav", output.getvalue())
+
+    def test_sanitized_build_does_not_mutate_source_tree(self) -> None:
+        def snapshot() -> dict[str, str]:
+            return {
+                path.relative_to(ROOT).as_posix(): sha256_file(path)
+                for path in sorted(BH.rglob("*"))
+                if path.is_file()
+            }
+
+        before = snapshot()
+        with tempfile.TemporaryDirectory() as tmp:
+            build(Path(tmp) / "site")
+        self.assertEqual(snapshot(), before)
 
     def test_demo_tones_are_valid_wavs(self) -> None:
         for n in (1, 2, 3, 4):
