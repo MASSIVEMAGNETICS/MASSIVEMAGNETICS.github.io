@@ -14,6 +14,8 @@ COPY_ITEMS = [
     "CNAME",
     "analytics.js",
     "assets",
+    "beheardnetwork",
+    "bheardnetwork",
     "favicon.svg",
     "frontier-radar",
     "index.html",
