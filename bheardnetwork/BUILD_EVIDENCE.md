@@ -212,4 +212,8 @@ No deployment workflow, Pages setting, domain, DNS, credential, secret,
 payment, webhook, or production state was changed. The live API remains
 a separate unverified integration boundary.
 
-Verification status at commit time: pending exact-head GitHub Actions.
+Verification — exact head `9c96b6ac90de4b75b80bbb337de3dc1748e55d87`:
+- [Site Contract CI #43679509740](https://github.com/MASSIVEMAGNETICS/MASSIVEMAGNETICS.github.io/actions/runs/43679509740): **SUCCESS**; full suite **76 tests, 3 skipped**; sanitized Pages build, required public-artifact checks, and registry validation passed.
+- [Validate Canonical Registry #43679509718](https://github.com/MASSIVEMAGNETICS/MASSIVEMAGNETICS.github.io/actions/runs/43679509718): **SUCCESS**; full suite **76 tests, 3 skipped**; sanitized Pages artifact and registry validation passed.
+- The three skipped tests are optional source-sync checks that require the private sibling v2 board source tree, which is not available in GitHub Actions.
+- Local standard-library WAV harness: **4/4** generated files passed format checks and repeated-generation SHA-256 checks. No local full repository test run is claimed.
