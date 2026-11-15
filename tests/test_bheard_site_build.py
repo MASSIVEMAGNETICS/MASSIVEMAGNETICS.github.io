@@ -205,8 +205,16 @@ class BHeardIndependentSiteBuildTests(unittest.TestCase):
                 build_bheard_site.LEGACY_CHECKOUT_EVENT
             )
 
-    def test_baseline_security_headers_are_present(self) -> None:
+    def test_baseline_security_headers_use_cloudflare_pages_syntax(self) -> None:
         headers = self.read("_headers")
+        lines = headers.splitlines()
+
+        # Cloudflare Pages _headers files use a path pattern followed by
+        # indented header declarations; C-style comments disable the rules.
+        self.assertGreaterEqual(len(lines), 5)
+        self.assertEqual(lines[0].strip(), "/*")
+        self.assertNotIn("*/", headers)
+
         for header in (
             "X-Content-Type-Options: nosniff",
             "Referrer-Policy: strict-origin-when-cross-origin",
@@ -214,7 +222,7 @@ class BHeardIndependentSiteBuildTests(unittest.TestCase):
             "Permissions-Policy: camera=(), microphone=(), geolocation=()",
         ):
             with self.subTest(header=header):
-                self.assertIn(header, headers)
+                self.assertIn(f"  {header}", lines)
 
     def test_build_is_repeatable_and_refuses_unmarked_output(self) -> None:
         build_bheard_site.build(self.output)
