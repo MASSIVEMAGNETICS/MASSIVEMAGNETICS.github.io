@@ -32,6 +32,8 @@ class BHeardIndependentSiteBuildTests(unittest.TestCase):
             build_site.build(artist_output)
 
             self.assertFalse((artist_output / "beheardnetwork").exists())
+            # The legacy social-app prototype must not leak back onto the artist origin.
+            self.assertFalse((artist_output / "bheardnetwork").exists())
             self.assertFalse((artist_output / "network").exists())
 
             homepage = (artist_output / "index.html").read_text(encoding="utf-8")
