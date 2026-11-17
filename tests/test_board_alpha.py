@@ -14,31 +14,29 @@ from build_site import build  # noqa: E402
 
 
 class BHeardBoardAlphaTests(unittest.TestCase):
-    def test_board_survives_sanitized_build_and_sitemap(self) -> None:
+    def test_board_source_is_available_but_not_an_artist_subpage(self) -> None:
+        board = ROOT / "network" / "board" / "index.html"
+        board_js = ROOT / "network" / "board" / "board.js"
+        board_css = ROOT / "network" / "board" / "board.css"
+        self.assertTrue(board.is_file())
+        self.assertTrue(board_js.is_file())
+        self.assertTrue(board_css.is_file())
+
+        html = board.read_text(encoding="utf-8")
+        script = board_js.read_text(encoding="utf-8")
+        self.assertIn("B Heard Board Alpha", html)
+        self.assertIn("MASSIVEMAGNETICS/MASSIVEMAGNETICS.github.io", script)
+        self.assertIn("/issues?state=all", script)
+
         with tempfile.TemporaryDirectory() as tmp:
             site = Path(tmp) / "site"
             build(site)
-
-            board = site / "network" / "board" / "index.html"
-            board_js = site / "network" / "board" / "board.js"
-            board_css = site / "network" / "board" / "board.css"
-
-            self.assertTrue(board.is_file())
-            self.assertTrue(board_js.is_file())
-            self.assertTrue(board_css.is_file())
-
-            html = board.read_text(encoding="utf-8")
-            script = board_js.read_text(encoding="utf-8")
+            for route in ("beheardnetwork", "bheardnetwork", "network"):
+                self.assertFalse((site / route).exists(), f"B Heard route leaked onto artist origin: {route}")
+            homepage = (site / "index.html").read_text(encoding="utf-8")
+            self.assertIn('href="https://bheardnetwork.com/"', homepage)
             sitemap = (site / "sitemap.xml").read_text(encoding="utf-8")
-
-            self.assertIn(
-                '<link rel="canonical" href="https://iambandobandz.com/network/board/">',
-                html,
-            )
-            self.assertIn("B Heard Board Alpha", html)
-            self.assertIn("MASSIVEMAGNETICS/MASSIVEMAGNETICS.github.io", script)
-            self.assertIn("/issues?state=all", script)
-            self.assertIn("https://iambandobandz.com/network/board/", sitemap)
+            self.assertNotIn("https://iambandobandz.com/network/", sitemap)
 
     def test_board_does_not_claim_final_account_backend(self) -> None:
         html = (ROOT / "network" / "board" / "index.html").read_text(encoding="utf-8")

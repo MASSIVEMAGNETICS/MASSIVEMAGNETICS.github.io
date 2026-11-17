@@ -176,8 +176,6 @@ def build(output: Path) -> None:
 
     compact_jsonld = json.dumps(build_jsonld(registry), separators=(",", ":"), ensure_ascii=False)
     pretty_jsonld = json.dumps(build_jsonld(registry), indent=2, ensure_ascii=False) + "\n"
-    compact_jsonld = compact_jsonld.replace("https://iambandobandz.com/network/", "https://bheardnetwork.com/")
-    pretty_jsonld = pretty_jsonld.replace("https://iambandobandz.com/network/", "https://bheardnetwork.com/")
     (output / "identity.jsonld").write_text(pretty_jsonld, encoding="utf-8")
 
     index_path = output / "index.html"
