@@ -113,17 +113,34 @@ class TestBheardNetworkTree(unittest.TestCase):
             self.assertTrue(target.is_file(), f"referenced asset missing: {ref}")
         self.assertIn('src="social-radio.js"', html)
 
-    def test_shared_brand_asset_is_present_in_sanitized_build(self) -> None:
+    def test_bheard_demo_is_not_published_on_artist_origin(self) -> None:
         self.assertTrue(BRAND_ASSET.is_file(), "shared B Heard brand asset is missing")
         with tempfile.TemporaryDirectory() as tmp:
             site = Path(tmp) / "site"
             build(site)
             self.assertTrue((site / "assets" / "brand" / "b-heard-network.webp").is_file())
-            self.assertTrue((site / "bheardnetwork" / "demo-media" / "1.wav").is_file())
-            with wave.open(str(site / "bheardnetwork" / "demo-media" / "1.wav"), "rb") as wav:
+            for route in ("beheardnetwork", "bheardnetwork", "network"):
+                self.assertFalse((site / route).exists(), f"B Heard route leaked onto artist origin: {route}")
+            built_page = (site / "index.html").read_text(encoding="utf-8")
+            self.assertIn('href="https://bheardnetwork.com/"', built_page)
+            self.assertNotIn('href="/network/"', built_page)
+            identity = json.loads((site / "identity.jsonld").read_text(encoding="utf-8"))
+            bheard = next(
+                (item for item in identity.get("@graph", [])
+                 if item.get("@type") == "Organization" and item.get("name") == "B Heard Network"),
+                None,
+            )
+            self.assertIsNotNone(bheard)
+            self.assertEqual(bheard.get("url"), "https://bheardnetwork.com/")
+
+        # Keep deterministic demo assets available for a future independent build,
+        # but never place them in the artist-domain Pages artifact.
+        with tempfile.TemporaryDirectory() as tmp:
+            demo_root = Path(tmp) / "bheardnetwork"
+            build_demo_assets(demo_root)
+            self.assertTrue((demo_root / "demo-media" / "1.wav").is_file())
+            with wave.open(str(demo_root / "demo-media" / "1.wav"), "rb") as wav:
                 self.assertEqual(wav.getnframes(), 3 * 22050)
-            built_page = (site / "bheardnetwork" / "index.html").read_text(encoding="utf-8")
-            self.assertIn('src="../assets/brand/b-heard-network.webp"', built_page)
 
     def test_no_hardcoded_tunnel_url(self) -> None:
         for path in sorted(BH.rglob("*")):

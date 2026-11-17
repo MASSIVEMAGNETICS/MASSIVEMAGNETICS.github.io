@@ -217,3 +217,11 @@ Verification — exact head `9c96b6ac90de4b75b80bbb337de3dc1748e55d87`:
 - [Validate Canonical Registry #43679509718](https://github.com/MASSIVEMAGNETICS/MASSIVEMAGNETICS.github.io/actions/runs/43679509718): **SUCCESS**; full suite **76 tests, 3 skipped**; sanitized Pages artifact and registry validation passed.
 - The three skipped tests are optional source-sync checks that require the private sibling v2 board source tree, which is not available in GitHub Actions.
 - Local standard-library WAV harness: **4/4** generated files passed format checks and repeated-generation SHA-256 checks. No local full repository test run is claimed.
+
+## 2026-11-17 independent-origin correction
+
+The earlier note saying the artist Pages builder should include `bheardnetwork/` is superseded. The artist-domain sanitized build now excludes all three legacy B Heard route trees: `beheardnetwork/`, `bheardnetwork/`, and `network/`. The artist homepage navigation and B Heard Organization JSON-LD point to the proposed independent origin, `https://bheardnetwork.com/`.
+
+The deterministic demo seed and synthetic WAV generator remain available through `tools/build_bheardnetwork.py` and its tests, but generated demo files are not copied into the artist-domain artifact. The social-app demo is not a production network and has no verified independent hosting or backend. Do not restore it to the artist Pages copy list to make the artist deployment pass. A future public social-app deployment requires a separate B Heard hosting project and independently verified backend.
+
+No Pages project, DNS, TLS, secrets, Stripe configuration, billing, payment, or production deployment was changed by this correction.
