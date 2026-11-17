@@ -36,7 +36,7 @@ class ConversionFunnelTests(unittest.TestCase):
 
     def test_consumer_navigation_prioritizes_working_owned_surfaces(self) -> None:
         index = (ROOT / "index.html").read_text(encoding="utf-8")
-        for route in ('/store/', '/network/', '/proof/', '/research/'):
+        for route in ('/store/', 'https://bheardnetwork.com/', '/proof/', '/research/'):
             self.assertIn(f'href="{route}"', index)
         self.assertIn('href="#listen"', index)
         self.assertIn('href="#contact"', index)
@@ -52,8 +52,10 @@ class ConversionFunnelTests(unittest.TestCase):
     def test_registry_generates_commercial_routes_and_preserves_pinned_consent(self) -> None:
         profile = json.loads((ROOT / "registry" / "public" / "public-profile.json").read_text(encoding="utf-8"))
         routes = {item["path"] for item in profile["routes"]}
-        for route in ('/audit/', '/store/', '/network/', '/signal/', '/proof/', '/research/'):
+        for route in ('/audit/', '/store/', '/signal/', '/proof/', '/research/'):
             self.assertIn(route, routes)
+        network = next(item for item in json.loads((ROOT / "registry" / "public" / "entities.json").read_text(encoding="utf-8"))["entities"] if item["id"] == "network:b-heard-network")
+        self.assertEqual(network["canonical_url"], "https://bheardnetwork.com/")
         self.assertEqual(profile["lead_capture"]["consent_text_version"], "signal-capture-v1")
 
     def test_internal_revenue_routes_remain_measurable(self) -> None:
