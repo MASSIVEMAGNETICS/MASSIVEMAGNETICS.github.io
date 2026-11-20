@@ -7,6 +7,7 @@ This **undeployed** Cloudflare Worker receives signed Stripe Checkout events for
 - Cloudflare Workers module entry: `src/worker.mjs`.
 - Route: `POST /webhooks/stripe` on a separately authorized B Heard backend origin.
 - D1 database binding: `DB`; apply `migrations/0001_orders.sql` before activation.
+- The order ledger stores the Checkout Session customer email for manual fulfillment contact. Missing, malformed, or overlength email leaves a paid order in `needs_intake`; no email is sent automatically. Define access controls and a retention period before production.
 - Secret bindings: `STRIPE_WEBHOOK_SECRET`, `STRIPE_SECRET_KEY` (live credentials only in deployed secrets, never committed).
 - Plaintext environment binding: `BHEARD_PAYMENT_LINK_ID` = `plink_1U5HMjCpO4d12HbZcK2NQg5p` for live mode. `BHEARD_EXPECT_LIVEMODE` defaults to `true`; set to `false` **only** in an isolated test environment with test keys and a test Payment Link ID.
 - Request bodies are counted while streaming and cancelled as soon as the 256 KiB limit is exceeded; a declared `Content-Length` above the limit is rejected before reading.
