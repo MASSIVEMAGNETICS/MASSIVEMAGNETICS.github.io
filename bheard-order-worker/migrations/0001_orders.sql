@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS bheard_orders (
   artist_name TEXT NOT NULL,
   release_url TEXT NOT NULL,
   campaign_goal TEXT NOT NULL,
+  customer_email TEXT NOT NULL DEFAULT '',
   status TEXT NOT NULL CHECK (status IN ('paid_pending_fulfillment', 'needs_intake', 'in_progress', 'fulfilled', 'refunded')),
   amount_cents INTEGER NOT NULL CHECK (amount_cents = 999),
   currency TEXT NOT NULL CHECK (currency = 'usd'),
