@@ -42,6 +42,9 @@ export function extractIntake(session) {
   const artist = rawArtist.slice(0, 80);
   const release = rawRelease.slice(0, 200);
   const goal = getCustomField(session.custom_fields, 'campaign_goal');
+  const rawEmail = String(session.customer_details?.email || session.customer_email || '').trim();
+  const email = rawEmail.length <= 254 ? rawEmail : '';
+  const validEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   let validUrl = false;
   try {
     const url = new URL(release);
@@ -57,8 +60,8 @@ export function extractIntake(session) {
   } catch { /* Invalid URLs are recorded for manual intake repair. */ }
   // Truncated URLs may point at a different resource: retain a bounded preview but require repair.
   const valid = rawArtist.length >= 1 && rawArtist.length <= 80 &&
-    rawRelease.length <= 200 && validUrl && GOALS.has(goal);
-  return { artist, release, goal, state: valid ? 'paid_pending_fulfillment' : 'needs_intake' };
+    rawRelease.length <= 200 && validUrl && GOALS.has(goal) && validEmail;
+  return { artist, release, goal, email, state: valid ? 'paid_pending_fulfillment' : 'needs_intake' };
 }
 
 async function readBodyLimited(request, maxBytes) {
@@ -143,9 +146,9 @@ export default {
       // D1 batch is atomic. Unique session ID prevents double orders across distinct events.
       const result = await env.DB.batch([
         env.DB.prepare(`INSERT OR IGNORE INTO bheard_orders
-          (stripe_session_id, stripe_event_id, artist_name, release_url, campaign_goal, status, amount_cents, currency)
-          VALUES (?, ?, ?, ?, ?, ?, 999, 'usd')`).bind(
-          session.id, event.id, intake.artist, intake.release, intake.goal, intake.state),
+          (stripe_session_id, stripe_event_id, artist_name, release_url, campaign_goal, customer_email, status, amount_cents, currency)
+          VALUES (?, ?, ?, ?, ?, ?, ?, 999, 'usd')`).bind(
+          session.id, event.id, intake.artist, intake.release, intake.goal, intake.email, intake.state),
         env.DB.prepare(`INSERT OR IGNORE INTO bheard_webhook_events
           (stripe_event_id, stripe_session_id, event_type) VALUES (?, ?, ?)`).bind(
           event.id, session.id, event.type),
