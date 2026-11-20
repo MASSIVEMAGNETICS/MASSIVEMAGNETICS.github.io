@@ -10,6 +10,7 @@ const session = {
   object: 'checkout.session', id: sessionId, livemode: true, status: 'complete',
   payment_status: 'paid', payment_link: paymentLink, currency: 'usd', amount_total: 999,
   metadata: { offer_code: 'bheard_creator_promo_v1' },
+  customer_details: { email: 'creator@example.com' },
   custom_fields: [
     { key: 'artist_name', type: 'text', text: { value: 'Example Artist' } },
     { key: 'release_url', type: 'text', text: { value: 'https://example.org/release' } },
@@ -73,7 +74,8 @@ test('one paid session creates one order and repeated delivery does not duplicat
     ['order_recorded', 'already_recorded', 'already_recorded']);
   assert.equal(database.orders.size, 1);
   assert.equal(database.events.size, 2);
-  assert.equal(database.orders.get(sessionId)[5], 'paid_pending_fulfillment');
+  assert.equal(database.orders.get(sessionId)[5], 'creator@example.com');
+  assert.equal(database.orders.get(sessionId)[6], 'paid_pending_fulfillment');
 });
 test('invalid signature cannot write an order', async () => {
   const database = db();
@@ -92,7 +94,7 @@ test('missing intake is persisted for manual repair, not marked fulfilled', asyn
   const incomplete = { ...session, custom_fields: [] };
   const result = await send({ database, fetched: incomplete });
   assert.equal(result.status, 200);
-  assert.equal(database.orders.get(sessionId)[5], 'needs_intake');
+  assert.equal(database.orders.get(sessionId)[6], 'needs_intake');
 });
 test('Stripe retrieval outage yields retryable failure without writes', async () => {
   const database = db();
@@ -100,6 +102,16 @@ test('Stripe retrieval outage yields retryable failure without writes', async ()
   assert.equal(result.status, 503);
   assert.equal(database.orders.size, 0);
 });
+test('missing or invalid customer email is quarantined for manual intake', () => {
+  for (const email of ['', 'not-an-email', 'x'.repeat(255)]) {
+    const intake = extractIntake({ ...session, customer_details: { email } });
+    assert.equal(intake.state, 'needs_intake');
+  }
+  const valid = extractIntake({ ...session, customer_details: { email: 'creator@example.com' } });
+  assert.equal(valid.email, 'creator@example.com');
+  assert.equal(valid.state, 'paid_pending_fulfillment');
+});
+
 test('invalid creator URL never marks order ready', () => {
   assert.equal(extractIntake({ custom_fields: [
     { key: 'artist_name', type: 'text', text: { value: 'A' } },
@@ -113,7 +125,7 @@ test('nonpublic and non-HTTPS release URLs remain needs_intake, not fulfillment-
     { key: 'release_url', type: 'text', text: { value: '' } },
     { key: 'campaign_goal', type: 'dropdown', dropdown: { value: 'reach' } },
   ];
-  const intakeFor = (releaseUrl) => extractIntake({ custom_fields: [
+  const intakeFor = (releaseUrl) => extractIntake({ customer_details: { email: 'creator@example.com' }, custom_fields: [
     baseFields[0], { ...baseFields[1], text: { value: releaseUrl } }, baseFields[2],
   ] });
   for (const releaseUrl of [
@@ -151,7 +163,7 @@ test('isolated test-mode configuration accepts test events and rejects live even
 });
 
 test('overlength intake is quarantined rather than silently accepted after truncation', () => {
-  const fields = (artist, release) => ({ custom_fields: [
+  const fields = (artist, release) => ({ customer_details: { email: 'creator@example.com' }, custom_fields: [
     { key: 'artist_name', type: 'text', text: { value: artist } },
     { key: 'release_url', type: 'text', text: { value: release } },
     { key: 'campaign_goal', type: 'dropdown', dropdown: { value: 'reach' } },
