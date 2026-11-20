@@ -1,16 +1,17 @@
 """Tests for the shippable static /bheardnetwork/ tree (GitHub Pages).
 
-The tree is built by tools/build_bheardnetwork.py from the v2 board's
-static assets plus two hand-written files (bheard-api.js, the live/demo
-API shim) and generated demo data/tones. These tests assert on the
-committed tree only, so they run the same in CI (where the v2 source
-dir does not exist) as locally. The source-sync checks skip when the
-v2 source dir is absent.
+The tree combines committed v2 board assets and the live/demo API shim
+with a shared canonical brand asset. Demo seed data and synthesized
+tones are generated deterministically before assertions, so CI does
+not need the private sibling v2 source tree. Optional source-sync checks
+still run when that local source tree is available.
 """
 from __future__ import annotations
 
 import hashlib
 import json
+from contextlib import redirect_stdout
+from io import StringIO
 import re
 import shutil
 import subprocess
@@ -22,6 +23,10 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 BH = ROOT / "bheardnetwork"
+sys.path.insert(0, str(ROOT / "tools"))
+from build_bheardnetwork import build_demo_assets, main as build_bheardnetwork_main
+from build_site import build
+
 V2_STATIC = (
     Path.home() / "workspace" / "goals" / "b-heard-network-platform-build"
     / "files" / "bheard-social-v2" / "board" / "static"
@@ -32,7 +37,7 @@ DEMO_CHECK = ROOT / "tests" / "bheardnetwork_demo_check.js"
 # Files the build produces (copied / transformed / generated).
 BUILT_FILES = [
     "index.html", "style.css", "app.js", "social-profiles.js",
-    "social-feed.js", "social-player.js", "logo.jpg", "demo-data.js",
+    "social-feed.js", "social-player.js", "demo-data.js",
     "demo-media/1.wav", "demo-media/2.wav", "demo-media/3.wav",
     "demo-media/4.wav",
 ]
@@ -41,11 +46,17 @@ HANDWRITTEN_FILES = ["bheard-api.js", "BUILD_EVIDENCE.md"]
 
 # Files copied byte-identical from the v2 board static tree.
 BYTE_IDENTICAL = ["style.css", "social-profiles.js", "social-feed.js",
-                  "social-player.js", "logo.jpg"]
+                  "social-player.js", "social-radio.js"]
+BRAND_ASSET = ROOT / "assets" / "brand" / "b-heard-network.webp"
 
 
 def sha256_file(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def setUpModule() -> None:
+    """Materialize generated demo assets before tree and build assertions."""
+    build_demo_assets(BH)
 
 
 class TestBheardNetworkTree(unittest.TestCase):
@@ -56,10 +67,12 @@ class TestBheardNetworkTree(unittest.TestCase):
     def test_index_uses_relative_asset_paths(self) -> None:
         html = (BH / "index.html").read_text(encoding="utf-8")
         for bad in ('"/style.css"', '"/app.js"', '"/logo.jpg"',
+                    'src="logo.jpg"', 'src="/logo.jpg"',
                     '"/social-profiles.js"', '"/social-feed.js"',
                     '"/social-player.js"'):
             self.assertNotIn(bad, html, f"root-absolute asset ref remains: {bad}")
-        for good in ('href="style.css"', 'src="app.js"', 'src="logo.jpg"',
+        for good in ('href="style.css"', 'src="app.js"',
+                     'src="../assets/brand/b-heard-network.webp"',
                      'src="social-profiles.js"', 'src="social-feed.js"',
                      'src="social-player.js"'):
             self.assertIn(good, html, f"relative asset ref missing: {good}")
@@ -100,6 +113,35 @@ class TestBheardNetworkTree(unittest.TestCase):
             self.assertTrue(target.is_file(), f"referenced asset missing: {ref}")
         self.assertIn('src="social-radio.js"', html)
 
+    def test_bheard_demo_is_not_published_on_artist_origin(self) -> None:
+        self.assertTrue(BRAND_ASSET.is_file(), "shared B Heard brand asset is missing")
+        with tempfile.TemporaryDirectory() as tmp:
+            site = Path(tmp) / "site"
+            build(site)
+            self.assertTrue((site / "assets" / "brand" / "b-heard-network.webp").is_file())
+            for route in ("beheardnetwork", "bheardnetwork", "network"):
+                self.assertFalse((site / route).exists(), f"B Heard route leaked onto artist origin: {route}")
+            built_page = (site / "index.html").read_text(encoding="utf-8")
+            self.assertIn('href="https://bheardnetwork.com/"', built_page)
+            self.assertNotIn('href="/network/"', built_page)
+            identity = json.loads((site / "identity.jsonld").read_text(encoding="utf-8"))
+            bheard = next(
+                (item for item in identity.get("@graph", [])
+                 if item.get("@type") == "Organization" and item.get("name") == "B Heard Network"),
+                None,
+            )
+            self.assertIsNotNone(bheard)
+            self.assertEqual(bheard.get("url"), "https://bheardnetwork.com/")
+
+        # Keep deterministic demo assets available for a future independent build,
+        # but never place them in the artist-domain Pages artifact.
+        with tempfile.TemporaryDirectory() as tmp:
+            demo_root = Path(tmp) / "bheardnetwork"
+            build_demo_assets(demo_root)
+            self.assertTrue((demo_root / "demo-media" / "1.wav").is_file())
+            with wave.open(str(demo_root / "demo-media" / "1.wav"), "rb") as wav:
+                self.assertEqual(wav.getnframes(), 3 * 22050)
+
     def test_no_hardcoded_tunnel_url(self) -> None:
         for path in sorted(BH.rglob("*")):
             if not path.is_file() or path.suffix not in (".js", ".html", ".md"):
@@ -132,6 +174,51 @@ class TestBheardNetworkTree(unittest.TestCase):
         self.assertIn("demo_alice@example.invalid",
                       [u["email"] for u in seed["users"]])
 
+    def test_demo_asset_builder_is_deterministic(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            dest = Path(tmp) / "bheardnetwork"
+            first = build_demo_assets(dest)
+            second = build_demo_assets(dest)
+            self.assertEqual(first, second)
+            self.assertEqual(
+                [item[0] for item in first],
+                ["demo-data.js", "demo-media/1.wav", "demo-media/2.wav",
+                 "demo-media/3.wav", "demo-media/4.wav"],
+            )
+
+    def test_demo_assets_only_cli_runs_without_private_source(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            missing_source = root / "private-v2-source"
+            dest = root / "generated"
+            output = StringIO()
+            with redirect_stdout(output):
+                result = build_bheardnetwork_main([
+                    "--source", str(missing_source),
+                    "--dest", str(dest),
+                    "--demo-assets-only",
+                ])
+            self.assertEqual(result, 0)
+            self.assertFalse(missing_source.exists())
+            self.assertTrue((dest / "demo-data.js").is_file())
+            for track_id in range(1, 5):
+                self.assertTrue((dest / "demo-media" / f"{track_id}.wav").is_file())
+            self.assertIn("Built B Heard demo assets in", output.getvalue())
+            self.assertIn("demo-media/4.wav", output.getvalue())
+
+    def test_sanitized_build_does_not_mutate_source_tree(self) -> None:
+        def snapshot() -> dict[str, str]:
+            return {
+                path.relative_to(ROOT).as_posix(): sha256_file(path)
+                for path in sorted(BH.rglob("*"))
+                if path.is_file()
+            }
+
+        before = snapshot()
+        with tempfile.TemporaryDirectory() as tmp:
+            build(Path(tmp) / "site")
+        self.assertEqual(snapshot(), before)
+
     def test_demo_tones_are_valid_wavs(self) -> None:
         for n in (1, 2, 3, 4):
             with wave.open(str(BH / "demo-media" / f"{n}.wav"), "rb") as wav:
@@ -142,7 +229,7 @@ class TestBheardNetworkTree(unittest.TestCase):
 
     def test_copied_js_has_no_new_external_urls(self) -> None:
         for name in ("app.js", "social-profiles.js", "social-feed.js",
-                     "social-player.js"):
+                     "social-player.js", "social-radio.js"):
             text = (BH / name).read_text(encoding="utf-8")
             urls = sorted(set(re.findall(r"https://[^\s\"'<>]+", text)))
             for url in urls:
@@ -154,7 +241,10 @@ class TestBheardNetworkTree(unittest.TestCase):
     def test_app_js_only_documented_change(self) -> None:
         text = (BH / "app.js").read_text(encoding="utf-8")
         self.assertNotIn('"/logo.jpg"', text)
-        self.assertEqual(text.count('"logo.jpg"'), 1)
+        self.assertNotIn('src="logo.jpg"', text)
+        self.assertEqual(
+            text.count('src="../assets/brand/b-heard-network.webp"'), 1
+        )
 
     @unittest.skipIf(not shutil.which("node"), "node not available")
     def test_js_syntax(self) -> None:
@@ -196,7 +286,10 @@ class TestBheardNetworkSourceSync(unittest.TestCase):
     def test_app_js_matches_source_plus_one_path_fix(self) -> None:
         source = (V2_STATIC / "app.js").read_text(encoding="utf-8")
         built = (BH / "app.js").read_text(encoding="utf-8")
-        self.assertEqual(built, source.replace('"/logo.jpg"', '"logo.jpg"'))
+        self.assertEqual(
+            built,
+            source.replace('"/logo.jpg"', '"../assets/brand/b-heard-network.webp"'),
+        )
 
     def test_build_reproduces_committed_tree(self) -> None:
         sys.path.insert(0, str(ROOT / "tools"))

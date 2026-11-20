@@ -37,14 +37,11 @@ class RegistryTests(unittest.TestCase):
 
     def test_empire_revenue_routes_survive_sanitized_build(self) -> None:
         audit_url = "https://book.stripe.com/eVqfZg8nz3Ys0LT8uZgbm01"
-        bheard_url = "https://buy.stripe.com/14AaEWgU5dz23Y5aD7gbm09"
         with tempfile.TemporaryDirectory() as tmp:
             site = Path(tmp) / "site"
             build(site)
 
             index = (site / "index.html").read_text(encoding="utf-8")
-            network_path = site / "network" / "index.html"
-            network_thanks = site / "network" / "thanks" / "index.html"
             store_path = site / "store" / "index.html"
             store_thanks = site / "store" / "thanks" / "index.html"
             commerce_path = site / "store" / "commerce.json"
@@ -52,15 +49,19 @@ class RegistryTests(unittest.TestCase):
             self.assertIn(audit_url, index)
             self.assertIn('href="/store/"', index)
             self.assertNotIn("https://iambandobandz.store/", index)
-            self.assertIn('href="/network/"', index)
+            self.assertIn('href="https://bheardnetwork.com/"', index)
+            self.assertNotIn('href="/network/"', index)
+            for route in ("beheardnetwork", "bheardnetwork", "network"):
+                self.assertFalse((site / route).exists(), f"B Heard route leaked onto artist origin: {route}")
 
-            self.assertTrue(network_path.is_file(), "B Heard /network/ route was omitted from deploy artifact")
-            self.assertTrue(network_thanks.is_file(), "B Heard post-checkout route was omitted from deploy artifact")
-            network = network_path.read_text(encoding="utf-8")
-            self.assertIn("$9.99", network)
-            self.assertIn(bheard_url, network)
-            self.assertIn("Secure Stripe checkout active", network)
-            self.assertNotIn("fails closed", network)
+            identity = json.loads((site / "identity.jsonld").read_text(encoding="utf-8"))
+            bheard = next(
+                (item for item in identity.get("@graph", [])
+                 if item.get("@type") == "Organization" and item.get("name") == "B Heard Network"),
+                None,
+            )
+            self.assertIsNotNone(bheard)
+            self.assertEqual(bheard.get("url"), "https://bheardnetwork.com/")
 
             self.assertTrue(store_path.is_file(), "Direct /store/ route was omitted from deploy artifact")
             self.assertTrue(store_thanks.is_file(), "Store post-checkout route was omitted from deploy artifact")

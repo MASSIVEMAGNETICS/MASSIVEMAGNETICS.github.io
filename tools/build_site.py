@@ -14,15 +14,12 @@ COPY_ITEMS = [
     "CNAME",
     "analytics.js",
     "assets",
-    "beheardnetwork",
-    "bheardnetwork",
     "favicon.svg",
     "frontier-radar",
     "index.html",
     "audit",
     "catalog-recovery",
     "jesus-told-me",
-    "network",
     "owner",
     "portfolio",
     "privacy",
@@ -43,7 +40,6 @@ COPY_ITEMS = [
 ANALYTICS_PAGES = [
     "audit/index.html",
     "catalog-recovery/index.html",
-    "network/index.html",
     "proof/index.html",
     "research/index.html",
     "signal/index.html",
@@ -132,8 +128,9 @@ def normalize_homepage_identity(index: str) -> str:
     index = index.replace('<p class="eyebrow">“I AM BANDO BANDZ”</p>', '<p class="eyebrow">iambandobandz</p>')
 
     old_nav = '<a href="/signal/">Signal</a><a href="#listen">Listen</a><a href="#empire">Empire</a><a href="/proof/">Proof</a><a href="/research/">Research</a><a href="#contact">Contact</a>'
-    new_nav = '<a href="#listen">Listen</a><a href="/store/">Store</a><a href="/network/">Creators</a><a href="/proof/">Proof</a><a href="/research/">Lab</a><a href="#contact">Contact</a>'
+    new_nav = '<a href="#listen">Listen</a><a href="/store/">Store</a><a href="https://bheardnetwork.com/">Creators</a><a href="/proof/">Proof</a><a href="/research/">Lab</a><a href="#contact">Contact</a>'
     index = index.replace(old_nav, new_nav)
+    index = index.replace('href="/network/"', 'href="https://bheardnetwork.com/"')
 
     old_header_cta = '<a class="header-cta" href="/audit/" data-revenue-path="truth-compiler" data-loop-stage="consider">Inspect $97 audit</a>'
     new_header_cta = '<a class="header-cta" href="/store/" data-revenue-path="store" data-loop-stage="buy">Own the music</a>'
@@ -229,7 +226,6 @@ def build(output: Path) -> None:
     # Commercial pages must expose the same trust boundary even when their
     # source templates evolve independently.
     inject_legal_links(output / "store" / "index.html")
-    inject_legal_links(output / "network" / "index.html")
 
     # Shared local-first analytics uses one event schema across major public
     # surfaces. A future HTTPS collector can ingest the same payloads without

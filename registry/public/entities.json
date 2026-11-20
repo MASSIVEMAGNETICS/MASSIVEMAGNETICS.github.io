@@ -32,7 +32,7 @@
       "type": "Organization",
       "name": "B Heard Network",
       "status": "active",
-      "canonical_url": "https://iambandobandz.com/network/",
+      "canonical_url": "https://bheardnetwork.com/",
       "relationships": [{"predicate": "founded_by", "target": "person:brandon-emery"}]
     },
     {

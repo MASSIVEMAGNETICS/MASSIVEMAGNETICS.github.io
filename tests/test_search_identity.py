@@ -27,7 +27,7 @@ class SearchIdentityContractTests(unittest.TestCase):
         self.assertEqual(artist["canonical_url"], "https://iambandobandz.com/")
         self.assertEqual(site["name"], "iambandobandz")
         self.assertEqual(site["canonical_url"], "https://iambandobandz.com/")
-        self.assertEqual(network["canonical_url"], "https://iambandobandz.com/network/")
+        self.assertEqual(network["canonical_url"], "https://bheardnetwork.com/")
         self.assertEqual(store["status"], "active")
         self.assertEqual(store["canonical_url"], "https://iambandobandz.com/store/")
 
@@ -47,8 +47,6 @@ class SearchIdentityContractTests(unittest.TestCase):
             "/research/",
             "/signal/",
             "/store/",
-            "/network/",
-            "/network/board/",
             "/frontier-radar/",
             "/portfolio/",
             "/jesus-told-me/",
@@ -70,6 +68,8 @@ class SearchIdentityContractTests(unittest.TestCase):
             self.assertIn('<meta property="og:site_name" content="iambandobandz">', index)
             self.assertNotIn("Bando Bandz", index)
             self.assertNotIn("I AM BANDO BANDZ", index)
+            self.assertIn('href="https://bheardnetwork.com/"', index)
+            self.assertNotIn('href="/network/"', index)
             self.assertEqual(sitemap, build_sitemap(registry))
             self.assertEqual(manifest["short_name"], "iambandobandz")
             self.assertIn("Canonical artist/brand: iambandobandz", llms)
