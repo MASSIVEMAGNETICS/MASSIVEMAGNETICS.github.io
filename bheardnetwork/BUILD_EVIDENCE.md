@@ -7,11 +7,10 @@ worker.
 
 ## Verdict
 
-SHIPPABLE as a static demo that lights up live when the tunnel is up.
-Two follow-ups sit with the parent/coordinator (see Blockers below):
-`tools/build_site.py` needs one line (`"bheardnetwork"` in COPY_ITEMS)
-or the deploy will not publish this folder, and live mode from the
-Pages origin needs CORS on the Dell API.
+SHIPPABLE as a static demo that defaults to local-only demo data. The
+sanitized Pages builder already includes both `assets/` and
+`bheardnetwork/` in its copy list. Live mode from the Pages origin
+still requires CORS and credential support on the Dell API.
 
 ## What it is
 
@@ -39,14 +38,17 @@ the live Dell API when the tunnel is live.
 
 Build: `python3 tools/build_bheardnetwork.py` (stdlib only, idempotent,
 reproducible — run twice, same hashes). It copies the v2 board static
-assets, applies exactly two documented transforms, and generates the
-demo seed + tones.
+assets, applies the documented path transforms, reuses the canonical
+site brand asset, and generates the demo seed + tones. The
+`--demo-assets-only` mode generates the seed and tones without the
+private sibling v2 source tree.
 
 | File | Origin |
 | --- | --- |
 | `index.html` | v2 `index.html` + relative asset paths + demo banner + radio section + shim scripts first |
-| `style.css`, `social-profiles.js`, `social-feed.js`, `social-player.js`, `logo.jpg` | v2 board static, byte-identical |
-| `app.js` | v2 `app.js` with ONE change: `"/logo.jpg"` → `"logo.jpg"` (subpath) |
+| `style.css`, `social-profiles.js`, `social-feed.js`, `social-player.js`, `social-radio.js` | v2 board static, byte-identical |
+| `assets/brand/b-heard-network.webp` | Shared canonical site brand asset; reused by relative path instead of duplicating a logo binary |
+| `app.js` | v2 `app.js` with ONE fallback path change: `"/logo.jpg"` → `"../assets/brand/b-heard-network.webp"` |
 | `bheard-api.js` | hand-written shim: detection, fetch/media patching, demo store, radio |
 | `demo-data.js` | generated from the seed in the build script (demo_* handles only) |
 | `demo-media/1–4.wav` | generated 3 s sine tones (220/277.18/329.63/440 Hz), no real audio |
@@ -62,12 +64,12 @@ where the source tree exists).
 
 ## Tests
 
-- `python3 -m unittest tests.test_bheardnetwork -v` — 16 tests:
-  tree contents, relative paths, script order, no inline code, no
-  hardcoded tunnel URL/IP, no unverified audience claims, demo handles
-  clearly fake, valid demo WAVs, no new external URLs, app.js single
-  documented change, `node --check` on all JS, demo-store end-to-end
-  harness (`tests/bheardnetwork_demo_check.js`, 41 checks: sign-in,
+- `python3 -m unittest tests.test_bheardnetwork -v` — validates tree
+  contents, shared brand path, script order, no inline code, no
+  hardcoded tunnel URL/IP, no unverified audience claims, clearly fake
+  demo handles, deterministic demo asset generation, valid WAV metadata,
+  no new external URLs, app.js source transform, `node --check` on JS,
+  and the demo-store end-to-end harness (`tests/bheardnetwork_demo_check.js`, 41 checks: sign-in,
   feed, profiles, discography, posts, likes, comments, votes, follows,
   upload, hide/unhide, checkout blocked, media, logout), misspelled
   redirect stub untouched, source-sync + rebuild reproducibility.
@@ -178,3 +180,48 @@ sections (the real `#radio` from the v2 source + a demo-only
   API calls (sign-in, feed, radio/now) still need the tunnel + CORS
   as previously flagged.
 - No push, no commit run. No GPT needed.
+
+
+## 2026-11-14 — deterministic demo asset completion
+
+The 2026-11-15 main-branch text-only build commit explicitly deferred
+binary assets. Exact-head Site Contract CI and Canonical Registry CI on
+B Heard order-intake PR #57 then failed because `bheardnetwork/logo.jpg`
+and `bheardnetwork/demo-media/*.wav` were absent. The registry count
+assertion itself passed; the earlier 14-versus-13 note is stale.
+
+This bounded correction:
+- reuses the existing canonical `assets/brand/b-heard-network.webp`
+  (Git blob `39aa923709fa059b42122743abbff2bf1112f620`) instead of
+  inventing or duplicating a logo binary;
+- updates the three HTML logo references and the app-card fallback to
+  the shared relative asset path;
+- extracts deterministic demo-data/WAV generation into
+  `build_demo_assets()` and adds `--demo-assets-only`, which does not
+  require the private v2 source directory;
+- makes `tools/build_site.py` materialize generated assets inside the
+  sanitized output tree after copying committed static files, without
+  mutating the source tree;
+- makes the tests generate the same assets before asserting their
+  contents and checks repeat-generation hashes plus sanitized-site
+  asset resolution;
+- ignores generated `bheardnetwork/demo-media/` so local tests do not
+  leave untracked binary files.
+
+No deployment workflow, Pages setting, domain, DNS, credential, secret,
+payment, webhook, or production state was changed. The live API remains
+a separate unverified integration boundary.
+
+Verification — exact head `9c96b6ac90de4b75b80bbb337de3dc1748e55d87`:
+- [Site Contract CI #43679509740](https://github.com/MASSIVEMAGNETICS/MASSIVEMAGNETICS.github.io/actions/runs/43679509740): **SUCCESS**; full suite **76 tests, 3 skipped**; sanitized Pages build, required public-artifact checks, and registry validation passed.
+- [Validate Canonical Registry #43679509718](https://github.com/MASSIVEMAGNETICS/MASSIVEMAGNETICS.github.io/actions/runs/43679509718): **SUCCESS**; full suite **76 tests, 3 skipped**; sanitized Pages artifact and registry validation passed.
+- The three skipped tests are optional source-sync checks that require the private sibling v2 board source tree, which is not available in GitHub Actions.
+- Local standard-library WAV harness: **4/4** generated files passed format checks and repeated-generation SHA-256 checks. No local full repository test run is claimed.
+
+## 2026-11-17 independent-origin correction
+
+The earlier note saying the artist Pages builder should include `bheardnetwork/` is superseded. The artist-domain sanitized build now excludes all three legacy B Heard route trees: `beheardnetwork/`, `bheardnetwork/`, and `network/`. The artist homepage navigation and B Heard Organization JSON-LD point to the proposed independent origin, `https://bheardnetwork.com/`.
+
+The deterministic demo seed and synthetic WAV generator remain available through `tools/build_bheardnetwork.py` and its tests, but generated demo files are not copied into the artist-domain artifact. The social-app demo is not a production network and has no verified independent hosting or backend. Do not restore it to the artist Pages copy list to make the artist deployment pass. A future public social-app deployment requires a separate B Heard hosting project and independently verified backend.
+
+No Pages project, DNS, TLS, secrets, Stripe configuration, billing, payment, or production deployment was changed by this correction.
