@@ -287,5 +287,40 @@ class BHeardIndependentSiteBuildTests(unittest.TestCase):
 
 
 
+    def test_serverless_deployment_runbook_is_explicit_and_fail_closed(self) -> None:
+        runbook = (ROOT / "beheardnetwork" / "README.md").read_text(encoding="utf-8")
+        required = (
+            "Cloudflare Pages",
+            "Cloudflare Worker",
+            "D1",
+            "R2",
+            "No home server",
+            "no inbound tunnel",
+            "500 builds/month",
+            "20,000 files/site",
+            "25 MiB",
+            "100,000 requests/day",
+            "10 milliseconds CPU",
+            "5 million rows read/day",
+            "100,000 rows written/day",
+            "10 GB-month",
+            "$5/month",
+            "checkout_enabled: false",
+            "stripe_payment_verified",
+            "UNIQUE(submission_id, voter_id)",
+            "HttpOnly; Secure; SameSite=Lax",
+            "Cloudflare Turnstile",
+            "paid_pending_fulfillment",
+            "manual fulfillment",
+            "credential-routing vulnerability",
+            "no remote collector",
+            "No DNS",
+        )
+        for token in required:
+            with self.subTest(token=token):
+                self.assertIn(token, runbook)
+
+
+
 if __name__ == "__main__":
     unittest.main()
